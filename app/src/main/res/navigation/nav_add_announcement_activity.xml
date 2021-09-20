@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_add_announcement_activity"
+    app:startDestination="@id/brandsFragment">
+
+    <fragment
+        android:id="@+id/brandsFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.BrandsFragment"
+        android:label="@string/select_phone_brand"
+        tools:layout="@layout/fragment_brands" >
+        <action
+            android:id="@+id/action_brandsFragment_to_modelsFragment"
+            app:destination="@id/modelsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/modelsFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.ModelsFragment"
+        android:label="@string/select_phone_model"
+        tools:layout="@layout/fragment_models" >
+        <argument
+            android:name="brandId"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_modelsFragment_to_brandsFragment"
+            app:destination="@id/brandsFragment"
+            app:popUpTo="@id/modelsFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_modelsFragment_to_imagesFragment"
+            app:destination="@id/imagesFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/imagesFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.ImagesFragment"
+        android:label="fragment_images"
+        tools:layout="@layout/fragment_images" >
+        <action
+            android:id="@+id/action_imagesFragment_to_modelsFragment"
+            app:destination="@id/modelsFragment"
+            app:popUpTo="@id/imagesFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_imagesFragment_to_descriptionFragment"
+            app:destination="@id/descriptionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/descriptionFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.DescriptionFragment"
+        android:label="fragment_description"
+        tools:layout="@layout/fragment_description" >
+        <action
+            android:id="@+id/action_descriptionFragment_to_imagesFragment"
+            app:destination="@id/imagesFragment"
+            app:popUpTo="@id/descriptionFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_descriptionFragment_to_featuresFragment"
+            app:destination="@id/featuresFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/featuresFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.FeaturesFragment"
+        android:label="fragment_features"
+        tools:layout="@layout/fragment_features" >
+        <action
+            android:id="@+id/action_featuresFragment_to_descriptionFragment"
+            app:destination="@id/descriptionFragment"
+            app:popUpTo="@id/featuresFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+</navigation>

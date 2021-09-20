@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "636233979207",
+    "project_id": "bax-project-556dd",
+    "storage_bucket": "bax-project-556dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636233979207:android:ca0317182d7042dd0ae862",
+        "android_client_info": {
+          "package_name": "com.nomanim.bax"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "636233979207-4o2ei2c83kfu856j42krmm5nitbqgkou.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nomanim.bax",
+            "certificate_hash": "c7dbb3a4a7a12a5f1f8bdaf7afbd9dff5a868af8"
+          }
+        },
+        {
+          "client_id": "636233979207-hheu71rik80ritm6kemhnlbuea9d8hc9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvWfzK3Qu3WWwnMW5_v4pRXPrmECDY0Kc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "636233979207-hheu71rik80ritm6kemhnlbuea9d8hc9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
