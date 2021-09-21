@@ -16,7 +16,7 @@ class FeaturesSheetRecyclerView(private val list: ArrayList<String>, val listene
 
         fun run(list: ArrayList<String>, position: Int, listener: Listener) {
 
-            binding.ramTextView.text = list[position]
+            binding.storageCapacityButton.text = list[position]
 
         }
     }

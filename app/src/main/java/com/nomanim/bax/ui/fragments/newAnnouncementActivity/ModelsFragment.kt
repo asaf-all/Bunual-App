@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneModelRecyclerView
 import com.nomanim.bax.databinding.FragmentModelsBinding
-import com.nomanim.bax.models.ModelPhone
 import com.nomanim.bax.retrofit.builder.PhoneModelApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.PhoneModelName
@@ -35,7 +34,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
         binding.modelsToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
 
         getModelNamesWithRetrofit()
-        searchInsidePhoneModels()
+
 
 
 
@@ -57,11 +56,12 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
                         val phoneModels = response.body()?.phoneModelNames as ArrayList<PhoneModelName>
                         filteredList = phoneModels.filter { (it.brandId) == args.brandId } as ArrayList<PhoneModelName>
                         val limitedAndFilteredList = filteredList.take(50) as ArrayList<PhoneModelName>
-                        setRecyclerView(limitedAndFilteredList)
+                        setModelsRecyclerView(limitedAndFilteredList)
+                        searchInsidePhoneModels()
 
                     }catch (e: Exception) {
 
-                        //Toast.makeText(requireContext(),"fail",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),R.string.fail,Toast.LENGTH_SHORT).show()
                         e.localizedMessage
                     }
                 }
@@ -88,14 +88,14 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
                 if (listAfterSearch.size > 1) {
 
                     val limitList = listAfterSearch.take(100) as ArrayList<PhoneModelName>
-                    setRecyclerView(limitList)
+                    setModelsRecyclerView(limitList)
 
-                }else { setRecyclerView(listAfterSearch) }
+                }else { setModelsRecyclerView(listAfterSearch) }
             }
         })
     }
 
-    private fun setRecyclerView(list: ArrayList<PhoneModelName>) {
+    private fun setModelsRecyclerView(list: ArrayList<PhoneModelName>) {
 
         val mrv = binding.modelsRecyclerView
         mrv.isNestedScrollingEnabled = false
@@ -109,8 +109,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
         try {
 
-            val action = ModelsFragmentDirections.actionModelsFragmentToImagesFragment(args.brandId,modelName)
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_modelsFragment_to_imagesFragment)
 
         }catch (e: Exception) { Toast.makeText(requireContext(),"***",Toast.LENGTH_SHORT).show() }
 

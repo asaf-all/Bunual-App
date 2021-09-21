@@ -19,6 +19,7 @@ class FeaturesFragment : Fragment(),FeaturesSheetRecyclerView.Listener {
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
     private  lateinit var bottomSheetView: View
+    val list = ArrayList<String>()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -27,25 +28,16 @@ class FeaturesFragment : Fragment(),FeaturesSheetRecyclerView.Listener {
 
         bottomSheetView = layoutInflater.inflate(R.layout.layout_bottom_sheet_phone_storage,container,false)
 
-
-        val list = ArrayList<String>()
         list.add("8 GB")
         list.add("16 GB")
         list.add("32 GB")
         list.add("64 GB")
         list.add("128 GB")
 
-
         binding.featuresToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
         binding.featuresNextToolbarButton.setOnClickListener { findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment) }
         binding.featuresNextButton.setOnClickListener { findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment) }
-
-        binding.chooseStorageCardView.setOnClickListener {
-
-            setBottomSheet()
-            setStorageRecyclerView(list)
-
-        }
+        binding.chooseStorageCardView.setOnClickListener { setBottomSheet() }
 
         return binding.root
     }
@@ -59,9 +51,10 @@ class FeaturesFragment : Fragment(),FeaturesSheetRecyclerView.Listener {
         val bottomSheet = BottomSheetDialog(requireContext())
         bottomSheet.setContentView(bottomSheetView)
         bottomSheet.show()
+        setStorageCapacityRecyclerView(list)
     }
 
-    private fun setStorageRecyclerView(storages: ArrayList<String>) {
+    private fun setStorageCapacityRecyclerView(storages: ArrayList<String>) {
 
         val recyclerView = bottomSheetView.findViewById<RecyclerView>(R.id.phoneStorageRecyclerView)
         recyclerView.isNestedScrollingEnabled = false

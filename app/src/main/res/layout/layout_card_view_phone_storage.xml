@@ -24,21 +24,23 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent">
 
-            <TextView
-                android:id="@+id/ramTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/storageCapacityButton"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/white"
+                android:ellipsize="end"
                 android:fontFamily="@font/roboto_medium"
+                android:gravity="center|start"
+                android:maxLines="1"
+                android:outlineProvider="none"
+                android:paddingStart="15dp"
                 android:text="2 GB"
-                android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

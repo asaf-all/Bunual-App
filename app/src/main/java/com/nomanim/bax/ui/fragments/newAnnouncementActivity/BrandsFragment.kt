@@ -2,13 +2,14 @@ package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
@@ -54,8 +55,9 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
                         phoneBrands = response.body()?.phoneBrandNames as ArrayList<PhoneBrandName>
                         setBrandsRecyclerView(phoneBrands)
+                        searchInsidePhoneModels()
 
-                    }catch (e: Exception) { Toast.makeText(requireContext(),getString(R.string.all_announcements),Toast.LENGTH_LONG).show() }
+                    }catch (e: Exception) { Toast.makeText(requireContext(),R.string.fail,Toast.LENGTH_LONG).show() }
                 }
             }
 
@@ -64,6 +66,23 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
                 binding.brandsProgressBar.visibility = View.INVISIBLE
             }
 
+        })
+    }
+
+    private fun searchInsidePhoneModels() {
+
+        binding.searchPhoneBrands.addTextChangedListener( object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+
+            override fun afterTextChanged(text: Editable?) {
+
+                val listAfterSearch = phoneBrands.filter { list ->
+
+                    (list.brandName.lowercase().contains(text.toString().lowercase())) } as ArrayList<PhoneBrandName>
+
+                setBrandsRecyclerView(listAfterSearch)
+            }
         })
     }
 
