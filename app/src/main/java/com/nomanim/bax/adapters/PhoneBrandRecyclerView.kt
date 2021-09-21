@@ -2,8 +2,8 @@ package com.nomanim.bax.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
 import com.nomanim.bax.retrofit.models.PhoneBrandName
@@ -22,6 +22,7 @@ class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<
         fun run(list: ArrayList<PhoneBrandName>, position: Int, listener: Listener, context: Context) {
 
             binding.brandOrModelName.text = list[position].brandName
+            binding.modelImageView.visibility = View.INVISIBLE
             binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(list[position].id) }
 
 

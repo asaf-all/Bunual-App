@@ -17,6 +17,7 @@ import com.nomanim.bax.databinding.FragmentModelsBinding
 import com.nomanim.bax.retrofit.builder.PhoneModelApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.PhoneModelName
+import com.nomanim.bax.ui.other.ClearEditTextButton
 import retrofit2.Call
 import retrofit2.Callback
 
@@ -31,12 +32,9 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
         _binding = FragmentModelsBinding.inflate(inflater,container,false)
 
+        ClearEditTextButton(binding.searchPhoneModels)
         binding.modelsToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-
         getModelNamesWithRetrofit()
-
-
-
 
         return binding.root
     }
@@ -61,7 +59,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
                     }catch (e: Exception) {
 
-                        Toast.makeText(requireContext(),R.string.fail,Toast.LENGTH_SHORT).show()
+                        context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_SHORT).show() }
                         e.localizedMessage
                     }
                 }
@@ -77,9 +75,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
         binding.searchPhoneModels.addTextChangedListener( object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
-
-            override fun afterTextChanged(text: Editable?) {
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
 
                 val listAfterSearch = filteredList.filter { list ->
 
@@ -92,6 +88,8 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
                 }else { setModelsRecyclerView(listAfterSearch) }
             }
+
+            override fun afterTextChanged(text: Editable?) { }
         })
     }
 
@@ -99,10 +97,13 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
         val mrv = binding.modelsRecyclerView
         mrv.isNestedScrollingEnabled = false
-        mrv.layoutManager = LinearLayoutManager(requireContext())
-        mrv.setHasFixedSize(true)
-        val adapter = PhoneModelRecyclerView(requireContext(),list,this@ModelsFragment)
-        mrv.adapter = adapter
+        context?.let { context ->
+
+            mrv.layoutManager = LinearLayoutManager(context)
+            mrv.setHasFixedSize(true)
+            val adapter = PhoneModelRecyclerView(context,list,this@ModelsFragment)
+            mrv.adapter = adapter
+        }
     }
 
     override fun onCardViewClickListener(modelName: String) {
@@ -111,7 +112,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
             findNavController().navigate(R.id.action_modelsFragment_to_imagesFragment)
 
-        }catch (e: Exception) { Toast.makeText(requireContext(),"***",Toast.LENGTH_SHORT).show() }
+        }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
 
 
     }

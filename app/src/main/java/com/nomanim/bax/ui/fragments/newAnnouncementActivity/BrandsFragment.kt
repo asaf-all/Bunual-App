@@ -19,6 +19,7 @@ import com.nomanim.bax.retrofit.builder.PhoneBrandApi
 import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
 import com.nomanim.bax.retrofit.models.PhoneBrandName
 import com.nomanim.bax.ui.activities.MainActivity
+import com.nomanim.bax.ui.other.ClearEditTextButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,6 +35,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
 
+        ClearEditTextButton(binding.searchPhoneBrands)
         getBrandNamesWithRetrofit()
         onBackPressed()
         binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }

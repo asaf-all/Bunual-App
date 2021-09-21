@@ -19,7 +19,7 @@
     <string name="check">Check</string>
     <string name="confirmation">Confirmation</string>
     <string name="more">More</string>
-    <string name="fail">Fail</string>
+    <string name="fail">Fail. Please try again.</string>
     <string name="search">Search</string>
     <string name="storage">Storage</string>
     <string name="ram">Ram</string>
@@ -38,6 +38,7 @@
     <string name="sign_in">I have account</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="enter_confirmation_code">Enter confirmation code</string>
+    <string name="send_sms_code">Send SMS code</string>
     <string name="enter_valid_phone_number">Please enter a valid phone number</string>
     <string name="enter_correct_confirmation_code">Please enter a correct confirmation code</string>
     <string name="confirmation_code_will_sent_you">confirmation code will be sent to you</string>

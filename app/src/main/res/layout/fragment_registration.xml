@@ -8,34 +8,13 @@
     android:backgroundTint="@color/status_bar_color"
     tools:context=".ui.fragments.mainActivity.RegistrationFragment">
 
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:rotation="320"
-        android:src="@drawable/phone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageView8"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingTop="60dp"
-        android:scaleType="fitEnd"
-        android:src="@drawable/boy_with_tablet"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/openAccountButton" />
-
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/createAccountButton"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="42dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="296dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/view_registration_button"
         android:ellipsize="end"
         android:fontFamily="@font/roboto_condensed_bold"
@@ -45,15 +24,18 @@
         android:text="@string/sign_up"
         android:textAllCaps="false"
         android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/openAccountButton"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="42dp"
+        android:layout_marginStart="40dp"
         android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/view_registration_button"
         android:ellipsize="end"
         android:fontFamily="@font/roboto_condensed_bold"
@@ -63,6 +45,10 @@
         android:text="@string/sign_in"
         android:textAllCaps="false"
         android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/createAccountButton" />
+        app:layout_constraintTop_toBottomOf="@+id/createAccountButton"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

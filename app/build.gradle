@@ -69,5 +69,7 @@ dependencies {
 
     //third party libraries
     implementation 'com.hbb20:ccp:2.5.0'  //country code picker
+    implementation 'com.squareup.picasso:picasso:2.71828' //picasso for load image from internet
+
 
 }

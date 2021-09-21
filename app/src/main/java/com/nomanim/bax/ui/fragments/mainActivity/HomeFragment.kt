@@ -78,10 +78,10 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
                 mostViewedPhones = Service().getData(firestore,"All Announcements",values)
                 setHorizontalRecyclerView()
 
-        }.addOnFailureListener {
+        }.addOnFailureListener { exception ->
 
                 binding.mostViewedProgressBar.visibility = View.INVISIBLE
-                Toast.makeText(requireContext(),it.localizedMessage?.toString(),Toast.LENGTH_SHORT).show()
+                context?.let { Toast.makeText(it,exception.localizedMessage?.toString(),Toast.LENGTH_SHORT).show() }
         }
     }
 
@@ -157,8 +157,11 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
         vrv.isNestedScrollingEnabled = false
         vrv.setHasFixedSize(true)
         vrv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
-        verticalRecyclerViewAdapter = VerticalRecyclerView(allPhones,this@HomeFragment)
-        vrv.adapter = verticalRecyclerViewAdapter
+        context?.let {
+
+            verticalRecyclerViewAdapter = VerticalRecyclerView(it,allPhones,this@HomeFragment)
+            vrv.adapter = verticalRecyclerViewAdapter
+        }
     }
 
 }

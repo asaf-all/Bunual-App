@@ -83,7 +83,7 @@ class FavouritesFragment : Fragment(),VerticalRecyclerView.Listener {
         fp.isNestedScrollingEnabled = false
         fp.setHasFixedSize(true)
         fp.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        val adapter = VerticalRecyclerView(allFavouritePhones,this@FavouritesFragment)
+        val adapter = VerticalRecyclerView(requireContext(),allFavouritePhones,this@FavouritesFragment)
         fp.adapter = adapter
     }
 

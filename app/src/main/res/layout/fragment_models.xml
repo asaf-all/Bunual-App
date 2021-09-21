@@ -40,7 +40,9 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                tools:layout_editor_absoluteX="72dp"
+                tools:layout_editor_absoluteY="16dp">
 
 
                 <TextView
@@ -64,7 +66,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
                     app:srcCompat="@drawable/ic_close" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -79,6 +83,7 @@
             android:layout_marginEnd="35dp"
             android:background="@drawable/view_search_edit_text"
             android:drawableStart="@drawable/ic_search_24"
+            android:drawableEnd="@drawable/ic_close"
             android:drawablePadding="6dp"
             android:ems="10"
             android:hint="@string/search"
@@ -90,7 +95,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/modelsToolbar" />
+            app:layout_constraintTop_toBottomOf="@+id/modelsToolbar"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <ProgressBar
             android:id="@+id/modelsProgressBar"

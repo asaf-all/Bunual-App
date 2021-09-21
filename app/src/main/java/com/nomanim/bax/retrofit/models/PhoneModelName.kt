@@ -11,6 +11,9 @@ data class PhoneModelName(
     val os: String,
     val body: String,
 
+    @SerializedName("picture")
+    val modelImage: String,
+
     @SerializedName("brand_id")
     val brandId: String,
 

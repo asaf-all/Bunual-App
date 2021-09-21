@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewVerticalPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
 
-class VerticalRecyclerView (val list: ArrayList<ModelAnnouncement>, val listener: Listener)
+class VerticalRecyclerView (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
     : RecyclerView.Adapter<VerticalRecyclerView.Holder>() {
 
     interface Listener {
