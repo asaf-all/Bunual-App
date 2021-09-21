@@ -3,20 +3,18 @@ package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneModelRecyclerView
 import com.nomanim.bax.databinding.FragmentModelsBinding
+import com.nomanim.bax.models.ModelPhone
 import com.nomanim.bax.retrofit.builder.PhoneModelApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.PhoneModelName
@@ -63,7 +61,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
                     }catch (e: Exception) {
 
-                        Toast.makeText(requireContext(),"fail",Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(requireContext(),"fail",Toast.LENGTH_SHORT).show()
                         e.localizedMessage
                     }
                 }
@@ -107,9 +105,15 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
         mrv.adapter = adapter
     }
 
-    override fun onCardViewClickListener() {
+    override fun onCardViewClickListener(modelName: String) {
 
-        findNavController().navigate(R.id.action_modelsFragment_to_imagesFragment)
+        try {
+
+            val action = ModelsFragmentDirections.actionModelsFragmentToImagesFragment(args.brandId,modelName)
+            findNavController().navigate(action)
+
+        }catch (e: Exception) { Toast.makeText(requireContext(),"***",Toast.LENGTH_SHORT).show() }
+
 
     }
 

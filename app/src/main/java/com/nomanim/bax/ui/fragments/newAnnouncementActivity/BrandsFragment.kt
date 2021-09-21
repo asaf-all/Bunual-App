@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
@@ -54,7 +55,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
                         phoneBrands = response.body()?.phoneBrandNames as ArrayList<PhoneBrandName>
                         setBrandsRecyclerView(phoneBrands)
 
-                    }catch (e: Exception) { Toast.makeText(requireContext(),"fail",Toast.LENGTH_LONG).show() }
+                    }catch (e: Exception) { Toast.makeText(requireContext(),getString(R.string.all_announcements),Toast.LENGTH_LONG).show() }
                 }
             }
 
@@ -96,8 +97,13 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
     override fun onCardViewClickListener(brandId: String) {
 
-        val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(brandId)
-        findNavController().navigate(action)
+        try {
+
+            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(brandId)
+            findNavController().navigateUp()
+            findNavController().navigate(action)
+
+        }catch (e: Exception) { Toast.makeText(requireContext(),"***",Toast.LENGTH_SHORT).show() }
 
     }
 

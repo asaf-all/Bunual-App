@@ -15,7 +15,7 @@ class PhoneModelRecyclerView (val context: Context, private val models: ArrayLis
 
     interface Listener {
 
-        fun onCardViewClickListener()
+        fun onCardViewClickListener(modelName: String)
 
     }
 
@@ -24,7 +24,7 @@ class PhoneModelRecyclerView (val context: Context, private val models: ArrayLis
         fun run(models: ArrayList<PhoneModelName>, position: Int, listener: Listener,context: Context) {
 
             binding.brandOrModelName.text = models[position].modelName
-            binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener() }
+            binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(models[position].modelName) }
 
         }
     }

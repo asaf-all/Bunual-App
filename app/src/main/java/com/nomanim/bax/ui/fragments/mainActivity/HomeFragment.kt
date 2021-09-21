@@ -71,7 +71,7 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
 
     private fun getMostViewedPhonesFromFireStore() {
 
-        firestore.collection("All Announcements")
+        firestore.collection(getString(R.string.all_announcements))
             .orderBy("numberOfViews", Query.Direction.DESCENDING).limit(10).get().addOnSuccessListener { values ->
 
                 binding.mostViewedProgressBar.visibility = View.INVISIBLE
@@ -160,5 +160,5 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
         verticalRecyclerViewAdapter = VerticalRecyclerView(allPhones,this@HomeFragment)
         vrv.adapter = verticalRecyclerViewAdapter
     }
-    
+
 }

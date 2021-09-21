@@ -12,7 +12,11 @@
         tools:layout="@layout/fragment_brands" >
         <action
             android:id="@+id/action_brandsFragment_to_modelsFragment"
-            app:destination="@id/modelsFragment" />
+            app:destination="@id/modelsFragment" >
+            <argument
+                android:name="brandId"
+                android:defaultValue="error" />
+        </action>
     </fragment>
     <fragment
         android:id="@+id/modelsFragment"
@@ -29,7 +33,9 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_modelsFragment_to_imagesFragment"
-            app:destination="@id/imagesFragment" />
+            app:destination="@id/imagesFragment"/>
+
+
     </fragment>
     <fragment
         android:id="@+id/imagesFragment"
@@ -44,6 +50,15 @@
         <action
             android:id="@+id/action_imagesFragment_to_descriptionFragment"
             app:destination="@id/descriptionFragment" />
+        <argument
+            android:name="brandName"
+            app:argType="string"
+            android:defaultValue="error" />
+        <argument
+            android:name="modelName"
+            app:argType="string"
+            android:defaultValue="error" />
+
     </fragment>
     <fragment
         android:id="@+id/descriptionFragment"

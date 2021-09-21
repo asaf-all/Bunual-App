@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'com.google.gms.google-services'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-parcelize'
 }
 
 android {
@@ -67,6 +68,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
 
     //third party libraries
-    implementation 'com.hbb20:ccp:2.4.0'  //country code picker
+    implementation 'com.hbb20:ccp:2.5.0'  //country code picker
 
 }
