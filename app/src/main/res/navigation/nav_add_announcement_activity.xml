@@ -12,11 +12,7 @@
         tools:layout="@layout/fragment_brands" >
         <action
             android:id="@+id/action_brandsFragment_to_modelsFragment"
-            app:destination="@id/modelsFragment" >
-            <argument
-                android:name="brandId"
-                android:defaultValue="error" />
-        </action>
+            app:destination="@id/modelsFragment"/>
     </fragment>
     <fragment
         android:id="@+id/modelsFragment"
@@ -26,50 +22,33 @@
         <argument
             android:name="brandId"
             app:argType="string" />
-        <action
-            android:id="@+id/action_modelsFragment_to_brandsFragment"
-            app:destination="@id/brandsFragment"
-            app:popUpTo="@id/modelsFragment"
-            app:popUpToInclusive="true" />
+        <argument
+            android:name="brandName"
+            app:argType="string" />
         <action
             android:id="@+id/action_modelsFragment_to_imagesFragment"
-            app:destination="@id/imagesFragment"/>
-
-
+            app:destination="@id/imagesFragment" />
     </fragment>
     <fragment
         android:id="@+id/imagesFragment"
         android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.ImagesFragment"
-        android:label="fragment_images"
+        android:label="@string/select_phone_image"
         tools:layout="@layout/fragment_images" >
-        <action
-            android:id="@+id/action_imagesFragment_to_modelsFragment"
-            app:destination="@id/modelsFragment"
-            app:popUpTo="@id/imagesFragment"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_imagesFragment_to_descriptionFragment"
             app:destination="@id/descriptionFragment" />
         <argument
             android:name="brandName"
-            app:argType="string"
-            android:defaultValue="error" />
+            app:argType="string" />
         <argument
             android:name="modelName"
-            app:argType="string"
-            android:defaultValue="error" />
-
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/descriptionFragment"
         android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.DescriptionFragment"
         android:label="fragment_description"
         tools:layout="@layout/fragment_description" >
-        <action
-            android:id="@+id/action_descriptionFragment_to_imagesFragment"
-            app:destination="@id/imagesFragment"
-            app:popUpTo="@id/descriptionFragment"
-            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_descriptionFragment_to_featuresFragment"
             app:destination="@id/featuresFragment" />
@@ -78,11 +57,5 @@
         android:id="@+id/featuresFragment"
         android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.FeaturesFragment"
         android:label="fragment_features"
-        tools:layout="@layout/fragment_features" >
-        <action
-            android:id="@+id/action_featuresFragment_to_descriptionFragment"
-            app:destination="@id/descriptionFragment"
-            app:popUpTo="@id/featuresFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_features" />
 </navigation>

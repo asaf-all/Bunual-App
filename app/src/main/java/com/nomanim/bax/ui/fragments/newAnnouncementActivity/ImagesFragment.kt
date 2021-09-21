@@ -39,7 +39,7 @@ class ImagesFragment : Fragment() {
 
         binding.selectPhotosImageView.setOnClickListener { imageViewClickAction() }
 
-        binding.imagesToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        binding.imagesToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         binding.textView4.setOnClickListener { findNavController().navigate(R.id.action_imagesFragment_to_descriptionFragment) }
 
@@ -48,16 +48,19 @@ class ImagesFragment : Fragment() {
 
     private fun imageViewClickAction() {
 
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        context?.let {
 
-            permission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+            if (ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
-        }else {
+                permission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
 
-            val intentToGallery = Intent(Intent.ACTION_GET_CONTENT)
-            intentToGallery.type = "image/*"
-            intentToGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-            lifecycleScope.launch { activityResultLauncher.launch(Intent.createChooser(intentToGallery,"SELECT IMAGE")) }
+            }else {
+
+                val intentToGallery = Intent(Intent.ACTION_GET_CONTENT)
+                intentToGallery.type = "image/*"
+                intentToGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
+                lifecycleScope.launch { activityResultLauncher.launch(Intent.createChooser(intentToGallery,"SELECT IMAGE")) }
+            }
         }
     }
 
@@ -100,7 +103,7 @@ class ImagesFragment : Fragment() {
 
             } else {
 
-                Toast.makeText(requireContext(), resources.getString(R.string.permission_needed), Toast.LENGTH_LONG).show()
+                context?.let { Toast.makeText(it, resources.getString(R.string.permission_needed), Toast.LENGTH_LONG).show() }
             }
         }
     }

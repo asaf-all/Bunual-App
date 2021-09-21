@@ -21,7 +21,7 @@ class DescriptionFragment : Fragment() {
         _binding = FragmentDescriptionBinding.inflate(inflater,container,false)
 
 
-        binding.descriptionToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        binding.descriptionToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         binding.descriptionNextButton.setOnClickListener { findNavController().navigate(R.id.action_descriptionFragment_to_featuresFragment) }
         binding.descriptionNextToolbarButton.setOnClickListener { findNavController().navigate(R.id.action_descriptionFragment_to_featuresFragment) }
 

@@ -24,11 +24,11 @@ class RegistrationFragment : Fragment() {
 
         binding.createAccountButton.setOnClickListener {
 
-            requireActivity().startActivity(Intent(requireActivity(),RegistrationActivity::class.java)) }
+            activity?.startActivity(Intent(activity,RegistrationActivity::class.java)) }
 
         binding.openAccountButton.setOnClickListener {
 
-            requireActivity().startActivity(Intent(requireActivity(),RegistrationActivity::class.java)) }
+            activity?.startActivity(Intent(activity,RegistrationActivity::class.java)) }
 
         return binding.root
     }

@@ -43,6 +43,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
         return binding.root
     }
 
+
     private fun getBrandNamesWithRetrofit() {
 
         val phoneService = PhoneBrandApi.buildAndCreate()
@@ -59,7 +60,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
                         setBrandsRecyclerView(phoneBrands)
                         searchInsidePhoneModels()
 
-                    }catch (e: Exception) { Toast.makeText(requireContext(),R.string.fail,Toast.LENGTH_LONG).show() }
+                    }catch (e: Exception) { context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_LONG).show() } }
                 }
             }
 
@@ -92,15 +93,18 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
         val brv = binding.brandsRecyclerView
         brv.isNestedScrollingEnabled = false
-        brv.layoutManager = LinearLayoutManager(requireContext())
-        brv.setHasFixedSize(true)
-        val adapter = PhoneBrandRecyclerView(requireContext(),list,this@BrandsFragment)
-        brv.adapter = adapter
+        context?.let {
+
+            brv.layoutManager = LinearLayoutManager(it)
+            brv.setHasFixedSize(true)
+            val adapter = PhoneBrandRecyclerView(it,list,this@BrandsFragment)
+            brv.adapter = adapter
+        }
     }
 
     private fun onBackPressed() {
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
 
                 intentToMainActivity()
@@ -110,21 +114,20 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
     private fun intentToMainActivity() {
 
-        val intent = Intent(requireActivity(),MainActivity::class.java)
-        requireActivity().finish()
-        requireActivity().startActivity(intent)
+        val intent = Intent(activity,MainActivity::class.java)
+        activity?.finish()
+        activity?.startActivity(intent)
 
     }
 
-    override fun onCardViewClickListener(brandId: String) {
+    override fun onCardViewClickListener(brandId: String, brandName: String) {
 
         try {
 
-            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(brandId)
-            findNavController().navigateUp()
+            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(brandId,brandName)
             findNavController().navigate(action)
 
-        }catch (e: Exception) { Toast.makeText(requireContext(),"***",Toast.LENGTH_SHORT).show() }
+        }catch (e: Exception) { context?.let { Toast.makeText(it,"***",Toast.LENGTH_SHORT).show() } }
 
     }
 

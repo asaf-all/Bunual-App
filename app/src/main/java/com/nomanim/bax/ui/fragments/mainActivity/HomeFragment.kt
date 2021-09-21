@@ -5,7 +5,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.common.base.Strings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -100,9 +99,9 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
                 getMorePhonesFromFireStore()
             }
 
-        }.addOnFailureListener {
+        }.addOnFailureListener { exception ->
             binding.allPhonesProgressBar.visibility = View.INVISIBLE
-            Toast.makeText(requireContext(),it.localizedMessage,Toast.LENGTH_SHORT).show()
+            context?.let { Toast.makeText(it,exception.localizedMessage,Toast.LENGTH_SHORT).show() }
         }
     }
 

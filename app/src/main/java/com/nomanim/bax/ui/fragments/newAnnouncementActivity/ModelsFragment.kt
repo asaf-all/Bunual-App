@@ -33,7 +33,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
         _binding = FragmentModelsBinding.inflate(inflater,container,false)
 
         ClearEditTextButton(binding.searchPhoneModels)
-        binding.modelsToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
+        binding.modelsToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         getModelNamesWithRetrofit()
 
         return binding.root
@@ -110,7 +110,8 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
         try {
 
-            findNavController().navigate(R.id.action_modelsFragment_to_imagesFragment)
+            val action = ModelsFragmentDirections.actionModelsFragmentToİmagesFragment(args.brandName,modelName)
+            findNavController().navigate(action)
 
         }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
 

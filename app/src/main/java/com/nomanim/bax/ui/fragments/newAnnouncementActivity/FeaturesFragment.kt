@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -34,9 +32,9 @@ class FeaturesFragment : Fragment(),FeaturesSheetRecyclerView.Listener {
         list.add("64 GB")
         list.add("128 GB")
 
-        binding.featuresToolbar.setNavigationOnClickListener { requireActivity().onBackPressed() }
-        binding.featuresNextToolbarButton.setOnClickListener { findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment) }
-        binding.featuresNextButton.setOnClickListener { findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment) }
+        binding.featuresToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        binding.featuresNextToolbarButton.setOnClickListener { activity?.onBackPressed() }
+        binding.featuresNextButton.setOnClickListener { activity?.onBackPressed() }
         binding.chooseStorageCardView.setOnClickListener { setBottomSheet() }
 
         return binding.root
@@ -48,10 +46,13 @@ class FeaturesFragment : Fragment(),FeaturesSheetRecyclerView.Listener {
 
             (bottomSheetView.parent as ViewGroup).removeAllViews()
         }
-        val bottomSheet = BottomSheetDialog(requireContext())
-        bottomSheet.setContentView(bottomSheetView)
-        bottomSheet.show()
-        setStorageCapacityRecyclerView(list)
+        context?.let {
+
+            val bottomSheet = BottomSheetDialog(it)
+            bottomSheet.setContentView(bottomSheetView)
+            bottomSheet.show()
+            setStorageCapacityRecyclerView(list)
+        }
     }
 
     private fun setStorageCapacityRecyclerView(storages: ArrayList<String>) {
@@ -59,9 +60,12 @@ class FeaturesFragment : Fragment(),FeaturesSheetRecyclerView.Listener {
         val recyclerView = bottomSheetView.findViewById<RecyclerView>(R.id.phoneStorageRecyclerView)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = FeaturesSheetRecyclerView(storages,this@FeaturesFragment)
-        recyclerView.adapter = adapter
+        context?.let {
+
+            recyclerView.layoutManager = LinearLayoutManager(it)
+            val adapter = FeaturesSheetRecyclerView(storages,this@FeaturesFragment)
+            recyclerView.adapter = adapter
+        }
     }
 
 }

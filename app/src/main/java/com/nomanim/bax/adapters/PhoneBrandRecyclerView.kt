@@ -13,7 +13,7 @@ class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<
 
     interface Listener {
 
-        fun onCardViewClickListener(brandId: String)
+        fun onCardViewClickListener(brandId: String, brandName: String)
 
     }
 
@@ -23,7 +23,7 @@ class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<
 
             binding.brandOrModelName.text = list[position].brandName
             binding.modelImageView.visibility = View.INVISIBLE
-            binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(list[position].id) }
+            binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(list[position].id,list[position].brandName) }
 
 
         }

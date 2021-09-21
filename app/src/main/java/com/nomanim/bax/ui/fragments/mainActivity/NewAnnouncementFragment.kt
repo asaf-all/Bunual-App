@@ -32,9 +32,9 @@ class NewAnnouncementFragment : Fragment() {
 
         if (auth.currentUser != null) {
 
-            val intent = Intent(requireActivity(),NewAnnouncementActivity::class.java)
-            requireActivity().finish()
-            requireActivity().startActivity(intent)
+            val intent = Intent(activity,NewAnnouncementActivity::class.java)
+            activity?.finish()
+            activity?.startActivity(intent)
 
         }else { findNavController().navigate(R.id.action_newAnnouncementFragment_to_registrationFragment) }
 
