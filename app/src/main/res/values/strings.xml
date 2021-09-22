@@ -27,6 +27,7 @@
     <string name="status">Status</string>
     <string name="new_">New</string>
     <string name="used">Used</string>
+    <string name="filter">Filter</string>
     <string name="as_spare_part">As a spare part</string>
     <string name="all_phones">All phones</string>
     <string name="chat_fragment_text">It will be activated soon.\nDo not forget to follow the updates.\n(Profile -> Settings button -> Check new application version)</string>
@@ -50,13 +51,16 @@
     <string name="select_phone_brand">Select Brand</string>
     <string name="select_phone_model">Select Model</string>
     <string name="select_phone_image">Select Image(s)</string>
-    <string name="select_images_text">On the screen that opens, select all the photos you want to share and click save</string>
+    <string name="select_images_text">On the screen that opens, select all the photos you want to share and click choose</string>
     <string name="permission_needed">Permission needed!</string>
     <string name="enter_phone_description">Enter description</string>
     <string name="fill_phone_features">Fill features</string>
     <string name="choose_phone_storage">Choose Storage</string>
     <string name="choose_phone_ram">Choose Ram</string>
     <string name="choose_phone_color">Choose Color</string>
+    <string name="all_phone_models">All phone models</string>
+    <string name="newest_first">Newest first</string>
+
 
 
 </resources>

@@ -16,7 +16,7 @@ import com.nomanim.bax.adapters.PhoneModelRecyclerView
 import com.nomanim.bax.databinding.FragmentModelsBinding
 import com.nomanim.bax.retrofit.builder.PhoneModelApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
-import com.nomanim.bax.retrofit.models.PhoneModelName
+import com.nomanim.bax.retrofit.models.ModelPhoneModels
 import com.nomanim.bax.ui.other.ClearEditTextButton
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,7 +26,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
     private var _binding: FragmentModelsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<ModelsFragmentArgs>()
-    private var filteredList = ArrayList<PhoneModelName>()
+    private var filteredList = ArrayList<ModelPhoneModels>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -51,9 +51,9 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
                     try {
 
-                        val phoneModels = response.body()?.phoneModelNames as ArrayList<PhoneModelName>
-                        filteredList = phoneModels.filter { (it.brandId) == args.brandId } as ArrayList<PhoneModelName>
-                        val limitedAndFilteredList = filteredList.take(50) as ArrayList<PhoneModelName>
+                        val phoneModels = response.body()?.modelPhoneModels as ArrayList<ModelPhoneModels>
+                        filteredList = phoneModels.filter { (it.brandId) == args.brandId } as ArrayList<ModelPhoneModels>
+                        val limitedAndFilteredList = filteredList.take(50) as ArrayList<ModelPhoneModels>
                         setModelsRecyclerView(limitedAndFilteredList)
                         searchInsidePhoneModels()
 
@@ -79,11 +79,11 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
                 val listAfterSearch = filteredList.filter { list ->
 
-                    (list.modelName.lowercase().contains(text.toString().lowercase())) } as ArrayList<PhoneModelName>
+                    (list.modelName.lowercase().contains(text.toString().lowercase())) } as ArrayList<ModelPhoneModels>
 
                 if (listAfterSearch.size > 1) {
 
-                    val limitList = listAfterSearch.take(100) as ArrayList<PhoneModelName>
+                    val limitList = listAfterSearch.take(100) as ArrayList<ModelPhoneModels>
                     setModelsRecyclerView(limitList)
 
                 }else { setModelsRecyclerView(listAfterSearch) }
@@ -93,7 +93,7 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
         })
     }
 
-    private fun setModelsRecyclerView(list: ArrayList<PhoneModelName>) {
+    private fun setModelsRecyclerView(list: ArrayList<ModelPhoneModels>) {
 
         val mrv = binding.modelsRecyclerView
         mrv.isNestedScrollingEnabled = false

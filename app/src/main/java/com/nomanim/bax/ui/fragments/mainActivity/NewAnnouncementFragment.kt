@@ -6,16 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentNewAnnouncementBinding
-import com.nomanim.bax.models.ModelAnnouncement
-import com.nomanim.bax.models.ModelPhone
-import com.nomanim.bax.models.ModelUser
-import com.nomanim.bax.retrofit.models.ModelPlace
 import com.nomanim.bax.ui.activities.NewAnnouncementActivity
 
 class NewAnnouncementFragment : Fragment() {

@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
-import com.nomanim.bax.retrofit.models.PhoneBrandName
+import com.nomanim.bax.retrofit.models.ModelPhoneBrands
 
-class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<PhoneBrandName>, val listener: Listener)
+class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<ModelPhoneBrands>, val listener: Listener)
     : RecyclerView.Adapter<PhoneBrandRecyclerView.Holder>() {
 
     interface Listener {
@@ -19,7 +19,7 @@ class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<
 
     class Holder(val binding: LayoutCardViewPhoneModelsBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun run(list: ArrayList<PhoneBrandName>, position: Int, listener: Listener, context: Context) {
+        fun run(list: ArrayList<ModelPhoneBrands>, position: Int, listener: Listener, context: Context) {
 
             binding.brandOrModelName.text = list[position].brandName
             binding.modelImageView.visibility = View.INVISIBLE

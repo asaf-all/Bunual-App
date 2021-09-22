@@ -3,7 +3,7 @@ package com.nomanim.bax.retrofit.models
 import com.google.gson.annotations.SerializedName
 
 
-data class ModelPlace(
+data class ModelPlaces(
 
     @SerializedName("admin_name")
     val city: String,

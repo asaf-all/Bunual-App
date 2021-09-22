@@ -1,10 +1,9 @@
 package com.nomanim.bax.retrofit.listModels
 
 import com.google.gson.annotations.SerializedName
-import com.nomanim.bax.retrofit.models.PhoneBrandName
-import com.nomanim.bax.retrofit.models.PhoneModelName
+import com.nomanim.bax.retrofit.models.ModelPhoneModels
 
 data class PhoneModelsList(
 
     @SerializedName("RECORDS")
-    val phoneModelNames: List<PhoneModelName>)
+    val modelPhoneModels: List<ModelPhoneModels>)

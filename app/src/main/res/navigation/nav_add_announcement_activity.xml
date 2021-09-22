@@ -52,6 +52,17 @@
         <action
             android:id="@+id/action_descriptionFragment_to_featuresFragment"
             app:destination="@id/featuresFragment" />
+        <argument
+            android:name="imageUri"
+            app:argType="string" />
+        <argument
+            android:name="imagesUri"
+            app:argType="string[]" />
+        <argument android:name="brandName"
+            app:argType="string" />
+        <argument
+            android:name="modelName"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/featuresFragment"

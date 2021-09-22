@@ -2,7 +2,7 @@ package com.nomanim.bax.retrofit.models
 
 import com.google.gson.annotations.SerializedName
 
-data class PhoneBrandName(
+data class ModelPhoneBrands(
 
     val id: String,
 

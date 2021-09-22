@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentHomeBinding
 import com.nomanim.bax.databinding.FragmentImagesBinding
@@ -26,9 +27,10 @@ class ImagesFragment : Fragment() {
 
     private var _binding: FragmentImagesBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<ImagesFragmentArgs>()
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permission: ActivityResultLauncher<String>
-    private val images = ArrayList<Uri>()
+    private val imagesUri = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -40,8 +42,6 @@ class ImagesFragment : Fragment() {
         binding.selectPhotosImageView.setOnClickListener { imageViewClickAction() }
 
         binding.imagesToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
-
-        binding.textView4.setOnClickListener { findNavController().navigate(R.id.action_imagesFragment_to_descriptionFragment) }
 
         return binding.root
     }
@@ -78,13 +78,18 @@ class ImagesFragment : Fragment() {
                         for (i in 0 until count) {
 
                             val uris = intentFromResult.clipData!!.getItemAt(i).uri
-                            images.add(uris)
+                            imagesUri.add(uris.toString())
                         }
                     }
-                    else {
+                    else { }
 
+                    Toast.makeText(requireContext(),imagesUri.toTypedArray().toString(),Toast.LENGTH_LONG).show()
 
-                    }
+                    val action = ImagesFragmentDirections.actionİmagesFragmentToDescriptionFragment(
+
+                        intentFromResult.data.toString(), imagesUri.toTypedArray(), args.brandName,args.modelName)
+
+                    findNavController().navigate(action)
                 }
             }
         }

@@ -17,7 +17,7 @@ import com.nomanim.bax.adapters.PhoneBrandRecyclerView
 import com.nomanim.bax.databinding.FragmentBrandsBinding
 import com.nomanim.bax.retrofit.builder.PhoneBrandApi
 import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
-import com.nomanim.bax.retrofit.models.PhoneBrandName
+import com.nomanim.bax.retrofit.models.ModelPhoneBrands
 import com.nomanim.bax.ui.activities.MainActivity
 import com.nomanim.bax.ui.other.ClearEditTextButton
 import retrofit2.Call
@@ -29,7 +29,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
     private var _binding: FragmentBrandsBinding? = null
     private val binding get() = _binding!!
-    private var phoneBrands = ArrayList<PhoneBrandName>()
+    private var phoneBrands = ArrayList<ModelPhoneBrands>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
 
@@ -56,7 +56,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
                     try {
 
-                        phoneBrands = response.body()?.phoneBrandNames as ArrayList<PhoneBrandName>
+                        phoneBrands = response.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
                         setBrandsRecyclerView(phoneBrands)
                         searchInsidePhoneModels()
 
@@ -82,14 +82,14 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
                 val listAfterSearch = phoneBrands.filter { list ->
 
-                    (list.brandName.lowercase().contains(text.toString().lowercase())) } as ArrayList<PhoneBrandName>
+                    (list.brandName.lowercase().contains(text.toString().lowercase())) } as ArrayList<ModelPhoneBrands>
 
                 setBrandsRecyclerView(listAfterSearch)
             }
         })
     }
 
-    private fun setBrandsRecyclerView(list: ArrayList<PhoneBrandName>) {
+    private fun setBrandsRecyclerView(list: ArrayList<ModelPhoneBrands>) {
 
         val brv = binding.brandsRecyclerView
         brv.isNestedScrollingEnabled = false

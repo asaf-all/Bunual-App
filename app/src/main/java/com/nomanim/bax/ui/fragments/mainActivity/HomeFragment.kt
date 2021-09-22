@@ -1,6 +1,7 @@
 package com.nomanim.bax.ui.fragments.mainActivity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
@@ -11,7 +12,6 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.HorizontalRecyclerView
-import com.nomanim.bax.adapters.SortRecyclerView
 import com.nomanim.bax.adapters.VerticalRecyclerView
 import com.nomanim.bax.databinding.FragmentHomeBinding
 import com.nomanim.bax.firebase.Service
@@ -19,7 +19,7 @@ import com.nomanim.bax.models.ModelAnnouncement
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView.Listener,VerticalRecyclerView.Listener{
+class HomeFragment : Fragment(),HorizontalRecyclerView.Listener,VerticalRecyclerView.Listener{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -43,10 +43,10 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
 
-        addSortTextsToList()
-        setSortRecyclerView()
+        binding.filterButton.visibility = View.INVISIBLE
 
         getMostViewedPhonesFromFireStore()
+        showFilterButton()
         getAllPhonesFromFireStore()
 
         return binding.root
@@ -57,15 +57,6 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
         for (text in resources.getStringArray(R.array.sort_data_texts) ) {
             sortTexts.add(text)
         }
-    }
-
-    private fun setSortRecyclerView() {
-
-        val srv = binding.sortRecyclerView
-        srv.setHasFixedSize(true)
-        srv.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
-        val sortRecyclerViewAdapter = SortRecyclerView(sortTexts,this@HomeFragment)
-        srv.adapter = sortRecyclerViewAdapter
     }
 
     private fun getMostViewedPhonesFromFireStore() {
@@ -139,6 +130,16 @@ class HomeFragment : Fragment(),SortRecyclerView.Listener,HorizontalRecyclerView
                 }
             }
         }
+    }
+
+    private fun showFilterButton() {
+
+        val intArray = IntArray(2)
+        val location = binding.filterButton.getLocationOnScreen(intArray)
+        //Toast.makeText(requireContext(),intArray[0].toString(),Toast.LENGTH_LONG).show()
+        //Log.e("******",intArray[1].toString())
+
+
     }
 
     private fun setHorizontalRecyclerView() {
