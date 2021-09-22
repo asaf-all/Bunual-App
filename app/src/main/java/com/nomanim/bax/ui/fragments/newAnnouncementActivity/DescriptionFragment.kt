@@ -27,10 +27,18 @@ class DescriptionFragment : Fragment() {
         binding.descriptionNextButton.setOnClickListener { findNavController().navigate(R.id.action_descriptionFragment_to_featuresFragment) }
         binding.descriptionNextToolbarButton.setOnClickListener { findNavController().navigate(R.id.action_descriptionFragment_to_featuresFragment) }
 
+        binding.desctiptionEditText.text
+
+        val action = DescriptionFragmentDirections.actionDescriptionFragmentToFeaturesFragment(
+
+            args.brandName,args.modelName,args.imageUri,args.imagesUri,binding.desctiptionEditText.text.toString())
+
+        findNavController().navigate(action)
+
         Log.e("brand",args.brandName)
         Log.e("model",args.modelName)
         Log.e("image",args.imageUri)
-        Log.e("images",args.imagesUri.toString())
+        Log.e("images",args.imagesUri.toList().toString())
 
         return binding.root
     }

@@ -68,5 +68,26 @@
         android:id="@+id/featuresFragment"
         android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.FeaturesFragment"
         android:label="fragment_features"
-        tools:layout="@layout/fragment_features" />
+        tools:layout="@layout/fragment_features" >
+        <argument android:name="brandName"
+            app:argType="string" />
+        <argument android:name="modelName" />
+        <argument
+            android:name="imageUri"
+            app:argType="string" />
+        <argument
+            android:name="imagesUri"
+            app:argType="string[]" />
+        <argument
+            android:name="desctiptionText"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_featuresFragment_to_priceFragment"
+            app:destination="@id/priceFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/priceFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.PriceFragment"
+        android:label="fragment_price"
+        tools:layout="@layout/fragment_price" />
 </navigation>

@@ -3,14 +3,12 @@ package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +17,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.nomanim.bax.R
-import com.nomanim.bax.databinding.FragmentHomeBinding
 import com.nomanim.bax.databinding.FragmentImagesBinding
 import kotlinx.coroutines.launch
 
@@ -40,7 +37,6 @@ class ImagesFragment : Fragment() {
         requestPermission()
 
         binding.selectPhotosImageView.setOnClickListener { imageViewClickAction() }
-
         binding.imagesToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
         return binding.root
