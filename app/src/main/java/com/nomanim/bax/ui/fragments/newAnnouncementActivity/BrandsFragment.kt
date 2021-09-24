@@ -13,7 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.PhoneBrandRecyclerView
+import com.nomanim.bax.adapters.PhoneBrandsAdapter
 import com.nomanim.bax.databinding.FragmentBrandsBinding
 import com.nomanim.bax.retrofit.builder.PhoneBrandApi
 import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
@@ -25,7 +25,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
 
-class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
+class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
     private var _binding: FragmentBrandsBinding? = null
     private val binding get() = _binding!!
@@ -36,8 +36,8 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
 
         ClearEditTextButton(binding.searchPhoneBrands)
-        getBrandNamesWithRetrofit()
         onBackPressed()
+        getBrandNamesWithRetrofit()
         binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
 
         return binding.root
@@ -56,6 +56,8 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
                     try {
 
+                        val model = ModelPhoneBrands("0","Other")
+                        phoneBrands.add(model)
                         phoneBrands = response.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
                         setBrandsRecyclerView(phoneBrands)
                         searchInsidePhoneModels()
@@ -97,7 +99,7 @@ class BrandsFragment : Fragment(),PhoneBrandRecyclerView.Listener {
 
             brv.layoutManager = LinearLayoutManager(it)
             brv.setHasFixedSize(true)
-            val adapter = PhoneBrandRecyclerView(it,list,this@BrandsFragment)
+            val adapter = PhoneBrandsAdapter(it,list,this@BrandsFragment)
             brv.adapter = adapter
         }
     }

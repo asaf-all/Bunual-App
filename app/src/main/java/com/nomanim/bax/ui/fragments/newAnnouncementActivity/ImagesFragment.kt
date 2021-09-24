@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -77,15 +78,19 @@ class ImagesFragment : Fragment() {
                             imagesUri.add(uris.toString())
                         }
                     }
-                    else { }
+                    else { /*intentFromResult.data.toString()*/ }
 
-                    Toast.makeText(requireContext(),imagesUri.toTypedArray().toString(),Toast.LENGTH_LONG).show()
+                    if (imagesUri.isEmpty()) { Toast.makeText(requireContext(),getString(R.string.fail),Toast.LENGTH_SHORT).show() }
+                    else {
 
-                    val action = ImagesFragmentDirections.actionİmagesFragmentToDescriptionFragment(
+                        Log.e("****************",imagesUri.toString())
 
-                        intentFromResult.data.toString(), imagesUri.toTypedArray(), args.brandName,args.modelName)
+                        val action = ImagesFragmentDirections.actionİmagesFragmentToDescriptionFragment(
 
-                    findNavController().navigate(action)
+                            imagesUri.toTypedArray(), args.brandName, args.modelName)
+
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }

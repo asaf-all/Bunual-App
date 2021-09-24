@@ -8,8 +8,8 @@ import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
 import com.squareup.picasso.Picasso
 
-class PhoneModelRecyclerView (val context: Context, private val list: ArrayList<ModelPhoneModels>, val listener: Listener)
-    : RecyclerView.Adapter<PhoneModelRecyclerView.Holder>() {
+class PhoneModelsAdapter (val context: Context, private val list: ArrayList<ModelPhoneModels>, val listener: Listener)
+    : RecyclerView.Adapter<PhoneModelsAdapter.Holder>() {
 
 
     interface Listener {

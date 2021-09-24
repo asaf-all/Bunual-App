@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
 import com.nomanim.bax.retrofit.models.ModelPhoneBrands
 
-class PhoneBrandRecyclerView (val context: Context, private val list: ArrayList<ModelPhoneBrands>, val listener: Listener)
-    : RecyclerView.Adapter<PhoneBrandRecyclerView.Holder>() {
+class PhoneBrandsAdapter (val context: Context, private val list: ArrayList<ModelPhoneBrands>, val listener: Listener)
+    : RecyclerView.Adapter<PhoneBrandsAdapter.Holder>() {
 
     interface Listener {
 

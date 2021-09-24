@@ -1,7 +1,6 @@
 package com.nomanim.bax.ui.fragments.mainActivity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
@@ -11,15 +10,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.HorizontalRecyclerView
-import com.nomanim.bax.adapters.VerticalRecyclerView
+import com.nomanim.bax.adapters.HorizontalOrderAdapter
+import com.nomanim.bax.adapters.VerticalOrderAdapter
 import com.nomanim.bax.databinding.FragmentHomeBinding
 import com.nomanim.bax.firebase.Service
 import com.nomanim.bax.models.ModelAnnouncement
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(),HorizontalRecyclerView.Listener,VerticalRecyclerView.Listener{
+class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAdapter.Listener{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -28,7 +27,7 @@ class HomeFragment : Fragment(),HorizontalRecyclerView.Listener,VerticalRecycler
     private val sortTexts = ArrayList<String>()
     private var mostViewedPhones = ArrayList<ModelAnnouncement>()
     private var allPhones = ArrayList<ModelAnnouncement>()
-    private lateinit var verticalRecyclerViewAdapter: VerticalRecyclerView
+    private lateinit var verticalRecyclerViewAdapter: VerticalOrderAdapter
 
     private var currentUserPhoneNumber: String = ""
     private val numberOfAnnouncement = 10L  //for load data limit from fireStore for once
@@ -147,7 +146,7 @@ class HomeFragment : Fragment(),HorizontalRecyclerView.Listener,VerticalRecycler
         val hrv = binding.horizontalRecyclerView
         hrv.setHasFixedSize(true)
         hrv.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
-        val horizontalRecyclerViewAdapter = HorizontalRecyclerView(mostViewedPhones,this@HomeFragment)
+        val horizontalRecyclerViewAdapter = HorizontalOrderAdapter(mostViewedPhones,this@HomeFragment)
         hrv.adapter = horizontalRecyclerViewAdapter
     }
 
@@ -159,7 +158,7 @@ class HomeFragment : Fragment(),HorizontalRecyclerView.Listener,VerticalRecycler
         vrv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         context?.let {
 
-            verticalRecyclerViewAdapter = VerticalRecyclerView(it,allPhones,this@HomeFragment)
+            verticalRecyclerViewAdapter = VerticalOrderAdapter(it,allPhones,this@HomeFragment)
             vrv.adapter = verticalRecyclerViewAdapter
         }
     }

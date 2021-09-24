@@ -5,10 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneStorageBinding
 
-class FeaturesSheetRecyclerView(private val list: ArrayList<String>, val listener: Listener)
-    : RecyclerView.Adapter<FeaturesSheetRecyclerView.Holder>() {
+class ColorSheetAdapter(private val list: ArrayList<String>, private val listener: Listener)
+    : RecyclerView.Adapter<ColorSheetAdapter.Holder>() {
 
     interface Listener {
+
+        fun setOnColorClickListener(buttonFinishText: String)
 
     }
 
@@ -16,7 +18,12 @@ class FeaturesSheetRecyclerView(private val list: ArrayList<String>, val listene
 
         fun run(list: ArrayList<String>, position: Int, listener: Listener) {
 
-            binding.storageCapacityButton.text = list[position]
+            binding.button.text = list[position]
+            binding.button.setOnClickListener {
+
+                val buttonFinishText = binding.button.text.toString()
+                listener.setOnColorClickListener(buttonFinishText)
+            }
 
         }
     }

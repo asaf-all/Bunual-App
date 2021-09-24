@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.PhoneModelRecyclerView
+import com.nomanim.bax.adapters.PhoneModelsAdapter
 import com.nomanim.bax.databinding.FragmentModelsBinding
 import com.nomanim.bax.retrofit.builder.PhoneModelApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
@@ -21,12 +21,19 @@ import com.nomanim.bax.ui.other.ClearEditTextButton
 import retrofit2.Call
 import retrofit2.Callback
 
-class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
+class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
     private var _binding: FragmentModelsBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<ModelsFragmentArgs>()
     private var filteredList = ArrayList<ModelPhoneModels>()
+    private val limitedAndFilteredList = ArrayList<ModelPhoneModels>()
+    private val limitedListAfterSearch = ArrayList<ModelPhoneModels>()
+    private var lastLoudIndex: Int = 30
+    private var numberOfModelName = 30
+    private var remainingFilteredListSize: Int = 0
+    private var remainingListAfterSearchSize: Int = 0
+    private lateinit var recyclerAdapter: PhoneModelsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -53,7 +60,25 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
                         val phoneModels = response.body()?.modelPhoneModels as ArrayList<ModelPhoneModels>
                         filteredList = phoneModels.filter { (it.brandId) == args.brandId } as ArrayList<ModelPhoneModels>
-                        val limitedAndFilteredList = filteredList.take(50) as ArrayList<ModelPhoneModels>
+
+                        if (filteredList.size < numberOfModelName) {
+
+                            numberOfModelName = filteredList.size
+                            binding.moreModelsProgressBar.visibility = View.INVISIBLE
+
+                        }else {
+
+                            remainingFilteredListSize = filteredList.size
+                            setMoreModelsRecyclerView(remainingFilteredListSize)
+                            binding.moreModelsProgressBar.visibility = View.VISIBLE
+
+                        }
+
+                        for (index in 0 until numberOfModelName) {
+
+                            limitedAndFilteredList.add(filteredList[index])
+
+                        }
                         setModelsRecyclerView(limitedAndFilteredList)
                         searchInsidePhoneModels()
 
@@ -71,25 +96,69 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
         })
     }
 
+    private fun setMoreModelsRecyclerView(_remainingListSize: Int) {
+
+        var remainingListSize = _remainingListSize
+
+        val scrollView = binding.modelsNestedScollView
+        scrollView.viewTreeObserver.addOnScrollChangedListener {
+
+            if (scrollView.getChildAt(0).bottom <= (scrollView.height + scrollView.scrollY)) {
+
+                remainingListSize -= numberOfModelName
+
+                if (remainingListSize >= 0) {
+
+                    if (remainingListSize < numberOfModelName) {
+
+                        numberOfModelName = remainingListSize
+                        binding.moreModelsProgressBar.visibility = View.INVISIBLE
+                    }
+
+                    for (index in lastLoudIndex until lastLoudIndex + numberOfModelName) {
+
+                        limitedAndFilteredList.add(filteredList[index])
+                    }
+
+                    lastLoudIndex += numberOfModelName
+                    recyclerAdapter.notifyDataSetChanged()
+
+                }else { binding.moreModelsProgressBar.visibility = View.INVISIBLE }
+            }
+        }
+    }
+
     private fun searchInsidePhoneModels() {
 
         binding.searchPhoneModels.addTextChangedListener( object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) { }
+
+            override fun afterTextChanged(text: Editable?) {
 
                 val listAfterSearch = filteredList.filter { list ->
 
                     (list.modelName.lowercase().contains(text.toString().lowercase())) } as ArrayList<ModelPhoneModels>
 
-                if (listAfterSearch.size > 1) {
+                if (listAfterSearch.size < numberOfModelName) {
 
-                    val limitList = listAfterSearch.take(100) as ArrayList<ModelPhoneModels>
-                    setModelsRecyclerView(limitList)
+                    numberOfModelName = listAfterSearch.size
+                    binding.moreModelsProgressBar.visibility = View.INVISIBLE
 
-                }else { setModelsRecyclerView(listAfterSearch) }
+                }else {
+
+                    remainingListAfterSearchSize = listAfterSearch.size
+                    setMoreModelsRecyclerView(remainingListAfterSearchSize)
+                    binding.moreModelsProgressBar.visibility = View.VISIBLE
+
+                }
+
+                for (index in 0 until numberOfModelName) {
+
+                    limitedListAfterSearch.add(listAfterSearch[index])
+                }
+                setModelsRecyclerView(limitedListAfterSearch)
             }
-
-            override fun afterTextChanged(text: Editable?) { }
         })
     }
 
@@ -101,8 +170,9 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
 
             mrv.layoutManager = LinearLayoutManager(context)
             mrv.setHasFixedSize(true)
-            val adapter = PhoneModelRecyclerView(context,list,this@ModelsFragment)
-            mrv.adapter = adapter
+            mrv.isNestedScrollingEnabled = false
+            recyclerAdapter = PhoneModelsAdapter(context,list,this@ModelsFragment)
+            mrv.adapter = recyclerAdapter
         }
     }
 
@@ -114,8 +184,6 @@ class ModelsFragment : Fragment(),PhoneModelRecyclerView.Listener {
             findNavController().navigate(action)
 
         }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
-
-
     }
 
 }

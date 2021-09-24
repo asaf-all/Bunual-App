@@ -1,17 +1,14 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentDescriptionBinding
-import com.nomanim.bax.databinding.FragmentHomeBinding
 
 class DescriptionFragment : Fragment() {
 
@@ -31,14 +28,9 @@ class DescriptionFragment : Fragment() {
 
         val action = DescriptionFragmentDirections.actionDescriptionFragmentToFeaturesFragment(
 
-            args.brandName,args.modelName,args.imageUri,args.imagesUri,binding.desctiptionEditText.text.toString())
+            args.brandName,args.modelName,args.imagesUri,binding.desctiptionEditText.text.toString())
 
         findNavController().navigate(action)
-
-        Log.e("brand",args.brandName)
-        Log.e("model",args.modelName)
-        Log.e("image",args.imageUri)
-        Log.e("images",args.imagesUri.toList().toString())
 
         return binding.root
     }

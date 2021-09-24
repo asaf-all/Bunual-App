@@ -18,8 +18,8 @@ class ClearEditTextButton(editText: EditText) {
 
             if (event.action == MotionEvent.ACTION_UP) {
                 if (event.rawX >= (editText.right - editText.compoundDrawables[DRAWABLE_RIGHT].bounds.width())) {
+
                     editText.setText("")
-                    true
                 }
             }
             false

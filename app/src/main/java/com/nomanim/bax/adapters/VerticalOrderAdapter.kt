@@ -3,13 +3,12 @@ package com.nomanim.bax.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewVerticalPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
 
-class VerticalRecyclerView (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
-    : RecyclerView.Adapter<VerticalRecyclerView.Holder>() {
+class VerticalOrderAdapter (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
+    : RecyclerView.Adapter<VerticalOrderAdapter.Holder>() {
 
     interface Listener {
 

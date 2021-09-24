@@ -12,13 +12,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.VerticalRecyclerView
+import com.nomanim.bax.adapters.VerticalOrderAdapter
 import com.nomanim.bax.databinding.FragmentFavouritesBinding
 import com.nomanim.bax.firebase.Service
 import com.nomanim.bax.models.ModelAnnouncement
-import com.nomanim.bax.ui.other.ProgressBarInAlertDialog
 
-class FavouritesFragment : Fragment(),VerticalRecyclerView.Listener {
+class FavouritesFragment : Fragment(),VerticalOrderAdapter.Listener {
 
     private var _binding: FragmentFavouritesBinding? = null
     private val binding get() = _binding!!
@@ -83,7 +82,7 @@ class FavouritesFragment : Fragment(),VerticalRecyclerView.Listener {
         fp.isNestedScrollingEnabled = false
         fp.setHasFixedSize(true)
         fp.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        val adapter = VerticalRecyclerView(requireContext(),allFavouritePhones,this@FavouritesFragment)
+        val adapter = VerticalOrderAdapter(requireContext(),allFavouritePhones,this@FavouritesFragment)
         fp.adapter = adapter
     }
 

@@ -4,12 +4,12 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/home"
-        android:title=""
+        android:title="@string/main"
         android:menuCategory="secondary"/>
     <item
         android:id="@+id/searchFragment"
         android:icon="@drawable/im_search"
-        android:title=""
+        android:title="@string/search"
         android:menuCategory="secondary"/>
     <item
         android:id="@+id/newAnnouncementFragment"
@@ -19,11 +19,11 @@
     <item
         android:id="@+id/favouritesFragment"
         android:icon="@drawable/favourites"
-        android:title=""
+        android:title="@string/favourites"
         android:menuCategory="secondary"/>
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/user"
-        android:title=""
+        android:title="@string/cabinet"
         android:menuCategory="secondary"/>
 </menu>

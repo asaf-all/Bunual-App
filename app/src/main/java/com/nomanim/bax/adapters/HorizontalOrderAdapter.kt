@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewHorizontalPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
 
-class HorizontalRecyclerView(private val list: ArrayList<ModelAnnouncement>, val listener: Listener)
-    : RecyclerView.Adapter<HorizontalRecyclerView.Holder>() {
+class HorizontalOrderAdapter(private val list: ArrayList<ModelAnnouncement>, val listener: Listener)
+    : RecyclerView.Adapter<HorizontalOrderAdapter.Holder>() {
 
     interface Listener {
 

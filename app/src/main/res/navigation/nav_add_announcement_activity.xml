@@ -53,9 +53,6 @@
             android:id="@+id/action_descriptionFragment_to_featuresFragment"
             app:destination="@id/featuresFragment" />
         <argument
-            android:name="imageUri"
-            app:argType="string" />
-        <argument
             android:name="imagesUri"
             app:argType="string[]" />
         <argument android:name="brandName"
@@ -71,15 +68,13 @@
         tools:layout="@layout/fragment_features" >
         <argument android:name="brandName"
             app:argType="string" />
-        <argument android:name="modelName" />
-        <argument
-            android:name="imageUri"
+        <argument android:name="modelName"
             app:argType="string" />
         <argument
             android:name="imagesUri"
             app:argType="string[]" />
         <argument
-            android:name="desctiptionText"
+            android:name="descriptionText"
             app:argType="string" />
         <action
             android:id="@+id/action_featuresFragment_to_priceFragment"
@@ -89,5 +84,26 @@
         android:id="@+id/priceFragment"
         android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.PriceFragment"
         android:label="fragment_price"
-        tools:layout="@layout/fragment_price" />
+        tools:layout="@layout/fragment_price">
+    <argument android:name="brandName"
+        app:argType="string" />
+    <argument android:name="modelName"
+        app:argType="string" />
+    <argument
+        android:name="imagesUri"
+        app:argType="string[]" />
+    <argument
+        android:name="descriptionText"
+        app:argType="string" />
+    <argument android:name="storageCapacity"
+        app:argType="string" />
+    <argument android:name="ramCapacity"
+        app:argType="string" />
+    <argument
+        android:name="color"
+        app:argType="string" />
+    <argument
+        android:name="status"
+        app:argType="string" />
+    </fragment>
 </navigation>
