@@ -5,6 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -42,7 +43,7 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
 
-        binding.filterButton.visibility = View.INVISIBLE
+
 
         getMostViewedPhonesFromFireStore()
         showFilterButton()
