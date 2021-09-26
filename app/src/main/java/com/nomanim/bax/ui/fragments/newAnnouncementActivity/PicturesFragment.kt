@@ -14,25 +14,34 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import com.google.firebase.storage.FirebaseStorage
 import com.nomanim.bax.R
-import com.nomanim.bax.databinding.FragmentImagesBinding
-import kotlinx.coroutines.launch
+import com.nomanim.bax.databinding.FragmentPicturesBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
-class ImagesFragment : Fragment() {
+class PicturesFragment : Fragment() {
 
-    private var _binding: FragmentImagesBinding? = null
+    private var _binding: FragmentPicturesBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<ImagesFragmentArgs>()
     private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
     private lateinit var permission: ActivityResultLauncher<String>
     private val imagesUri = ArrayList<String>()
+    private lateinit var firebaseStorage: FirebaseStorage
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        _binding = FragmentImagesBinding.inflate(inflater,container,false)
+        _binding = FragmentPicturesBinding.inflate(inflater,container,false)
+
+        firebaseStorage = FirebaseStorage.getInstance()
+        //uploadImagesToStorage()
+
+        val bundle = arguments?.getBundle("modelsBundle")
+        bundle?.putString("pictureUrl","randomUrl")
+        bundle?.putBundle("picturesBundle",bundle)
+        findNavController().navigate(R.id.action_picturesFragment_to_descriptionFragment,bundle)
 
         registerLauncher()
         requestPermission()
@@ -56,7 +65,7 @@ class ImagesFragment : Fragment() {
                 val intentToGallery = Intent(Intent.ACTION_GET_CONTENT)
                 intentToGallery.type = "image/*"
                 intentToGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-                lifecycleScope.launch { activityResultLauncher.launch(Intent.createChooser(intentToGallery,"SELECT IMAGE")) }
+                activityResultLauncher.launch(Intent.createChooser(intentToGallery,"SELECT IMAGE"))
             }
         }
     }
@@ -65,34 +74,30 @@ class ImagesFragment : Fragment() {
 
         activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 
+
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
 
                 val intentFromResult = result.data
                 if (intentFromResult != null) {
                     if (intentFromResult.clipData != null) {
 
-                        val count = intentFromResult.clipData!!.itemCount
-                        for (i in 0 until count) {
+                            val count = intentFromResult.clipData!!.itemCount
+                            for (i in 0 until count) {
 
-                            val uris = intentFromResult.clipData!!.getItemAt(i).uri
-                            imagesUri.add(uris.toString())
+                                val uris = intentFromResult.clipData!!.getItemAt(i).uri
+                                imagesUri.add(uris.toString())
+                            }
+                        }
+                        else { imagesUri.add(intentFromResult.data.toString()) }
+
+                        if (imagesUri.isEmpty()) { Toast.makeText(requireContext(),getString(R.string.fail),Toast.LENGTH_SHORT).show() }
+                        else {
+
+                            navigateToNextFragment()
                         }
                     }
-                    else { /*intentFromResult.data.toString()*/ }
-
-                    if (imagesUri.isEmpty()) { Toast.makeText(requireContext(),getString(R.string.fail),Toast.LENGTH_SHORT).show() }
-                    else {
-
-                        Log.e("****************",imagesUri.toString())
-
-                        val action = ImagesFragmentDirections.actionİmagesFragmentToDescriptionFragment(
-
-                            imagesUri.toTypedArray(), args.brandName, args.modelName)
-
-                        findNavController().navigate(action)
-                    }
                 }
-            }
+
         }
     }
 
@@ -112,6 +117,26 @@ class ImagesFragment : Fragment() {
                 context?.let { Toast.makeText(it, resources.getString(R.string.permission_needed), Toast.LENGTH_LONG).show() }
             }
         }
+    }
+
+    private fun uploadImagesToStorage() {
+
+        val reference = firebaseStorage.reference
+        val child = reference.child("Pictures").child(UUID.randomUUID().toString())
+        child.putFile("randomUri".toUri()).addOnSuccessListener {
+
+                child.downloadUrl
+        }
+    }
+
+    private fun navigateToNextFragment() {
+
+        val bundle = arguments?.getBundle("modelsBundle")
+        bundle?.putBundle("imagesBundle",bundle)
+
+        Log.e("*********",bundle?.getString("brandsId").toString())
+
+        findNavController().navigate(R.id.action_picturesFragment_to_descriptionFragment,bundle)
     }
 
 }

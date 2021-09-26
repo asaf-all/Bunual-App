@@ -11,14 +11,10 @@ class PhoneBrandApi {
 
         private val BASE_URL: String = "https://raw.githubusercontent.com/"
 
-        fun buildAndCreate(): PhoneBrandService {
-
-            val builder = Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-            return builder.create(PhoneBrandService::class.java)
-        }
+        val builder = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(PhoneBrandService::class.java)
     }
 }

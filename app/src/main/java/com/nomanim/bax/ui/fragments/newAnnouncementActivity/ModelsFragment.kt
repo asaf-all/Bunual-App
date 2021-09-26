@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneModelsAdapter
@@ -17,15 +16,15 @@ import com.nomanim.bax.databinding.FragmentModelsBinding
 import com.nomanim.bax.retrofit.builder.PhoneModelApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
-import com.nomanim.bax.ui.other.ClearEditTextButton
-import retrofit2.Call
-import retrofit2.Callback
+import com.nomanim.bax.ui.other.clearTextWhenClickClear
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
     private var _binding: FragmentModelsBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<ModelsFragmentArgs>()
+    private val compositeDisposable = io.reactivex.disposables.CompositeDisposable()
     private var filteredList = ArrayList<ModelPhoneModels>()
     private val limitedAndFilteredList = ArrayList<ModelPhoneModels>()
     private val limitedListAfterSearch = ArrayList<ModelPhoneModels>()
@@ -39,7 +38,7 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
         _binding = FragmentModelsBinding.inflate(inflater,container,false)
 
-        ClearEditTextButton(binding.searchPhoneModels)
+        binding.searchPhoneModels.clearTextWhenClickClear()
         binding.modelsToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         getModelNamesWithRetrofit()
 
@@ -48,52 +47,51 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
     private fun getModelNamesWithRetrofit() {
 
-        val phoneService = PhoneModelApi.buildAndCreate()
-        phoneService.getData().enqueue(object  : Callback<PhoneModelsList> {
-            override fun onResponse(call: Call<PhoneModelsList>, response: retrofit2.Response<PhoneModelsList>?) {
+        compositeDisposable.add(PhoneModelApi.builder.getData()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(this::handleResponseFromRxJava))
 
-                binding.modelsProgressBar.visibility = View.INVISIBLE
+    }
 
-                if (response != null) {
+    private fun handleResponseFromRxJava(list: PhoneModelsList?) {
 
-                    try {
+        if (list != null) {
 
-                        val phoneModels = response.body()?.modelPhoneModels as ArrayList<ModelPhoneModels>
-                        filteredList = phoneModels.filter { (it.brandId) == args.brandId } as ArrayList<ModelPhoneModels>
+            try {
 
-                        if (filteredList.size < numberOfModelName) {
+                val phoneModels = list.modelPhoneModels
+                filteredList = phoneModels.filter { (it.brandId) == arguments?.getString("brandId") } as ArrayList<ModelPhoneModels>
 
-                            numberOfModelName = filteredList.size
-                            binding.moreModelsProgressBar.visibility = View.INVISIBLE
+                if (filteredList.size < numberOfModelName) {
 
-                        }else {
+                    numberOfModelName = filteredList.size
+                    binding.moreModelsProgressBar.visibility = View.INVISIBLE
 
-                            remainingFilteredListSize = filteredList.size
-                            setMoreModelsRecyclerView(remainingFilteredListSize)
-                            binding.moreModelsProgressBar.visibility = View.VISIBLE
+                }else {
 
-                        }
+                    remainingFilteredListSize = filteredList.size
+                    setMoreModelsRecyclerView(remainingFilteredListSize)
+                    binding.moreModelsProgressBar.visibility = View.VISIBLE
 
-                        for (index in 0 until numberOfModelName) {
-
-                            limitedAndFilteredList.add(filteredList[index])
-
-                        }
-                        setModelsRecyclerView(limitedAndFilteredList)
-                        searchInsidePhoneModels()
-
-                    }catch (e: Exception) {
-
-                        context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_SHORT).show() }
-                        e.localizedMessage
-                    }
                 }
-            }
-            override fun onFailure(call: Call<PhoneModelsList>, t: Throwable) {
 
-                binding.modelsProgressBar.visibility = View.INVISIBLE
+                for (index in 0 until numberOfModelName) {
+
+                    limitedAndFilteredList.add(filteredList[index])
+
+                }
+                setModelsRecyclerView(limitedAndFilteredList)
+                searchInsidePhoneModels()
+
+            }catch (e: Exception) {
+
+                context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_SHORT).show() }
+                e.localizedMessage
             }
-        })
+        }
+
+        binding.modelsProgressBar.visibility = View.INVISIBLE
     }
 
     private fun setMoreModelsRecyclerView(_remainingListSize: Int) {
@@ -157,6 +155,7 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
                     limitedListAfterSearch.add(listAfterSearch[index])
                 }
+
                 setModelsRecyclerView(limitedListAfterSearch)
             }
         })
@@ -164,15 +163,17 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
     private fun setModelsRecyclerView(list: ArrayList<ModelPhoneModels>) {
 
-        val mrv = binding.modelsRecyclerView
-        mrv.isNestedScrollingEnabled = false
+        val recyclerView = binding.modelsRecyclerView
+
         context?.let { context ->
 
-            mrv.layoutManager = LinearLayoutManager(context)
-            mrv.setHasFixedSize(true)
-            mrv.isNestedScrollingEnabled = false
+            recyclerView.visibility = View.VISIBLE
+            recyclerView.isNestedScrollingEnabled = false
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.isNestedScrollingEnabled = false
             recyclerAdapter = PhoneModelsAdapter(context,list,this@ModelsFragment)
-            mrv.adapter = recyclerAdapter
+            recyclerView.adapter = recyclerAdapter
         }
     }
 
@@ -180,10 +181,18 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
         try {
 
-            val action = ModelsFragmentDirections.actionModelsFragmentToİmagesFragment(args.brandName,modelName)
-            findNavController().navigate(action)
+            val bundle = arguments?.getBundle("brandsBundle")
+            bundle?.putString("modelName",modelName)
+            bundle?.putBundle("modelsBundle",bundle)
+
+            findNavController().navigate(R.id.action_modelsFragment_to_picturesFragment,bundle)
 
         }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
 }

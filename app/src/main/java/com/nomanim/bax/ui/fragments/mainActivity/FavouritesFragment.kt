@@ -14,8 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.VerticalOrderAdapter
 import com.nomanim.bax.databinding.FragmentFavouritesBinding
-import com.nomanim.bax.firebase.Service
 import com.nomanim.bax.models.ModelAnnouncement
+import com.nomanim.bax.ui.other.getDataFromFireStore
 
 class FavouritesFragment : Fragment(),VerticalOrderAdapter.Listener {
 
@@ -56,7 +56,7 @@ class FavouritesFragment : Fragment(),VerticalOrderAdapter.Listener {
 
                 firestore.collection(resources.getString(R.string.all_announcements)).whereIn("id",favoritesPhones).get().addOnSuccessListener { values ->
 
-                    allFavouritePhones = Service().getData(firestore,resources.getString(R.string.all_announcements),values)
+                    allFavouritePhones.getDataFromFireStore(firestore,resources.getString(R.string.all_announcements),values)
                     binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
                     setFavoritesPhonesRecyclerView()
 

@@ -5,7 +5,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -14,8 +13,8 @@ import com.nomanim.bax.R
 import com.nomanim.bax.adapters.HorizontalOrderAdapter
 import com.nomanim.bax.adapters.VerticalOrderAdapter
 import com.nomanim.bax.databinding.FragmentHomeBinding
-import com.nomanim.bax.firebase.Service
 import com.nomanim.bax.models.ModelAnnouncement
+import com.nomanim.bax.ui.other.getDataFromFireStore
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,10 +42,7 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
 
-
-
         getMostViewedPhonesFromFireStore()
-        showFilterButton()
         getAllPhonesFromFireStore()
 
         return binding.root
@@ -62,10 +58,10 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
     private fun getMostViewedPhonesFromFireStore() {
 
         firestore.collection("All Announcements")
-            .orderBy("numberOfViews", Query.Direction.DESCENDING).limit(10).get().addOnSuccessListener { values ->
+            .orderBy("numberOfViews", Query.Direction.DESCENDING).limit(numberOfAnnouncement).get().addOnSuccessListener { values ->
 
                 binding.mostViewedProgressBar.visibility = View.INVISIBLE
-                mostViewedPhones = Service().getData(firestore,"All Announcements",values)
+                mostViewedPhones.getDataFromFireStore(firestore,"All Announcements",values)
                 setHorizontalRecyclerView()
 
         }.addOnFailureListener { exception ->
@@ -81,7 +77,7 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
             .limit(numberOfAnnouncement).orderBy("time",Query.Direction.ASCENDING).get().addOnSuccessListener { values ->
 
             binding.allPhonesProgressBar.visibility = View.INVISIBLE
-            allPhones = Service().getData(firestore,"All Announcements",values)
+            allPhones.getDataFromFireStore(firestore,"All Announcements",values)
             setVerticalRecyclerView()
 
             if (values.size() != 0) {
@@ -119,7 +115,9 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
 
                             lastValue = values
 
-                            val morePhones = Service().getData(firestore,"All Announcements",values)
+                            val morePhones = ArrayList<ModelAnnouncement>()
+                                .getDataFromFireStore(firestore,"All Announcements",values)
+
                             for (i in 0 until morePhones.size) {
 
                                 allPhones.add(morePhones[i])
@@ -130,16 +128,6 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
                 }
             }
         }
-    }
-
-    private fun showFilterButton() {
-
-        val intArray = IntArray(2)
-        val location = binding.filterButton.getLocationOnScreen(intArray)
-        //Toast.makeText(requireContext(),intArray[0].toString(),Toast.LENGTH_LONG).show()
-        //Log.e("******",intArray[1].toString())
-
-
     }
 
     private fun setHorizontalRecyclerView() {

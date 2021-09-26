@@ -7,11 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bax.R
@@ -27,7 +26,6 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<FeaturesFragmentArgs>()
     private lateinit var storageBottomSheetBinding: LayoutBottomSheetPhoneStorageBinding
     private lateinit var ramBottomSheetBinding: LayoutBottomSheetPhoneRamBinding
     private lateinit var colorBottomSheetBinding: LayoutBottomSheetPhoneColorBinding
@@ -53,7 +51,6 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
             ramBottomSheet = BottomSheetDialog(context)
             colorBottomSheet = BottomSheetDialog(context)
         }
-
 
         storageList.add("8 GB")
         storageList.add("16 GB")
@@ -84,7 +81,8 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
             setColorRecyclerView()
         }
 
-        binding.featuresToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        onBackPressed()
+        binding.featuresToolbar.setNavigationOnClickListener { onBackPressed() }
         binding.featuresNextToolbarButton.setOnClickListener { navigateToPriceFragment(it) }
         binding.featuresNextButton.setOnClickListener { navigateToPriceFragment(it) }
 
@@ -176,18 +174,24 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
 
         }else {
 
-            val action = FeaturesFragmentDirections.actionFeaturesFragmentToPriceFragment(
+            val bundle = arguments?.getBundle("descriptionBundle")
+            bundle?.putString("storageCapacity",storageCapacity)
+            bundle?.putString("ramCapacity",ramCapacity)
+            bundle?.putString("color",color)
+            bundle?.putBundle("featuresBundle",bundle)
 
-            args.brandName,args.modelName,args.imagesUri,args.descriptionText,
-            storageCapacity,ramCapacity,color,status.toString())
-
-            findNavController().navigate(action)
+            findNavController().navigate(R.id.action_featuresFragment_to_priceFragment,bundle)
         }
     }
 
     private fun onBackPressed() {
 
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
 
+
+            }
+        })
     }
 
 }

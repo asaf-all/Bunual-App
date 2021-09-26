@@ -31,21 +31,25 @@
     <string name="search">Search</string>
     <string name="favourites">Favourites</string>
     <string name="cabinet">Cabinet</string>
+    <string name="price">Price</string>
+    <string name="by_agreement">By agreement</string>
     <string name="as_spare_part">As a spare part</string>
+    <string name="is_executed">Is executed..</string>
     <string name="all_phones">All phones</string>
     <string name="chat_fragment_text">It will be activated soon.\nDo not forget to follow the updates.\n(Profile -> Settings button -> Check new application version)</string>
     <string name="favourites_announcement_limit">Favourites announcement limit is 10</string>
     <string name="filter_announcements">Filter Announcements</string>
     <string name="retrofit_exception">There was a problem loading data</string>
-    <string name="sign_up">Create Account</string>
-    <string name="sign_in">I have account</string>
+    <string name="log_out">Log out</string>
     <string name="enter_phone_number">Enter phone number</string>
     <string name="enter_confirmation_code">Enter confirmation code</string>
-    <string name="send_sms_code">Send SMS code</string>
     <string name="enter_valid_phone_number">Please enter a valid phone number</string>
     <string name="enter_correct_confirmation_code">Please enter a correct confirmation code</string>
-    <string name="confirmation_code_will_sent_you">confirmation code will be sent to you</string>
     <string name="enter_code">Enter the confirmation code sent to you</string>
+    <string name="enter_phone_description">Enter description</string>
+    <string name="enter_phone_price">Enter price</string>
+    <string name="send_sms_code">Send SMS code</string>
+    <string name="confirmation_code_will_sent_you">confirmation code will be sent to you</string>
     <string name="wait_for_sending_code">please wait while sending the code</string>
     <string name="send_code_again">send again</string>
     <string name="account_opened_successfully">Account opened successfully</string>
@@ -55,7 +59,7 @@
     <string name="select_phone_image">Select Image(s)</string>
     <string name="select_images_text">On the screen that opens, select all the photos you want to share and click choose</string>
     <string name="permission_needed">Permission needed!</string>
-    <string name="enter_phone_description">Enter description</string>
+
     <string name="fill_phone_features">Fill features</string>
     <string name="fill_in_all">Please fill in all</string>
     <string name="choose_phone_storage">Choose Storage</string>
@@ -63,6 +67,8 @@
     <string name="choose_phone_color">Choose Color</string>
     <string name="all_phone_models">All phone models</string>
     <string name="newest_first">Newest first</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

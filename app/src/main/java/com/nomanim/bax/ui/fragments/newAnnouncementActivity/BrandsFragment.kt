@@ -19,7 +19,7 @@ import com.nomanim.bax.retrofit.builder.PhoneBrandApi
 import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
 import com.nomanim.bax.retrofit.models.ModelPhoneBrands
 import com.nomanim.bax.ui.activities.MainActivity
-import com.nomanim.bax.ui.other.ClearEditTextButton
+import com.nomanim.bax.ui.other.clearTextWhenClickClear
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,7 +35,7 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
 
-        ClearEditTextButton(binding.searchPhoneBrands)
+        binding.searchPhoneBrands.clearTextWhenClickClear()
         onBackPressed()
         getBrandNamesWithRetrofit()
         binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
@@ -46,8 +46,8 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
     private fun getBrandNamesWithRetrofit() {
 
-        val phoneService = PhoneBrandApi.buildAndCreate()
-        phoneService.getData().enqueue(object  : Callback<PhoneBrandsList> {
+        val phoneService = PhoneBrandApi.builder.getData()
+        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
             override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
 
                 binding.brandsProgressBar.visibility = View.INVISIBLE
@@ -58,6 +58,7 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
                         val model = ModelPhoneBrands("0","Other")
                         phoneBrands.add(model)
+
                         phoneBrands = response.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
                         setBrandsRecyclerView(phoneBrands)
                         searchInsidePhoneModels()
@@ -126,10 +127,14 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
         try {
 
-            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(brandId,brandName)
-            findNavController().navigate(action)
+            val bundle = Bundle()
+            bundle.putString("brandId",brandId)
+            bundle.putString("brandName",brandName)
+            bundle.putBundle("brandsBundle",bundle)
 
-        }catch (e: Exception) { context?.let { Toast.makeText(it,"***",Toast.LENGTH_SHORT).show() } }
+            findNavController().navigate(R.id.action_brandsFragment_to_modelsFragment,bundle)
+
+        }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
 
     }
 
