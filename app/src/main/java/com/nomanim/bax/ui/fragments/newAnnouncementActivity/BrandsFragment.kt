@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneBrandsAdapter
 import com.nomanim.bax.databinding.FragmentBrandsBinding
-import com.nomanim.bax.retrofit.builder.PhoneBrandApi
+import com.nomanim.bax.retrofit.builder.PhoneBrandsApi
 import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
 import com.nomanim.bax.retrofit.models.ModelPhoneBrands
 import com.nomanim.bax.ui.activities.MainActivity
@@ -46,7 +46,7 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
     private fun getBrandNamesWithRetrofit() {
 
-        val phoneService = PhoneBrandApi.builder.getData()
+        val phoneService = PhoneBrandsApi.builder.getData()
         phoneService.enqueue(object  : Callback<PhoneBrandsList> {
             override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
 

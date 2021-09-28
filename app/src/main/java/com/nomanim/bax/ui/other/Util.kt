@@ -53,7 +53,6 @@ fun ArrayList<ModelAnnouncement>.getDataFromFireStore(fireStore: FirebaseFiresto
             val user = doc.get("user") as Map<*, *>
             val place = user["place"] as Map<*, *>
             val city = place["city"] as String
-            val region = place["region"] as String
             val population = place["population"] as String
 
             val userName = user["name"] as String
@@ -69,7 +68,7 @@ fun ArrayList<ModelAnnouncement>.getDataFromFireStore(fireStore: FirebaseFiresto
             val numberOfLike = doc.get("numberOfLike") as String
 
             val phoneModel = ModelPhone(brand,model,price,color,storage,ram,currentStatus,delivery,agreementPrice)
-            val placeModel = ModelPlaces(city,region,population)
+            val placeModel = ModelPlaces(city,population)
             val userModel = ModelUser(userName,phoneNumber,placeModel)
             val announcement = ModelAnnouncement(id,image,description,numberOfViews,time,numberOfLike,phoneModel,userModel)
 

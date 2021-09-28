@@ -8,9 +8,6 @@ data class ModelPlaces(
     @SerializedName("admin_name")
     val city: String,
 
-    @SerializedName("city")
-    val region: String,
-
     //@SerializedName("population")
-    val population: String )
+    val population: String = "0" )
 

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneModelsAdapter
 import com.nomanim.bax.databinding.FragmentModelsBinding
-import com.nomanim.bax.retrofit.builder.PhoneModelApi
+import com.nomanim.bax.retrofit.builder.PhoneModelsApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
 import com.nomanim.bax.ui.other.clearTextWhenClickClear
@@ -47,7 +47,7 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
 
     private fun getModelNamesWithRetrofit() {
 
-        compositeDisposable.add(PhoneModelApi.builder.getData()
+        compositeDisposable.add(PhoneModelsApi.builder.getData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleResponseFromRxJava))

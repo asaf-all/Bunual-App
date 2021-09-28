@@ -4,25 +4,26 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneStorageBinding
+import com.nomanim.bax.retrofit.models.ModelPlaces
 
-class RamSheetAdapter(private val list: ArrayList<String>, private val listener: Listener)
-    : RecyclerView.Adapter<RamSheetAdapter.Holder>() {
+class PlacesAdapter(private val list: ArrayList<ModelPlaces>, private val listener: Listener)
+    : RecyclerView.Adapter<PlacesAdapter.Holder>() {
 
     interface Listener {
 
-        fun setOnRamClickListener(buttonFinishText: String)
+        fun setOnPlaceClickListener(buttonFinishText: String)
 
     }
 
     class Holder(val binding: LayoutCardViewPhoneStorageBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun run(list: ArrayList<String>, position: Int, listener: Listener) {
+        fun run(list: ArrayList<ModelPlaces>, position: Int, listener: Listener) {
 
-            binding.button.text = list[position]
+            binding.button.text = list[position].city
             binding.button.setOnClickListener {
 
                 val buttonFinishText = binding.button.text.toString()
-                listener.setOnRamClickListener(buttonFinishText)
+                listener.setOnPlaceClickListener(buttonFinishText)
             }
 
         }
@@ -41,6 +42,4 @@ class RamSheetAdapter(private val list: ArrayList<String>, private val listener:
     override fun getItemCount(): Int {
         return list.size
     }
-
-
 }

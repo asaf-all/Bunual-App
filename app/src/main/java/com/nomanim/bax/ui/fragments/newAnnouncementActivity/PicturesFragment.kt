@@ -30,18 +30,14 @@ class PicturesFragment : Fragment() {
     private lateinit var permission: ActivityResultLauncher<String>
     private val imagesUri = ArrayList<String>()
     private lateinit var firebaseStorage: FirebaseStorage
+    private val downloadUrlList = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentPicturesBinding.inflate(inflater,container,false)
 
         firebaseStorage = FirebaseStorage.getInstance()
-        //uploadImagesToStorage()
-
-        val bundle = arguments?.getBundle("modelsBundle")
-        bundle?.putString("pictureUrl","randomUrl")
-        bundle?.putBundle("picturesBundle",bundle)
-        findNavController().navigate(R.id.action_picturesFragment_to_descriptionFragment,bundle)
+        navigateToNextFragment()
 
         registerLauncher()
         requestPermission()
@@ -93,7 +89,7 @@ class PicturesFragment : Fragment() {
                         if (imagesUri.isEmpty()) { Toast.makeText(requireContext(),getString(R.string.fail),Toast.LENGTH_SHORT).show() }
                         else {
 
-                            navigateToNextFragment()
+                            uploadImagesToStorage()
                         }
                     }
                 }
@@ -122,20 +118,24 @@ class PicturesFragment : Fragment() {
     private fun uploadImagesToStorage() {
 
         val reference = firebaseStorage.reference
-        val child = reference.child("Pictures").child(UUID.randomUUID().toString())
-        child.putFile("randomUri".toUri()).addOnSuccessListener {
 
-                child.downloadUrl
+        for (i in 0 until imagesUri.size) {
+
+            val child = reference.child("Pictures").child(UUID.randomUUID().toString())
+            child.putFile(imagesUri[i].toUri()).addOnSuccessListener {
+
+                downloadUrlList.add(child.downloadUrl.toString())
+            }
         }
+
+        navigateToNextFragment()
     }
 
     private fun navigateToNextFragment() {
 
         val bundle = arguments?.getBundle("modelsBundle")
-        bundle?.putBundle("imagesBundle",bundle)
-
-        Log.e("*********",bundle?.getString("brandsId").toString())
-
+        bundle?.putStringArrayList("downloadUrlList",downloadUrlList)
+        bundle?.putBundle("picturesBundle",bundle)
         findNavController().navigate(R.id.action_picturesFragment_to_descriptionFragment,bundle)
     }
 

@@ -1,7 +1,6 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,20 +8,19 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.ColorSheetAdapter
-import com.nomanim.bax.adapters.RamSheetAdapter
-import com.nomanim.bax.adapters.StorageSheetAdapter
+import com.nomanim.bax.adapters.ColorsAdapter
+import com.nomanim.bax.adapters.RamsAdapter
+import com.nomanim.bax.adapters.StoragesAdapter
 import com.nomanim.bax.databinding.FragmentFeaturesBinding
 import com.nomanim.bax.databinding.LayoutBottomSheetPhoneColorBinding
 import com.nomanim.bax.databinding.LayoutBottomSheetPhoneRamBinding
 import com.nomanim.bax.databinding.LayoutBottomSheetPhoneStorageBinding
 
-class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapter.Listener, ColorSheetAdapter.Listener {
+class FeaturesFragment : Fragment(),StoragesAdapter.Listener, RamsAdapter.Listener, ColorsAdapter.Listener {
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
@@ -108,7 +106,7 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
         context?.let {
 
             recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = StorageSheetAdapter(storageList,this@FeaturesFragment)
+            val adapter = StoragesAdapter(storageList,this@FeaturesFragment)
             recyclerView.adapter = adapter
         }
     }
@@ -121,7 +119,7 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
         context?.let {
 
             recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = RamSheetAdapter(ramList,this@FeaturesFragment)
+            val adapter = RamsAdapter(ramList,this@FeaturesFragment)
             recyclerView.adapter = adapter
         }
     }
@@ -134,7 +132,7 @@ class FeaturesFragment : Fragment(),StorageSheetAdapter.Listener, RamSheetAdapte
         context?.let {
 
             recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = ColorSheetAdapter(colorList,this@FeaturesFragment)
+            val adapter = ColorsAdapter(colorList,this@FeaturesFragment)
             recyclerView.adapter = adapter
         }
     }

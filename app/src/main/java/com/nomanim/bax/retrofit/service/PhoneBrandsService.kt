@@ -4,7 +4,7 @@ import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface PhoneBrandService {
+interface PhoneBrandsService {
 
     @GET("ilyasozkurt/mobilephone-brands-and-models/master/brands.json")
     fun getData() : Call<PhoneBrandsList>

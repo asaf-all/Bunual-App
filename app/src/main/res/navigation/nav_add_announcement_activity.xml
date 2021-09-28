@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_add_announcement_activity"
-    app:startDestination="@id/brandsFragment">
+    app:startDestination="@id/userFragment">
 
     <fragment
         android:id="@+id/brandsFragment"
@@ -22,9 +22,6 @@
         <action
             android:id="@+id/action_modelsFragment_to_picturesFragment"
             app:destination="@id/picturesFragment" />
-        <action
-            android:id="@+id/action_modelsFragment_to_descriptionFragment"
-            app:destination="@id/descriptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/picturesFragment"
@@ -61,9 +58,6 @@
         <action
             android:id="@+id/action_priceFragment_to_userFragment"
             app:destination="@id/userFragment" />
-        <action
-            android:id="@+id/action_priceFragment_to_downloadFragment"
-            app:destination="@id/downloadFragment" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"

@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneStorageBinding
 
-class StorageSheetAdapter(private val list: ArrayList<String>, private val listener: Listener)
-    : RecyclerView.Adapter<StorageSheetAdapter.Holder>() {
+class RamsAdapter(private val list: ArrayList<String>, private val listener: Listener)
+    : RecyclerView.Adapter<RamsAdapter.Holder>() {
 
     interface Listener {
 
-        fun setOnStorageClickListener(buttonFinishText: String)
+        fun setOnRamClickListener(buttonFinishText: String)
 
     }
 
@@ -22,7 +22,7 @@ class StorageSheetAdapter(private val list: ArrayList<String>, private val liste
             binding.button.setOnClickListener {
 
                 val buttonFinishText = binding.button.text.toString()
-                listener.setOnStorageClickListener(buttonFinishText)
+                listener.setOnRamClickListener(buttonFinishText)
             }
 
         }

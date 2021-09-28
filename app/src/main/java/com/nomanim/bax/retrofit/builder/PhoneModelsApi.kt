@@ -1,11 +1,11 @@
 package com.nomanim.bax.retrofit.builder
 
-import com.nomanim.bax.retrofit.service.PhoneBrandService
-import com.nomanim.bax.retrofit.service.PhoneModelService
+import com.nomanim.bax.retrofit.service.PhoneModelsService
 import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class PhoneBrandApi {
+class PhoneModelsApi {
 
     companion object {
 
@@ -14,7 +14,8 @@ class PhoneBrandApi {
         val builder = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
-            .create(PhoneBrandService::class.java)
+            .create(PhoneModelsService::class.java)
     }
 }
