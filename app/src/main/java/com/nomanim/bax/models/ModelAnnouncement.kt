@@ -1,7 +1,6 @@
 package com.nomanim.bax.models
 
 import com.google.firebase.Timestamp
-import java.util.*
 
 data class ModelAnnouncement( val id: String,
                               val image: String,

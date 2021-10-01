@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
@@ -41,6 +43,9 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
+
+        val bottomNavigation = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNavigation?.visibility = View.VISIBLE
 
         getMostViewedPhonesFromFireStore()
         getAllPhonesFromFireStore()
@@ -150,6 +155,20 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
             verticalRecyclerViewAdapter = VerticalOrderAdapter(it,allPhones,this@HomeFragment)
             vrv.adapter = verticalRecyclerViewAdapter
         }
+    }
+
+    override fun setOnClickHorizontalAnnouncement() {
+
+        findNavController().navigate(R.id.action_homeFragment_to_showDetailsFragment)
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav?.visibility = View.GONE
+    }
+
+    override fun setOnClickVerticalAnnouncement() {
+
+        findNavController().navigate(R.id.action_homeFragment_to_showDetailsFragment)
+        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
+        bottomNav?.visibility = View.GONE
     }
 
 }

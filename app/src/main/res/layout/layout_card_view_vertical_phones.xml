@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/verticalLinearLayout"
     android:layout_width="match_parent"
     android:layout_height="240dp">
 
@@ -17,7 +18,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/announcementImageView"
                 android:layout_width="0dp"
                 android:layout_height="146dp"
                 android:scaleType="centerCrop"
@@ -27,7 +28,7 @@
                 app:srcCompat="@drawable/im_samsung" />
 
             <TextView
-                android:id="@+id/allPhonesName"
+                android:id="@+id/announcementName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -35,12 +36,12 @@
                 android:maxLines="1"
                 android:text="@string/download"
                 android:textColor="@color/black"
-                app:layout_constraintEnd_toEndOf="@+id/allPhonesPrice"
-                app:layout_constraintStart_toStartOf="@+id/allPhonesPrice"
-                app:layout_constraintTop_toBottomOf="@+id/allPhonesPrice" />
+                app:layout_constraintEnd_toEndOf="@+id/announcementPrice"
+                app:layout_constraintStart_toStartOf="@+id/announcementPrice"
+                app:layout_constraintTop_toBottomOf="@+id/announcementPrice" />
 
             <TextView
-                android:id="@+id/allPhonesDescription"
+                android:id="@+id/announcementDescription"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
@@ -55,38 +56,37 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/allPhonesName"
-                app:layout_constraintTop_toBottomOf="@+id/allPhonesName"
+                app:layout_constraintStart_toStartOf="@+id/announcementName"
+                app:layout_constraintTop_toBottomOf="@+id/announcementName"
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/allPhonesViews"
+                android:id="@+id/announcementViews"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:layout_marginEnd="4dp"
-                android:layout_marginBottom="3dp"
                 android:fontFamily="@font/roboto_light"
                 android:text="9999"
                 android:textColor="@color/black"
                 android:textSize="8sp"
-                app:layout_constraintBottom_toTopOf="@+id/allPhonesDescription"
+                app:layout_constraintBottom_toTopOf="@+id/announcementDescription"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2"
-                app:layout_constraintVertical_bias="0.081" />
+                app:layout_constraintTop_toBottomOf="@+id/announcementImageView"
+                app:layout_constraintVertical_bias="0.076" />
 
             <ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="1dp"
-                app:layout_constraintBottom_toBottomOf="@+id/allPhonesViews"
-                app:layout_constraintEnd_toStartOf="@+id/allPhonesViews"
-                app:layout_constraintTop_toTopOf="@+id/allPhonesViews"
+                app:layout_constraintBottom_toBottomOf="@+id/announcementViews"
+                app:layout_constraintEnd_toStartOf="@+id/announcementViews"
+                app:layout_constraintTop_toTopOf="@+id/announcementViews"
                 app:srcCompat="@drawable/view" />
 
             <TextView
-                android:id="@+id/allPhonesPrice"
+                android:id="@+id/announcementPrice"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="9dp"
@@ -98,10 +98,10 @@
                 android:text="@string/download"
                 android:textColor="@color/black"
                 android:textSize="19sp"
-                app:layout_constraintBottom_toTopOf="@+id/allPhonesName"
+                app:layout_constraintBottom_toTopOf="@+id/announcementName"
                 app:layout_constraintEnd_toStartOf="@+id/imageView4"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+                app:layout_constraintTop_toBottomOf="@+id/announcementImageView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

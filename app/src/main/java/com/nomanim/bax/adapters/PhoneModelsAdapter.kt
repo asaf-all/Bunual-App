@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
-import com.squareup.picasso.Picasso
+import com.nomanim.bax.ui.other.downloadImageWithGlide
 
 class PhoneModelsAdapter (val context: Context, private val list: ArrayList<ModelPhoneModels>, val listener: Listener)
     : RecyclerView.Adapter<PhoneModelsAdapter.Holder>() {
@@ -23,7 +23,7 @@ class PhoneModelsAdapter (val context: Context, private val list: ArrayList<Mode
         fun run(list: ArrayList<ModelPhoneModels>, position: Int, listener: Listener, context: Context) {
 
             binding.brandOrModelName.text = list[position].modelName
-            Picasso.get().load(list[position].modelImage).into(binding.modelImageView)
+            binding.modelImageView.downloadImageWithGlide(itemView,list[position].modelImage)
             binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(list[position].modelName) }
 
         }

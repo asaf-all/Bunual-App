@@ -6,7 +6,7 @@ import retrofit2.http.GET
 
 interface PlacesService {
 
-    @GET("AsafHacioglu/bax-api-collection/c730ff5e7182b2ba1892f1947a6ba60c9aa28120/az.json?token=ASQRT2DPY4YR63IMTYTQ5YLBKLPA2")
+    @GET("AsafHacioglu/bax-api-collection/master/az.json")
 
     fun getData() : Single<List<ModelPlaces>>
 }

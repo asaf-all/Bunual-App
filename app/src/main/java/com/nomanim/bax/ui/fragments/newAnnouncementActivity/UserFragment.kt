@@ -1,7 +1,6 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import java.util.*
 
 class UserFragment : Fragment(),PlacesAdapter.Listener {
 
@@ -26,7 +26,7 @@ class UserFragment : Fragment(),PlacesAdapter.Listener {
     private val binding get() = _binding!!
     private val compositeDisposable = CompositeDisposable()
     private lateinit var bottomSheetBinding: LayoutBottomSheetPlacesBinding
-    private var placesList = ArrayList<ModelPlaces>()
+    private lateinit var placesList: List<ModelPlaces>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -49,7 +49,7 @@ class UserFragment : Fragment(),PlacesAdapter.Listener {
 
                 override fun onSuccess(list: List<ModelPlaces>) {
 
-                    placesList = list.sortedWith ( compareBy<ModelPlaces> { it.population.toInt() } ) as ArrayList<ModelPlaces>
+                    placesList = list.sortedWith(compareByDescending { it.population })
                     setPlacesRecyclerView()
                 }
 
@@ -57,7 +57,6 @@ class UserFragment : Fragment(),PlacesAdapter.Listener {
 
                     Snackbar.make(binding.root,getString(R.string.fail),Snackbar.LENGTH_SHORT).show()
                     error.printStackTrace()
-                    Log.e("errorerrorerror",error.toString())
                 }
             }))
     }

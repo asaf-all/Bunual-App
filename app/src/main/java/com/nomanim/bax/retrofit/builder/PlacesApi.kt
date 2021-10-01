@@ -9,8 +9,7 @@ class PlacesApi {
 
     companion object {
 
-
-        private val BASE_URL: String = "https://gitcdn.link/repo/"
+        private val BASE_URL: String = "https://raw.githubusercontent.com/"
 
         val builder = Retrofit.Builder()
             .baseUrl(BASE_URL)

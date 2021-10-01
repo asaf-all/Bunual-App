@@ -35,6 +35,7 @@
     <string name="name">Name</string>
     <string name="phone_number">Phone number</string>
     <string name="by_agreement">By agreement</string>
+    <string name="more_reviews">More reviews</string>
     <string name="as_spare_part">As a spare part</string>
     <string name="is_executed">Is executed..</string>
     <string name="all_phones">All phones</string>
@@ -73,5 +74,7 @@
     <string name="choose_place">Choose your place</string>
     <string name="all_phone_models">All phone models</string>
     <string name="newest_first">Newest first</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -86,4 +86,8 @@ class FavouritesFragment : Fragment(),VerticalOrderAdapter.Listener {
         fp.adapter = adapter
     }
 
+    override fun setOnClickVerticalAnnouncement() {
+
+    }
+
 }

@@ -128,4 +128,8 @@ class ProfileFragment : Fragment(),VerticalOrderAdapter.Listener {
         recyclerViewAdapter = VerticalOrderAdapter(context,announcements,this@ProfileFragment)
         recyclerView.adapter = recyclerViewAdapter
     }
+
+    override fun setOnClickVerticalAnnouncement() {
+
+    }
 }

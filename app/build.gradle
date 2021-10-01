@@ -16,7 +16,6 @@ android {
         targetSdk 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -78,7 +77,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
 
-
     //rxJava & rxAndroid
     implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
     implementation 'io.reactivex.rxjava3:rxjava:3.1.1'
@@ -87,7 +85,9 @@ dependencies {
     //third party libraries
     implementation 'io.grpc:grpc-okhttp:1.41.0' //okHTTP
     implementation 'com.hbb20:ccp:2.5.4'  //country code picker
-    implementation 'com.squareup.picasso:picasso:2.71828' //picasso for load images from internet
+    implementation 'com.squareup.picasso:picasso:2.71828'  //picasso for load images from internet
+    implementation 'com.github.bumptech.glide:glide:4.12.0'  //glide for load images from internet
+    kapt 'com.github.bumptech.glide:compiler:4.12.0'
 
 
 }

@@ -13,13 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Bax">
         <activity
-            android:name=".ui.activities.SplashScreenActivity"
-            android:exported="true"/>
-        <activity
             android:name=".ui.activities.NewAnnouncementActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.activities.RegistrationActivity"
             android:exported="true" />
         <activity
             android:name=".ui.activities.MainActivity"

@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneStorageBinding
 import com.nomanim.bax.retrofit.models.ModelPlaces
 
-class PlacesAdapter(private val list: ArrayList<ModelPlaces>, private val listener: Listener)
+class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: Listener)
     : RecyclerView.Adapter<PlacesAdapter.Holder>() {
 
     interface Listener {
@@ -17,7 +17,7 @@ class PlacesAdapter(private val list: ArrayList<ModelPlaces>, private val listen
 
     class Holder(val binding: LayoutCardViewPhoneStorageBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun run(list: ArrayList<ModelPlaces>, position: Int, listener: Listener) {
+        fun run(list: List<ModelPlaces>, position: Int, listener: Listener) {
 
             binding.button.text = list[position].city
             binding.button.setOnClickListener {
