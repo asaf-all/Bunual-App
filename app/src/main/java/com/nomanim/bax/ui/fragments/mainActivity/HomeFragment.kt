@@ -1,9 +1,15 @@
 package com.nomanim.bax.ui.fragments.mainActivity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.core.widget.NestedScrollView
+import androidx.fragment.app.FragmentTransaction
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -36,16 +42,12 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
     private lateinit var lastValue: QuerySnapshot
     private var announcementsAreOver = false
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
-
-        val bottomNavigation = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNavigation?.visibility = View.VISIBLE
 
         getMostViewedPhonesFromFireStore()
         getAllPhonesFromFireStore()
@@ -58,6 +60,15 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         for (text in resources.getStringArray(R.array.sort_data_texts) ) {
             sortTexts.add(text)
         }
+    }
+
+    private fun addOrUpdateLastRefreshTime() {
+
+        val sp = activity?.getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
+        val editor = sp?.edit()
+        editor?.putString("refreshTime",System.currentTimeMillis().toString())
+        editor?.apply()
+
     }
 
     private fun getMostViewedPhonesFromFireStore() {
@@ -159,16 +170,48 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
 
     override fun setOnClickHorizontalAnnouncement() {
 
-        findNavController().navigate(R.id.action_homeFragment_to_showDetailsFragment)
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNav?.visibility = View.GONE
+        showDetailsFragmentAlgorithm()
     }
 
     override fun setOnClickVerticalAnnouncement() {
 
-        findNavController().navigate(R.id.action_homeFragment_to_showDetailsFragment)
-        val bottomNav = activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)
-        bottomNav?.visibility = View.GONE
+        showDetailsFragmentAlgorithm()
+    }
+
+    private fun showDetailsFragmentAlgorithm() {
+
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
+        activity?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.visibility = View.GONE
+        binding.fragmentContainer.visibility = View.VISIBLE
+
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragmentContainer,ShowDetailsFragment())?.commit()
+        onBackPressInDetailsFragment()
+    }
+
+    private fun onBackPressInDetailsFragment() {
+
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                binding.fragmentContainer.visibility = View.GONE
+                activity?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.visibility = View.VISIBLE
+                activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
+                onBackPressInHomeFragment()
+            }
+        })
+    }
+
+    private fun onBackPressInHomeFragment() {
+
+        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+                val intent = Intent(Intent.ACTION_MAIN)
+                intent.addCategory(Intent.CATEGORY_HOME)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                activity?.startActivity(intent)
+            }
+        })
     }
 
 }
