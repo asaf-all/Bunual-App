@@ -1,6 +1,6 @@
-package com.nomanim.bax.retrofit.builder
+package com.nomanim.bax.retrofit.builders
 
-import com.nomanim.bax.retrofit.service.PhoneModelsService
+import com.nomanim.bax.retrofit.services.PhoneModelsService
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory

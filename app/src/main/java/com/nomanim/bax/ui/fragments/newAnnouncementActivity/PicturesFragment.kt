@@ -1,142 +1,73 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.storage.FirebaseStorage
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentPicturesBinding
-import java.util.*
-import kotlin.collections.ArrayList
+import com.nomanim.bax.models.ModelImages
+import com.nomanim.bax.room.database.RoomDB
+import com.nomanim.bax.ui.other.BaseCoroutineScope
+import gun0912.tedimagepicker.builder.TedImagePicker
+import gun0912.tedimagepicker.builder.type.MediaType
+import kotlinx.coroutines.launch
 
-class PicturesFragment : Fragment() {
+
+class PicturesFragment : BaseCoroutineScope() {
 
     private var _binding: FragmentPicturesBinding? = null
     private val binding get() = _binding!!
-    private lateinit var activityResultLauncher: ActivityResultLauncher<Intent>
-    private lateinit var permission: ActivityResultLauncher<String>
-    private val imagesUri = ArrayList<String>()
-    private lateinit var firebaseStorage: FirebaseStorage
-    private val downloadUrlList = ArrayList<String>()
+    private val imagesUrl = ArrayList<Uri>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
-        _binding = FragmentPicturesBinding.inflate(inflater,container,false)
+        _binding = FragmentPicturesBinding.inflate(inflater)
 
-        firebaseStorage = FirebaseStorage.getInstance()
-        navigateToNextFragment()
-
-        registerLauncher()
-        requestPermission()
-
-        binding.selectPhotosImageView.setOnClickListener { imageViewClickAction() }
-        binding.imagesToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        openGallery()
 
         return binding.root
     }
 
-    private fun imageViewClickAction() {
+    private fun openGallery() {
 
-        context?.let {
+        TedImagePicker.with(requireContext())
+            .title(R.string.select_phone_image)
+            .backButton(R.drawable.back)
+            .buttonText(R.string.next)
+            .buttonBackground(R.color.main)
+            .mediaType(MediaType.IMAGE)
+            .startMultiImage { imagesUri ->
 
-            if (ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                val list = ArrayList<ModelImages>()
 
-                permission.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                for (element in imagesUri) {
 
-            }else {
-
-                val intentToGallery = Intent(Intent.ACTION_GET_CONTENT)
-                intentToGallery.type = "image/*"
-                intentToGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-                activityResultLauncher.launch(Intent.createChooser(intentToGallery,"SELECT IMAGE"))
-            }
-        }
-    }
-
-    private fun registerLauncher() {
-
-        activityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-
-
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
-
-                val intentFromResult = result.data
-                if (intentFromResult != null) {
-                    if (intentFromResult.clipData != null) {
-
-                            val count = intentFromResult.clipData!!.itemCount
-                            for (i in 0 until count) {
-
-                                val uris = intentFromResult.clipData!!.getItemAt(i).uri
-                                imagesUri.add(uris.toString())
-                            }
-                        }
-                        else { imagesUri.add(intentFromResult.data.toString()) }
-
-                        if (imagesUri.isEmpty()) { Toast.makeText(requireContext(),getString(R.string.fail),Toast.LENGTH_SHORT).show() }
-                        else {
-
-                            uploadImagesToStorage()
-                        }
-                    }
+                    val model = ModelImages(element.toString())
+                    list.add(model)
                 }
 
-        }
+                saveImagesUrlAtRoom(list,imagesUri)
+            }
     }
 
-    private fun requestPermission() {
+    private fun saveImagesUrlAtRoom(list: ArrayList<ModelImages>, imagesUri: List<Uri>) {
 
-        permission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
+        launch {
 
-            if (result) {
-
-                val intentToGallery = Intent(Intent.ACTION_GET_CONTENT)
-                intentToGallery.putExtra(Intent.EXTRA_ALLOW_MULTIPLE,true)
-                intentToGallery.type = "image/*"
-                activityResultLauncher.launch(intentToGallery)
-
-            } else {
-
-                context?.let { Toast.makeText(it, resources.getString(R.string.permission_needed), Toast.LENGTH_LONG).show() }
-            }
+            val database = RoomDB(requireContext()).getDataFromRoom()
+            database.deleteImagesUri()
+            database.insertImagesUri(*list.toTypedArray())
+            imagesUrl.addAll(imagesUri)
+            navigateToNextFragment()
         }
-    }
-
-    private fun uploadImagesToStorage() {
-
-        val reference = firebaseStorage.reference
-
-        for (i in 0 until imagesUri.size) {
-
-            val child = reference.child("Pictures").child(UUID.randomUUID().toString())
-            child.putFile(imagesUri[i].toUri()).addOnSuccessListener {
-
-                downloadUrlList.add(child.downloadUrl.toString())
-            }
-        }
-
-        navigateToNextFragment()
     }
 
     private fun navigateToNextFragment() {
 
-        val bundle = arguments?.getBundle("modelsBundle")
-        bundle?.putStringArrayList("downloadUrlList",downloadUrlList)
-        bundle?.putBundle("picturesBundle",bundle)
-        findNavController().navigate(R.id.action_picturesFragment_to_descriptionFragment,bundle)
+        findNavController().navigate(R.id.action_picturesFragment_to_descriptionFragment)
     }
 
 }

@@ -4,13 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.NestedScrollView
-import androidx.fragment.app.FragmentTransaction
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -18,15 +15,15 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.HorizontalOrderAdapter
-import com.nomanim.bax.adapters.VerticalOrderAdapter
+import com.nomanim.bax.adapters.MostViewedPhonesAdapter
+import com.nomanim.bax.adapters.AllPhonesAdapter
 import com.nomanim.bax.databinding.FragmentHomeBinding
 import com.nomanim.bax.models.ModelAnnouncement
 import com.nomanim.bax.ui.other.getDataFromFireStore
 import java.util.*
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAdapter.Listener{
+class HomeFragment : Fragment(),MostViewedPhonesAdapter.Listener,AllPhonesAdapter.Listener{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -35,7 +32,7 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
     private val sortTexts = ArrayList<String>()
     private var mostViewedPhones = ArrayList<ModelAnnouncement>()
     private var allPhones = ArrayList<ModelAnnouncement>()
-    private lateinit var verticalRecyclerViewAdapter: VerticalOrderAdapter
+    private lateinit var verticalRecyclerViewAdapter: AllPhonesAdapter
 
     private var currentUserPhoneNumber: String = ""
     private val numberOfAnnouncement = 10L  //for load data limit from fireStore for once
@@ -48,6 +45,8 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
+
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
 
         getMostViewedPhonesFromFireStore()
         getAllPhonesFromFireStore()
@@ -151,7 +150,7 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         val hrv = binding.horizontalRecyclerView
         hrv.setHasFixedSize(true)
         hrv.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
-        val horizontalRecyclerViewAdapter = HorizontalOrderAdapter(mostViewedPhones,this@HomeFragment)
+        val horizontalRecyclerViewAdapter = MostViewedPhonesAdapter(mostViewedPhones,this@HomeFragment)
         hrv.adapter = horizontalRecyclerViewAdapter
     }
 
@@ -163,12 +162,12 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
         vrv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         context?.let {
 
-            verticalRecyclerViewAdapter = VerticalOrderAdapter(it,allPhones,this@HomeFragment)
+            verticalRecyclerViewAdapter = AllPhonesAdapter(it,allPhones,this@HomeFragment)
             vrv.adapter = verticalRecyclerViewAdapter
         }
     }
 
-    override fun setOnClickHorizontalAnnouncement() {
+    override fun onMostViewedPhoneClick() {
 
         showDetailsFragmentAlgorithm()
     }
@@ -182,18 +181,18 @@ class HomeFragment : Fragment(),HorizontalOrderAdapter.Listener,VerticalOrderAda
 
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
         activity?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.visibility = View.GONE
-        binding.fragmentContainer.visibility = View.VISIBLE
+        binding.detailsFragmentContainer.visibility = View.VISIBLE
 
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragmentContainer,ShowDetailsFragment())?.commit()
-        onBackPressInDetailsFragment()
+        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.detailsFragmentContainer,ShowDetailsFragment())?.commit()
+        onBackPressInDetailsScreen()
     }
 
-    private fun onBackPressInDetailsFragment() {
+    private fun onBackPressInDetailsScreen() {
 
         activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
 
-                binding.fragmentContainer.visibility = View.GONE
+                binding.detailsFragmentContainer.visibility = View.GONE
                 activity?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.visibility = View.VISIBLE
                 activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
                 onBackPressInHomeFragment()

@@ -39,7 +39,7 @@ fun ArrayList<ModelAnnouncement>.getDataFromFireStore(fireStore: FirebaseFiresto
             val id = doc.id
             collectionName?.let { fireStore.collection(collectionName).document(id).update("id",id) }
 
-            val image = doc.get("image") as String
+            val image = doc.get("image") as ArrayList<String>
             val description = doc.get("description") as String
             val numberOfViews = doc.get("numberOfViews") as String
             val time = doc.get("time") as Timestamp

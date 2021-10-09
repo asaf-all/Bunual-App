@@ -5,44 +5,58 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.nomanim.bax.adapters.PhoneReviewsAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.google.firebase.firestore.FirebaseFirestore
+import com.nomanim.bax.adapters.SimilarPhonesAdapter
 import com.nomanim.bax.databinding.FragmentShowDetailsBinding
-import com.nomanim.bax.models.ModelPhoneReviews
+import com.nomanim.bax.models.ModelAnnouncement
+import com.nomanim.bax.ui.other.getDataFromFireStore
 
 
-class ShowDetailsFragment : Fragment(), PhoneReviewsAdapter.Listener {
+class ShowDetailsFragment : Fragment(), SimilarPhonesAdapter.Listener {
 
     private var _binding: FragmentShowDetailsBinding? = null
     private val binding get() = _binding!!
-    private val reviewsList = ArrayList<ModelPhoneReviews>()
+    private lateinit var firestore: FirebaseFirestore
+    private val similarPhones = ArrayList<ModelAnnouncement>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentShowDetailsBinding.inflate(inflater)
+        firestore = FirebaseFirestore.getInstance()
 
-        val modelReviews1 = ModelPhoneReviews("storage","32 GB")
-        val modelReviews2 = ModelPhoneReviews("ram","2 GB")
-
-        reviewsList.add(modelReviews1)
-        reviewsList.add(modelReviews2)
-
-        setReviewsRecyclerView()
+        getSimilarPhonesFromFireStore()
 
 
 
         return binding.root
     }
 
-    private fun setReviewsRecyclerView() {
+    private fun getSimilarPhonesFromFireStore() {
+
+        firestore.collection("All Announcements").get().addOnSuccessListener { value ->
+
+            similarPhones.getDataFromFireStore(firestore,"All Announcements",value)
+            setSimilarPhonesRecyclerView()
+        }
+    }
+
+    private fun setSimilarPhonesRecyclerView() {
 
         context?.let {
 
-            val recyclerView = binding.phoneReviewsRecyclerView
+            val recyclerView = binding.similarPhonesRecyclerView
             recyclerView.setHasFixedSize(true)
             recyclerView.isNestedScrollingEnabled = false
-            val adapter = PhoneReviewsAdapter(it,reviewsList,this@ShowDetailsFragment)
+            recyclerView.layoutManager = StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL)
+            val adapter = SimilarPhonesAdapter(it,similarPhones,this@ShowDetailsFragment)
             recyclerView.adapter = adapter
         }
+    }
+
+    override fun onSimilarPhoneClick() {
+
     }
 
 }

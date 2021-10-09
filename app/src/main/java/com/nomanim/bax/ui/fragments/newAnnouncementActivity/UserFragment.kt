@@ -12,7 +12,7 @@ import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PlacesAdapter
 import com.nomanim.bax.databinding.FragmentUserBinding
 import com.nomanim.bax.databinding.LayoutBottomSheetPlacesBinding
-import com.nomanim.bax.retrofit.builder.PlacesApi
+import com.nomanim.bax.retrofit.builders.PlacesApi
 import com.nomanim.bax.retrofit.models.ModelPlaces
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

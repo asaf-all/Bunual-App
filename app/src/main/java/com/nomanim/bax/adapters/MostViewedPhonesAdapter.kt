@@ -2,36 +2,35 @@ package com.nomanim.bax.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.nomanim.bax.databinding.LayoutCardViewHorizontalPhonesBinding
+import com.nomanim.bax.databinding.LayoutCardViewMostviewedPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
-import com.nomanim.bax.ui.other.downloadImageWithPicasso
+import com.nomanim.bax.ui.other.downloadImageWithGlide
 
-class HorizontalOrderAdapter(private val list: ArrayList<ModelAnnouncement>, val listener: Listener)
-    : RecyclerView.Adapter<HorizontalOrderAdapter.Holder>() {
+class MostViewedPhonesAdapter(private val list: ArrayList<ModelAnnouncement>, val listener: Listener)
+    : RecyclerView.Adapter<MostViewedPhonesAdapter.Holder>() {
 
     interface Listener {
 
-        fun setOnClickHorizontalAnnouncement()
+        fun onMostViewedPhoneClick()
     }
 
-    class Holder(val binding: LayoutCardViewHorizontalPhonesBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(val binding: LayoutCardViewMostviewedPhonesBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun run(list: ArrayList<ModelAnnouncement>, position: Int, listener: Listener) {
 
             binding.mostViewedPhonesPrice.text = list[position].phone.price
             binding.mostViewedPhonesName.text = list[position].phone.brand
             binding.mostViewedPhonesViews.text = list[position].numberOfViews
-            binding.phoneImage.downloadImageWithPicasso(list[position].image)
-            binding.horizontalLinearLayout.setOnClickListener { listener.setOnClickHorizontalAnnouncement() }
+            binding.phoneImage.downloadImageWithGlide(binding.root,list[position].image[0])
+            binding.mostViewedPhonesLinearLayout.setOnClickListener { listener.onMostViewedPhoneClick() }
 
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 
-        return Holder(LayoutCardViewHorizontalPhonesBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return Holder(LayoutCardViewMostviewedPhonesBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

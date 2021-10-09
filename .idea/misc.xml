@@ -26,7 +26,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/activity_new_announcement.xml" value="0.2969298245614035" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/activity_registration.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/activity_splash_screen.xml" value="0.3087719298245614" />
-        <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_brands.xml" value="0.264" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_brands.xml" value="0.4" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_chat.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_confirm_phone_number.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_create_account.xml" value="0.4" />
@@ -40,6 +40,7 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_images.xml" value="0.3610062893081761" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_models.xml" value="0.264" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_new_announcement.xml" value="0.3087719298245614" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_pictures.xml" value="0.3087719298245614" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_price.xml" value="0.4" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_profile.xml" value="0.4" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/fragment_registration.xml" value="0.264" />
@@ -53,9 +54,11 @@
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_bottom_sheet_phone_storage.xml" value="0.460655737704918" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_bottom_sheet_places.xml" value="0.3087719298245614" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_horizontal_phones.xml" value="0.8800000000000001" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_mostviewed_phones.xml" value="0.3087719298245614" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_phone_models.xml" value="1.0" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_phone_reviews.xml" value="0.72" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_phone_storage.xml" value="0.4" />
+        <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_similar_phones.xml" value="0.536" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_sort_phones.xml" value="0.3087719298245614" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_card_view_vertical_phones.xml" value="0.4" />
         <entry key="..\:/Users/HP/AndroidStudioProjects/Bax/app/src/main/res/layout/layout_custom_progessbar_in_alertdialog.xml" value="0.536" />

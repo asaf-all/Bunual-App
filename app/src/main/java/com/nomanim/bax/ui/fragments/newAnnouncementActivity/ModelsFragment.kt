@@ -1,5 +1,8 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -13,18 +16,27 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneModelsAdapter
 import com.nomanim.bax.databinding.FragmentModelsBinding
-import com.nomanim.bax.retrofit.builder.PhoneModelsApi
+import com.nomanim.bax.models.ModelImages
+import com.nomanim.bax.retrofit.builders.PhoneModelsApi
 import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
+import com.nomanim.bax.room.database.RoomDB
+import com.nomanim.bax.ui.other.BaseCoroutineScope
 import com.nomanim.bax.ui.other.clearTextWhenClickClear
+import gun0912.tedimagepicker.builder.TedImagePicker
+import gun0912.tedimagepicker.builder.type.MediaType
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
-class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
+class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
     private var _binding: FragmentModelsBinding? = null
     private val binding get() = _binding!!
-    private val compositeDisposable = io.reactivex.disposables.CompositeDisposable()
+    private var sharedPref: SharedPreferences? = null
+    private var phoneBrandId: String? = null
     private var filteredList = ArrayList<ModelPhoneModels>()
     private val limitedAndFilteredList = ArrayList<ModelPhoneModels>()
     private val limitedListAfterSearch = ArrayList<ModelPhoneModels>()
@@ -34,64 +46,80 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
     private var remainingListAfterSearchSize: Int = 0
     private lateinit var recyclerAdapter: PhoneModelsAdapter
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentModelsBinding.inflate(inflater,container,false)
 
         binding.searchPhoneModels.clearTextWhenClickClear()
         binding.modelsToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
-        getModelNamesWithRetrofit()
+
+        getPhoneIdFromSharedPref()
+        getModelNamesFromRoom()
 
         return binding.root
     }
 
-    private fun getModelNamesWithRetrofit() {
+    private fun getPhoneIdFromSharedPref() {
 
-        compositeDisposable.add(PhoneModelsApi.builder.getData()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::handleResponseFromRxJava))
-
+        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        phoneBrandId = sharedPref?.getString("phoneBrandId","error")
     }
 
-    private fun handleResponseFromRxJava(list: PhoneModelsList?) {
+    private fun getModelNamesFromRoom() {
 
-        if (list != null) {
+        launch {
 
-            try {
+            val database = RoomDB(requireContext()).getDataFromRoom()
+            val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelPhoneModels>
+            filterPhoneModelNames(phoneModelNames)
+        }
+    }
 
-                val phoneModels = list.modelPhoneModels
-                filteredList = phoneModels.filter { (it.brandId) == arguments?.getString("brandId") } as ArrayList<ModelPhoneModels>
+    private fun filterPhoneModelNames(modelNames: ArrayList<ModelPhoneModels>) {
 
-                if (filteredList.size < numberOfModelName) {
+        if (modelNames.isNotEmpty()) {
 
-                    numberOfModelName = filteredList.size
-                    binding.moreModelsProgressBar.visibility = View.INVISIBLE
+            filteredList = modelNames.filter { (it.brandId) == phoneBrandId } as ArrayList<ModelPhoneModels>
 
-                }else {
+            if (filteredList.size < numberOfModelName) {
 
-                    remainingFilteredListSize = filteredList.size
-                    setMoreModelsRecyclerView(remainingFilteredListSize)
-                    binding.moreModelsProgressBar.visibility = View.VISIBLE
+                numberOfModelName = filteredList.size
+                binding.moreModelsProgressBar.visibility = View.INVISIBLE
 
-                }
+            }else {
 
-                for (index in 0 until numberOfModelName) {
+                remainingFilteredListSize = filteredList.size
+                setMoreModelsRecyclerView(remainingFilteredListSize)
+                binding.moreModelsProgressBar.visibility = View.VISIBLE
 
-                    limitedAndFilteredList.add(filteredList[index])
-
-                }
-                setModelsRecyclerView(limitedAndFilteredList)
-                searchInsidePhoneModels()
-
-            }catch (e: Exception) {
-
-                context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_SHORT).show() }
-                e.localizedMessage
             }
+
+            for (index in 0 until numberOfModelName) {
+
+                limitedAndFilteredList.add(filteredList[index])
+
+            }
+            setModelsRecyclerView(limitedAndFilteredList)
+            searchInsidePhoneModels()
         }
 
         binding.modelsProgressBar.visibility = View.INVISIBLE
+    }
+
+    private fun setModelsRecyclerView(list: ArrayList<ModelPhoneModels>) {
+
+        context?.let { context ->
+
+            val recyclerView = binding.modelsRecyclerView
+            recyclerView.visibility = View.VISIBLE
+            recyclerView.isNestedScrollingEnabled = false
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.setHasFixedSize(true)
+            recyclerView.isNestedScrollingEnabled = false
+            recyclerAdapter = PhoneModelsAdapter(context,list,this@ModelsFragment)
+            recyclerView.adapter = recyclerAdapter
+        }
     }
 
     private fun setMoreModelsRecyclerView(_remainingListSize: Int) {
@@ -161,38 +189,21 @@ class ModelsFragment : Fragment(),PhoneModelsAdapter.Listener {
         })
     }
 
-    private fun setModelsRecyclerView(list: ArrayList<ModelPhoneModels>) {
-
-        val recyclerView = binding.modelsRecyclerView
-
-        context?.let { context ->
-
-            recyclerView.visibility = View.VISIBLE
-            recyclerView.isNestedScrollingEnabled = false
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.isNestedScrollingEnabled = false
-            recyclerAdapter = PhoneModelsAdapter(context,list,this@ModelsFragment)
-            recyclerView.adapter = recyclerAdapter
-        }
-    }
-
     override fun onCardViewClickListener(modelName: String) {
 
         try {
 
-            val bundle = arguments?.getBundle("brandsBundle")
-            bundle?.putString("modelName",modelName)
-            bundle?.putBundle("modelsBundle",bundle)
+            saveModelNameAtSharedPref(modelName)
+            findNavController().navigate(R.id.action_modelsFragment_to_picturesFragment)
 
-            findNavController().navigate(R.id.action_modelsFragment_to_picturesFragment,bundle)
-
-        }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
+        }catch (e:Exception){}
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        compositeDisposable.clear()
+    private fun saveModelNameAtSharedPref(modelName: String) {
+
+        val editor = sharedPref?.edit()
+        editor?.putString("phoneModelName",modelName)
+        editor?.apply()
     }
 
 }

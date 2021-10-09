@@ -3,14 +3,13 @@ package com.nomanim.bax.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
-import com.nomanim.bax.databinding.LayoutCardViewVerticalPhonesBinding
+import com.nomanim.bax.databinding.LayoutCardViewAllPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
-import com.nomanim.bax.ui.other.downloadImageWithPicasso
+import com.nomanim.bax.ui.other.downloadImageWithGlide
 
-class VerticalOrderAdapter (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
-    : RecyclerView.Adapter<VerticalOrderAdapter.Holder>() {
+class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
+    : RecyclerView.Adapter<AllPhonesAdapter.Holder>() {
 
     interface Listener {
 
@@ -19,7 +18,7 @@ class VerticalOrderAdapter (val context: Context, val list: ArrayList<ModelAnnou
     }
 
 
-    class Holder(val binding: LayoutCardViewVerticalPhonesBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(val binding: LayoutCardViewAllPhonesBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun run(list: ArrayList<ModelAnnouncement>, position: Int, listener: Listener) {
 
@@ -29,7 +28,7 @@ class VerticalOrderAdapter (val context: Context, val list: ArrayList<ModelAnnou
             binding.announcementViews.text = list[position].numberOfViews
             //val announcementUploadingTime = com.google.firebase.Timestamp.now().toDate()
             //holder.allPhonesTime.text = announcementUploadingTime.toString()
-            binding.announcementImageView.downloadImageWithPicasso(list[position].image)
+            binding.announcementImageView.downloadImageWithGlide(binding.root,list[position].image[0])
             binding.verticalLinearLayout.setOnClickListener { listener.setOnClickVerticalAnnouncement() }
 
         }
@@ -37,7 +36,7 @@ class VerticalOrderAdapter (val context: Context, val list: ArrayList<ModelAnnou
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutCardViewVerticalPhonesBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return Holder(LayoutCardViewAllPhonesBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

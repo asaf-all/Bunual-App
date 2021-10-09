@@ -3,7 +3,7 @@ package com.nomanim.bax.models
 import com.google.firebase.Timestamp
 
 data class ModelAnnouncement( val id: String,
-                              val image: String,
+                              val image: ArrayList<String>,
                               val description: String,
                               val numberOfViews: String,
                               val time: Timestamp,

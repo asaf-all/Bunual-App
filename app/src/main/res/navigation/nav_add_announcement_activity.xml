@@ -22,14 +22,8 @@
         <action
             android:id="@+id/action_modelsFragment_to_picturesFragment"
             app:destination="@id/picturesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/picturesFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.PicturesFragment"
-        android:label="@string/select_phone_image"
-        tools:layout="@layout/fragment_pictures" >
         <action
-            android:id="@+id/action_picturesFragment_to_descriptionFragment"
+            android:id="@+id/action_modelsFragment_to_descriptionFragment"
             app:destination="@id/descriptionFragment" />
     </fragment>
     <fragment
@@ -73,4 +67,13 @@
         android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.DownloadFragment"
         android:label="fragment_download"
         tools:layout="@layout/fragment_download" />
+    <fragment
+        android:id="@+id/picturesFragment"
+        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.PicturesFragment"
+        android:label="fragment_pictures"
+        tools:layout="@layout/fragment_pictures" >
+        <action
+            android:id="@+id/action_picturesFragment_to_descriptionFragment"
+            app:destination="@id/descriptionFragment" />
+    </fragment>
 </navigation>

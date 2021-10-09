@@ -1,31 +1,30 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneBrandsAdapter
 import com.nomanim.bax.databinding.FragmentBrandsBinding
-import com.nomanim.bax.retrofit.builder.PhoneBrandsApi
-import com.nomanim.bax.retrofit.listModels.PhoneBrandsList
 import com.nomanim.bax.retrofit.models.ModelPhoneBrands
+import com.nomanim.bax.room.database.RoomDB
 import com.nomanim.bax.ui.activities.MainActivity
+import com.nomanim.bax.ui.other.BaseCoroutineScope
 import com.nomanim.bax.ui.other.clearTextWhenClickClear
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
+class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
 
     private var _binding: FragmentBrandsBinding? = null
     private val binding get() = _binding!!
@@ -35,44 +34,26 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
 
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
 
-        binding.searchPhoneBrands.clearTextWhenClickClear()
         onBackPressed()
-        getBrandNamesWithRetrofit()
+        getBrandNamesWithRoom()
         binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
+        binding.closeActivity.setOnClickListener { intentToMainActivity() }
+        binding.searchPhoneBrands.clearTextWhenClickClear()
 
         return binding.root
     }
 
 
-    private fun getBrandNamesWithRetrofit() {
+    private fun getBrandNamesWithRoom() {
 
-        val phoneService = PhoneBrandsApi.builder.getData()
-        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
-            override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
+        launch {
 
-                binding.brandsProgressBar.visibility = View.INVISIBLE
-
-                if (response != null) {
-
-                    try {
-
-                        val model = ModelPhoneBrands("0","Other")
-                        phoneBrands.add(model)
-
-                        phoneBrands = response.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
-                        setBrandsRecyclerView(phoneBrands)
-                        searchInsidePhoneModels()
-
-                    }catch (e: Exception) { context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_LONG).show() } }
-                }
-            }
-
-            override fun onFailure(call: Call<PhoneBrandsList>, t: Throwable) {
-
-                binding.brandsProgressBar.visibility = View.INVISIBLE
-            }
-
-        })
+            val database = RoomDB(requireContext()).getDataFromRoom()
+            phoneBrands = database.getBrandNamesFromDb() as ArrayList<ModelPhoneBrands>
+            setBrandsRecyclerView(phoneBrands)
+            binding.brandsProgressBar.visibility = View.INVISIBLE
+            searchInsidePhoneModels()
+        }
     }
 
     private fun searchInsidePhoneModels() {
@@ -88,16 +69,17 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
                     (list.brandName.lowercase().contains(text.toString().lowercase())) } as ArrayList<ModelPhoneBrands>
 
                 setBrandsRecyclerView(listAfterSearch)
+                binding.brandsProgressBar.visibility = View.INVISIBLE
             }
         })
     }
 
     private fun setBrandsRecyclerView(list: ArrayList<ModelPhoneBrands>) {
 
-        val brv = binding.brandsRecyclerView
-        brv.isNestedScrollingEnabled = false
         context?.let {
 
+            val brv = binding.brandsRecyclerView
+            brv.isNestedScrollingEnabled = false
             brv.layoutManager = LinearLayoutManager(it)
             brv.setHasFixedSize(true)
             val adapter = PhoneBrandsAdapter(it,list,this@BrandsFragment)
@@ -120,22 +102,21 @@ class BrandsFragment : Fragment(),PhoneBrandsAdapter.Listener {
         val intent = Intent(activity,MainActivity::class.java)
         activity?.finish()
         activity?.startActivity(intent)
-
     }
 
     override fun onCardViewClickListener(brandId: String, brandName: String) {
 
         try {
 
-            val bundle = Bundle()
-            bundle.putString("brandId",brandId)
-            bundle.putString("brandName",brandName)
-            bundle.putBundle("brandsBundle",bundle)
+            val sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+            val editor = sharedPref?.edit()
+            editor?.putString("phoneBrandName",brandName)
+            editor?.putString("phoneBrandId",brandId)
+            editor?.apply()
 
-            findNavController().navigate(R.id.action_brandsFragment_to_modelsFragment,bundle)
+            findNavController().navigate(R.id.action_brandsFragment_to_modelsFragment)
 
-        }catch (e: Exception) { context?.let { Toast.makeText(it,"2 item clicked",Toast.LENGTH_SHORT).show() } }
-
+        }catch (e: Exception) { }
     }
 
 }

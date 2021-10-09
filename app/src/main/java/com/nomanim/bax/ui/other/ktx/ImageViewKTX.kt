@@ -5,16 +5,14 @@ import android.widget.ImageView
 import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.nomanim.bax.R
-import com.squareup.picasso.Picasso
-
 
 fun ImageView.downloadImageWithPicasso(uri: String) {
 
-    Picasso
+    /*Picasso
         .get()
         .load(uri.toUri())
         .placeholder(R.drawable.im_whenloadingpictures)
-        .into(this)
+        .into(this)*/
 }
 
 fun ImageView.downloadImageWithGlide(view: View,uri: String) {
@@ -23,5 +21,6 @@ fun ImageView.downloadImageWithGlide(view: View,uri: String) {
         .with(view)
         .load(uri.toUri())
         .centerCrop()
+        .placeholder(R.drawable.im_whenloadingpictures)
         .into(this)
 }

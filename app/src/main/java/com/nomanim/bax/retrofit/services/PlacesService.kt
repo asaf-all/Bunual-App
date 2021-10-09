@@ -1,4 +1,4 @@
-package com.nomanim.bax.retrofit.service
+package com.nomanim.bax.retrofit.services
 
 import com.nomanim.bax.retrofit.models.ModelPlaces
 import io.reactivex.Single

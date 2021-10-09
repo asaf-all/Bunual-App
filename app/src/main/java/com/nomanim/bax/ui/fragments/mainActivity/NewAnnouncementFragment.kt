@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestoreSettings
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentNewAnnouncementBinding
 import com.nomanim.bax.models.ModelAnnouncement
@@ -35,9 +34,12 @@ class NewAnnouncementFragment : Fragment() {
 
         if (auth.currentUser != null) {
 
-            /*val intent = Intent(activity,NewAnnouncementActivity::class.java)
+            val intent = Intent(activity, NewAnnouncementActivity::class.java)
             activity?.finish()
-            activity?.startActivity(intent)*/
+            activity?.startActivity(intent)
+
+                /*val imagesList = ArrayList<String>()
+            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/no3210b.gif")
 
                 val modelPhone = ModelPhone("Samsung","galaxy a71","423 AZN","purple"
                 ,"64 GB","4 GB","used","no",false)
@@ -46,7 +48,7 @@ class NewAnnouncementFragment : Fragment() {
 
             val modelUser = ModelUser("randomName","randomNumber",modelPlaces)
 
-            val modelAnnouncement = ModelAnnouncement("","https://fdn2.gsmarena.com/vv/bigpic/no3210b.gif","randomDescription"
+            val modelAnnouncement = ModelAnnouncement("",imagesList,"randomDescription"
                 ,"524", Timestamp.now(),"124",modelPhone,modelUser)
 
             firestore = FirebaseFirestore.getInstance()
@@ -55,7 +57,7 @@ class NewAnnouncementFragment : Fragment() {
 
                 Toast.makeText(requireContext(),"Added",Toast.LENGTH_SHORT).show()
 
-            }
+            }*/
 
         }else { findNavController().navigate(R.id.action_newAnnouncementFragment_to_registrationFragment) }
 

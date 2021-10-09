@@ -21,6 +21,7 @@ android {
 
     buildFeatures {
         viewBinding true
+        dataBinding true
     }
 
     buildTypes {
@@ -60,8 +61,16 @@ dependencies {
 
     //navigation component
     def nav_version = "2.3.5"
-    implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
-    implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    //room
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'android.arch.persistence.room:runtime:1.1.1'
 
     //firebase
     implementation platform('com.google.firebase:firebase-bom:28.3.1')
@@ -85,10 +94,14 @@ dependencies {
     //third party libraries
     implementation 'io.grpc:grpc-okhttp:1.41.0' //okHTTP
     implementation 'com.hbb20:ccp:2.5.4'  //country code picker
-    implementation 'com.squareup.picasso:picasso:2.71828'  //picasso for load images from internet
+    //implementation 'com.squareup.picasso:picasso:2.71828'  picasso for load images from internet
     implementation 'com.github.bumptech.glide:glide:4.12.0'  //glide for load images from internet
     kapt 'com.github.bumptech.glide:compiler:4.12.0'
-    //implementation 'com.github.technolifestyle:imageslider:1.5.6'
+    implementation 'io.github.ParkSangGwon:tedimagepicker:1.2.4'  //multi image picker
+    implementation 'com.github.smarteist:autoimageslider:1.4.0'  //image slider
+
+
+
 
 
 

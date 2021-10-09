@@ -16,12 +16,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.VerticalOrderAdapter
+import com.nomanim.bax.adapters.AllPhonesAdapter
 import com.nomanim.bax.databinding.FragmentProfileBinding
 import com.nomanim.bax.models.ModelAnnouncement
 import com.nomanim.bax.ui.other.getDataFromFireStore
 
-class ProfileFragment : Fragment(),VerticalOrderAdapter.Listener {
+class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
@@ -29,7 +29,7 @@ class ProfileFragment : Fragment(),VerticalOrderAdapter.Listener {
     private lateinit var firestore: FirebaseFirestore
     private var currentUser: FirebaseUser? = null
     private var announcements = ArrayList<ModelAnnouncement>()
-    private lateinit var recyclerViewAdapter: VerticalOrderAdapter
+    private lateinit var recyclerViewAdapter: AllPhonesAdapter
     private lateinit var lastValue: QuerySnapshot
     private var announcementsAreOver = false
 
@@ -125,7 +125,7 @@ class ProfileFragment : Fragment(),VerticalOrderAdapter.Listener {
         recyclerView.setHasFixedSize(true)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerViewAdapter = VerticalOrderAdapter(context,announcements,this@ProfileFragment)
+        recyclerViewAdapter = AllPhonesAdapter(context,announcements,this@ProfileFragment)
         recyclerView.adapter = recyclerViewAdapter
     }
 

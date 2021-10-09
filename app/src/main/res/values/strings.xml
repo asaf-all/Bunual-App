@@ -34,6 +34,7 @@
     <string name="price">Price</string>
     <string name="name">Name</string>
     <string name="phone_number">Phone number</string>
+    <string name="similar_announcements">Similar announcements</string>
     <string name="by_agreement">By agreement</string>
     <string name="more_reviews">More reviews</string>
     <string name="as_spare_part">As a spare part</string>
