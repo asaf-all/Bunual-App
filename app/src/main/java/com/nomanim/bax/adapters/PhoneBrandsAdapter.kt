@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
 import com.nomanim.bax.retrofit.models.ModelPhoneBrands
+import com.thekhaeng.pushdownanim.PushDownAnim
 
 class PhoneBrandsAdapter (val context: Context, private val list: ArrayList<ModelPhoneBrands>, val listener: Listener)
     : RecyclerView.Adapter<PhoneBrandsAdapter.Holder>() {
@@ -23,9 +24,10 @@ class PhoneBrandsAdapter (val context: Context, private val list: ArrayList<Mode
 
             binding.brandOrModelName.text = list[position].brandName
             binding.modelImageView.visibility = View.INVISIBLE
-            binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(list[position].id,list[position].brandName) }
+            PushDownAnim.setPushDownAnimTo(binding.modelOrBrandCardView).setOnClickListener {
 
-
+                listener.onCardViewClickListener(list[position].id,list[position].brandName)
+            }
         }
     }
 

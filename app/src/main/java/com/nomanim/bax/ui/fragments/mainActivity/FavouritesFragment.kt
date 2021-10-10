@@ -35,8 +35,15 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
         firestore = FirebaseFirestore.getInstance()
         currentUser = auth.currentUser
 
+        binding.noDataImageView.visibility = View.INVISIBLE
+        binding.noDataTextView.visibility = View.INVISIBLE
+
         if (currentUser != null) { getFavouritesPhonesFromFireStore() }
-        else { findNavController().navigate(R.id.action_favouritesFragment_to_registrationFragment) }
+        else {
+
+            binding.noDataImageView.visibility = View.VISIBLE
+            binding.noDataTextView.visibility = View.VISIBLE
+        }
 
         return binding.root
     }
@@ -69,6 +76,8 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
             }else {
 
                 binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
+                binding.noDataImageView.visibility = View.VISIBLE
+                binding.noDataTextView.visibility = View.VISIBLE
             }
         }.addOnFailureListener {
 

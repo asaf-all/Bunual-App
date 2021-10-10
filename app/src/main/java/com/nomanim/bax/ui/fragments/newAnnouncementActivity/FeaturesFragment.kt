@@ -1,54 +1,35 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bax.R
-import com.nomanim.bax.adapters.ColorsAdapter
-import com.nomanim.bax.adapters.RamsAdapter
-import com.nomanim.bax.adapters.StoragesAdapter
 import com.nomanim.bax.databinding.FragmentFeaturesBinding
-import com.nomanim.bax.databinding.LayoutBottomSheetPhoneColorBinding
-import com.nomanim.bax.databinding.LayoutBottomSheetPhoneRamBinding
-import com.nomanim.bax.databinding.LayoutBottomSheetPhoneStorageBinding
+import com.nomanim.bax.ui.other.ktx.showDialogOfCloseActivity
+import com.nomanim.bax.ui.other.ktx.showFeaturesBottomSheet
 
-class FeaturesFragment : Fragment(),StoragesAdapter.Listener, RamsAdapter.Listener, ColorsAdapter.Listener {
+class FeaturesFragment : Fragment() {
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
-    private lateinit var storageBottomSheetBinding: LayoutBottomSheetPhoneStorageBinding
-    private lateinit var ramBottomSheetBinding: LayoutBottomSheetPhoneRamBinding
-    private lateinit var colorBottomSheetBinding: LayoutBottomSheetPhoneColorBinding
     private val storageList = ArrayList<String>()
     private val ramList = ArrayList<String>()
     private val colorList = ArrayList<String>()
-    private lateinit var storageBottomSheet: BottomSheetDialog
-    private lateinit var ramBottomSheet: BottomSheetDialog
-    private lateinit var colorBottomSheet: BottomSheetDialog
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentFeaturesBinding.inflate(inflater,container,false)
 
-        storageBottomSheetBinding = LayoutBottomSheetPhoneStorageBinding.inflate(inflater)
-        ramBottomSheetBinding = LayoutBottomSheetPhoneRamBinding.inflate(inflater)
-        colorBottomSheetBinding = LayoutBottomSheetPhoneColorBinding.inflate(inflater)
-
-        context?.let { context ->
-
-            storageBottomSheet = BottomSheetDialog(context)
-            ramBottomSheet = BottomSheetDialog(context)
-            colorBottomSheet = BottomSheetDialog(context)
-        }
+        binding.featuresToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        binding.featuresNextToolbarButton.setOnClickListener { navigateToPriceFragment(it) }
+        binding.featuresNextButton.setOnClickListener { navigateToPriceFragment(it) }
+        binding.featuresCancelButton.setOnClickListener { showDialogOfCloseActivity() }
 
         storageList.add("8 GB")
         storageList.add("16 GB")
@@ -62,100 +43,20 @@ class FeaturesFragment : Fragment(),StoragesAdapter.Listener, RamsAdapter.Listen
         colorList.add("Blue")
         colorList.add("Yellow")
 
-
         binding.chooseStorageCardView.setOnClickListener {
 
-            setBottomSheet(storageBottomSheetBinding.root,storageBottomSheet)
-            setStorageRecyclerView()
-        }
+            showFeaturesBottomSheet(storageList,binding.storageTextView,R.string.choose_phone_storage) }
+
         binding.chooseRamCardView.setOnClickListener {
 
-            setBottomSheet(ramBottomSheetBinding.root,ramBottomSheet)
-            setRamRecyclerView()
-        }
+            showFeaturesBottomSheet(ramList,binding.ramTextView,R.string.choose_phone_ram) }
+
         binding.chooseColorCardView.setOnClickListener {
 
-            setBottomSheet(colorBottomSheetBinding.root,colorBottomSheet)
-            setColorRecyclerView()
-        }
-
-        onBackPressed()
-        binding.featuresToolbar.setNavigationOnClickListener { onBackPressed() }
-        binding.featuresNextToolbarButton.setOnClickListener { navigateToPriceFragment(it) }
-        binding.featuresNextButton.setOnClickListener { navigateToPriceFragment(it) }
+            showFeaturesBottomSheet(colorList,binding.colorTextView,R.string.choose_phone_color) }
 
         return binding.root
     }
-
-    private fun setBottomSheet(bottomSheetView:View,bottomSheetDialog: BottomSheetDialog) {
-
-        if (bottomSheetView.parent != null) {
-
-            (bottomSheetView.parent as ViewGroup).removeAllViews()
-        }
-
-        bottomSheetDialog.setContentView(bottomSheetView)
-        bottomSheetDialog.show()
-    }
-
-    private fun setStorageRecyclerView() {
-
-        val recyclerView = storageBottomSheetBinding.storageRecyclerView
-        recyclerView.isNestedScrollingEnabled = false
-        recyclerView.setHasFixedSize(true)
-        context?.let {
-
-            recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = StoragesAdapter(storageList,this@FeaturesFragment)
-            recyclerView.adapter = adapter
-        }
-    }
-
-    private fun setRamRecyclerView() {
-
-        val recyclerView = ramBottomSheetBinding.ramRecyclerView
-        recyclerView.isNestedScrollingEnabled = false
-        recyclerView.setHasFixedSize(true)
-        context?.let {
-
-            recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = RamsAdapter(ramList,this@FeaturesFragment)
-            recyclerView.adapter = adapter
-        }
-    }
-
-    private fun setColorRecyclerView() {
-
-        val recyclerView = colorBottomSheetBinding.colorRecyclerView
-        recyclerView.isNestedScrollingEnabled = false
-        recyclerView.setHasFixedSize(true)
-        context?.let {
-
-            recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = ColorsAdapter(colorList,this@FeaturesFragment)
-            recyclerView.adapter = adapter
-        }
-    }
-
-    override fun setOnStorageClickListener(buttonFinishText: String) {
-
-        binding.storageTextView.text = buttonFinishText
-        storageBottomSheet.dismiss()
-    }
-
-    override fun setOnRamClickListener(buttonFinishText: String) {
-
-        binding.ramTextView.text = buttonFinishText
-        ramBottomSheet.dismiss()
-    }
-
-    override fun setOnColorClickListener(buttonFinishText: String) {
-
-        binding.colorTextView.text = buttonFinishText
-        colorBottomSheet.dismiss()
-    }
-
-
 
     private fun navigateToPriceFragment(view: View) {
 
@@ -172,24 +73,15 @@ class FeaturesFragment : Fragment(),StoragesAdapter.Listener, RamsAdapter.Listen
 
         }else {
 
-            val bundle = arguments?.getBundle("descriptionBundle")
-            bundle?.putString("storageCapacity",storageCapacity)
-            bundle?.putString("ramCapacity",ramCapacity)
-            bundle?.putString("color",color)
-            bundle?.putBundle("featuresBundle",bundle)
+            val sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+            val editor = sharedPref?.edit()
+            editor?.putString("storageCapacity",storageCapacity)
+            editor?.putString("ramCapacity",ramCapacity)
+            editor?.putString("color",color)
+            editor?.apply()
 
-            findNavController().navigate(R.id.action_featuresFragment_to_priceFragment,bundle)
+            findNavController().navigate(R.id.action_featuresFragment_to_priceFragment)
         }
-    }
-
-    private fun onBackPressed() {
-
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-
-
-            }
-        })
     }
 
 }

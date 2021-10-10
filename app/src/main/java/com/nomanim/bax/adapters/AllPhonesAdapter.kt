@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewAllPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
 import com.nomanim.bax.ui.other.downloadImageWithGlide
+import com.thekhaeng.pushdownanim.PushDownAnim
 
 class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
     : RecyclerView.Adapter<AllPhonesAdapter.Holder>() {
@@ -29,7 +30,10 @@ class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncem
             //val announcementUploadingTime = com.google.firebase.Timestamp.now().toDate()
             //holder.allPhonesTime.text = announcementUploadingTime.toString()
             binding.announcementImageView.downloadImageWithGlide(binding.root,list[position].image[0])
-            binding.verticalLinearLayout.setOnClickListener { listener.setOnClickVerticalAnnouncement() }
+            PushDownAnim.setPushDownAnimTo(binding.verticalLinearLayout).setOnClickListener {
+
+                listener.setOnClickVerticalAnnouncement()
+            }
 
         }
     }

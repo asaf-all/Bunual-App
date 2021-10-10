@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
@@ -21,6 +19,7 @@ import com.nomanim.bax.room.database.RoomDB
 import com.nomanim.bax.ui.activities.MainActivity
 import com.nomanim.bax.ui.other.BaseCoroutineScope
 import com.nomanim.bax.ui.other.clearTextWhenClickClear
+import com.nomanim.bax.ui.other.ktx.showDialogOfCloseActivity
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -35,14 +34,13 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
 
         onBackPressed()
-        getBrandNamesWithRoom()
-        binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
-        binding.closeActivity.setOnClickListener { intentToMainActivity() }
         binding.searchPhoneBrands.clearTextWhenClickClear()
+        binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
+        binding.closeActivityInBrandsFragment.setOnClickListener { showDialogOfCloseActivity() }
+        getBrandNamesWithRoom()
 
         return binding.root
     }
-
 
     private fun getBrandNamesWithRoom() {
 

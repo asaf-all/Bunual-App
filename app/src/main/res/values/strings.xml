@@ -34,6 +34,10 @@
     <string name="price">Price</string>
     <string name="name">Name</string>
     <string name="phone_number">Phone number</string>
+    <string name="no_data">No any data</string>
+    <string name="ok">OK</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="cancel">Cancel</string>
     <string name="similar_announcements">Similar announcements</string>
     <string name="by_agreement">By agreement</string>
     <string name="more_reviews">More reviews</string>
@@ -43,7 +47,8 @@
     <string name="no_delivery">No delivery</string>
     <string name="delivery_to_space">Delivery to space</string>
     <string name="subway_delivery">Subway delivery</string>
-    <string name="chat_fragment_text">It will be activated soon.\nDo not forget to follow the updates.\n(Profile -> Settings button -> Check new application version)</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="changes_will_canceled">If you press YES changes will be canceled!</string>
     <string name="favourites_announcement_limit">Favourites announcement limit is 10</string>
     <string name="filter_announcements">Filter Announcements</string>
     <string name="retrofit_exception">There was a problem loading data</string>
@@ -56,6 +61,7 @@
     <string name="enter_phone_description">Enter description</string>
     <string name="enter_phone_price">Enter price</string>
     <string name="send_sms_code">Send SMS code</string>
+    <string name="do_not_want_continue">Yes,I do not want continue</string>
     <string name="confirmation_code_will_sent_you">confirmation code will be sent to you</string>
     <string name="wait_for_sending_code">please wait while sending the code</string>
     <string name="send_code_again">send again</string>
@@ -75,7 +81,5 @@
     <string name="choose_place">Choose your place</string>
     <string name="all_phone_models">All phone models</string>
     <string name="newest_first">Newest first</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

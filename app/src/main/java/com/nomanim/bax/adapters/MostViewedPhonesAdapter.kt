@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewMostviewedPhonesBinding
 import com.nomanim.bax.models.ModelAnnouncement
 import com.nomanim.bax.ui.other.downloadImageWithGlide
+import com.thekhaeng.pushdownanim.PushDownAnim
 
 class MostViewedPhonesAdapter(private val list: ArrayList<ModelAnnouncement>, val listener: Listener)
     : RecyclerView.Adapter<MostViewedPhonesAdapter.Holder>() {
@@ -23,8 +24,10 @@ class MostViewedPhonesAdapter(private val list: ArrayList<ModelAnnouncement>, va
             binding.mostViewedPhonesName.text = list[position].phone.brand
             binding.mostViewedPhonesViews.text = list[position].numberOfViews
             binding.phoneImage.downloadImageWithGlide(binding.root,list[position].image[0])
-            binding.mostViewedPhonesLinearLayout.setOnClickListener { listener.onMostViewedPhoneClick() }
+            PushDownAnim.setPushDownAnimTo(binding.mostViewedPhonesLinearLayout).setOnClickListener {
 
+                listener.onMostViewedPhoneClick()
+            }
         }
     }
 

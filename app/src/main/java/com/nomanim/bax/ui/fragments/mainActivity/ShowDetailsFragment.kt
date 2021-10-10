@@ -5,13 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nomanim.bax.adapters.ImagesSliderAdapter
 import com.nomanim.bax.adapters.SimilarPhonesAdapter
 import com.nomanim.bax.databinding.FragmentShowDetailsBinding
 import com.nomanim.bax.models.ModelAnnouncement
 import com.nomanim.bax.ui.other.getDataFromFireStore
+import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
+import com.smarteist.autoimageslider.SliderAnimations
 
 
 class ShowDetailsFragment : Fragment(), SimilarPhonesAdapter.Listener {
@@ -26,11 +28,23 @@ class ShowDetailsFragment : Fragment(), SimilarPhonesAdapter.Listener {
         _binding = FragmentShowDetailsBinding.inflate(inflater)
         firestore = FirebaseFirestore.getInstance()
 
+        setImagesInSlider()
         getSimilarPhonesFromFireStore()
 
-
-
         return binding.root
+    }
+
+    private fun setImagesInSlider() {
+
+        val bundle = arguments?.getBundle("announcementData")
+        val imagesList = bundle?.getStringArrayList("images") as ArrayList<String>
+
+        val imageSlider = binding.imageSlider
+        imageSlider.setSliderAdapter(ImagesSliderAdapter(imagesList))
+        imageSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)
+        imageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+        imageSlider.startAutoCycle()
+
     }
 
     private fun getSimilarPhonesFromFireStore() {
@@ -55,8 +69,6 @@ class ShowDetailsFragment : Fragment(), SimilarPhonesAdapter.Listener {
         }
     }
 
-    override fun onSimilarPhoneClick() {
-
-    }
+    override fun onSimilarPhoneClick() { }
 
 }

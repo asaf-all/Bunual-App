@@ -3,13 +3,15 @@ package com.nomanim.bax.ui.fragments.mainActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentSplashScreenBinding
@@ -36,48 +38,68 @@ class SplashScreenFragment : BaseCoroutineScope() {
     private var _binding: FragmentSplashScreenBinding? = null
     private val binding get() = _binding!!
     private lateinit var firestore: FirebaseFirestore
-    private var activeApiVersionCode: String = "1"
     private var sharedPref: SharedPreferences? = null
     private val compositeDisposable = io.reactivex.disposables.CompositeDisposable()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentSplashScreenBinding.inflate(inflater)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         firestore = FirebaseFirestore.getInstance()
-
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.INVISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
         firestore.collection("Important Data").document("api_version")
             .get().addOnSuccessListener { value ->
 
-                activeApiVersionCode = value.get("version_code").toString()
-                checkApiVersionCodeForLoadData()
+                val activeApiVersionCode = value.get("version_code").toString()
+                checkApiVersionCodeForLoadData(activeApiVersionCode)
+
+            }.addOnFailureListener {
+
+                Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
             }
+
+        navigateIfProcessTakesLongTime()
 
         return binding.root
     }
 
-    private fun checkApiVersionCodeForLoadData() {
+    private fun checkApiVersionCodeForLoadData(activeApiVersionCode: String?) {
 
         val latestApiVersionCode = sharedPref?.getString("api_version_code","1")
 
         if (activeApiVersionCode == latestApiVersionCode) {
 
-            findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+            lifecycleScope.launchWhenResumed {
 
+                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+            }
         }else {
 
-            addNewApiVersionCodeToSharedPref()
+            addNewApiVersionCodeToSharedPref(activeApiVersionCode)
             getBrandNamesWithRetrofit()
         }
     }
 
-    private fun addNewApiVersionCodeToSharedPref() {
+    private fun addNewApiVersionCodeToSharedPref(activeApiVersionCode: String?) {
 
         val editor = sharedPref?.edit()
         editor?.putString("api_version_code",activeApiVersionCode)
         editor?.apply()
+    }
+
+    private fun navigateIfProcessTakesLongTime() {
+
+        object : CountDownTimer(20000,1000) {
+
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+                Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
+                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+            }
+        }
     }
 
     private fun getBrandNamesWithRetrofit() {

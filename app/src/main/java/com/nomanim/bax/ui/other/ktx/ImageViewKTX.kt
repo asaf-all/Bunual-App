@@ -6,7 +6,7 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.nomanim.bax.R
 
-fun ImageView.downloadImageWithPicasso(uri: String) {
+private fun ImageView.downloadImageWithPicasso(uri: String) {
 
     /*Picasso
         .get()

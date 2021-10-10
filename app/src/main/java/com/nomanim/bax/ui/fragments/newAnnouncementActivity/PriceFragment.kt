@@ -1,5 +1,6 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentPriceBinding
+import com.nomanim.bax.ui.other.ktx.showDialogOfCloseActivity
 
 class PriceFragment : Fragment() {
 
@@ -23,14 +25,11 @@ class PriceFragment : Fragment() {
 
         _binding = FragmentPriceBinding.inflate(inflater,container,false)
 
-        binding.maxPrice.visibility = View.INVISIBLE
-        binding.minPrice.visibility = View.INVISIBLE
-        binding.view3.visibility = View.INVISIBLE
-
         binding.byAgreementSwitch.setOnClickListener { checkSwitchStatus() }
         binding.priceToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         binding.priceNextToolbarButton.setOnClickListener { navigateToNextFragment(it) }
         binding.priceNextButton.setOnClickListener { navigateToNextFragment(it) }
+        binding.priceCancelButton.setOnClickListener { showDialogOfCloseActivity() }
 
         return binding.root
     }
@@ -41,40 +40,30 @@ class PriceFragment : Fragment() {
 
             radioButtonActive = false
             binding.price.visibility = View.VISIBLE
-            binding.maxPrice.visibility = View.INVISIBLE
-            binding.minPrice.visibility = View.INVISIBLE
-            binding.view3.visibility = View.INVISIBLE
 
         }else {
 
             radioButtonActive = true
             binding.price.visibility = View.INVISIBLE
-            binding.maxPrice.visibility = View.VISIBLE
-            binding.minPrice.visibility = View.VISIBLE
-            binding.view3.visibility = View.VISIBLE
-
         }
     }
 
     private fun navigateToNextFragment(view: View) {
 
-        bundle = arguments?.getBundle("featuresBundle")
+        val sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        val editor = sharedPref?.edit()
 
         if (binding.priceEditText.visibility == View.VISIBLE) {
 
-            bundle?.putString("price",binding.priceEditText.text.toString() + " AZN")
+            editor?.putString("price",binding.priceEditText.text.toString() + " AZN")
             checkPriceEditTextAndNavigate(view)
 
         }else {
 
-            val minPrice = binding.minPriceEditText.text.toString()
-            val maxPrice = binding.maxPriceEditText.text.toString()
-            val agreementPrice = "$minPrice-$maxPrice AZN"
-            bundle?.putString("price",agreementPrice)
-            checkAgreementAndNavigate(view,minPrice,maxPrice)
+            editor?.putInt("priceWithAgreement",R.string.by_agreement)
         }
 
-        bundle?.putBundle("priceBundle",bundle)
+        editor?.apply()
     }
 
     private fun checkPriceEditTextAndNavigate(view: View) {
@@ -82,17 +71,7 @@ class PriceFragment : Fragment() {
         if (TextUtils.isEmpty(binding.priceEditText.text.toString())) {
 
             Snackbar.make(view,getString(R.string.fill_in_all),Snackbar.LENGTH_SHORT).show()
-        }else {
 
-            findNavController().navigate(R.id.action_priceFragment_to_userFragment,bundle)
-        }
-    }
-
-    private fun checkAgreementAndNavigate(view: View, minEditText: String, maxEditText: String) {
-
-        if (TextUtils.isEmpty(minEditText) || TextUtils.isEmpty(maxEditText)) {
-
-            Snackbar.make(view,getString(R.string.fill_in_all),Snackbar.LENGTH_SHORT).show()
         }else {
 
             findNavController().navigate(R.id.action_priceFragment_to_userFragment,bundle)

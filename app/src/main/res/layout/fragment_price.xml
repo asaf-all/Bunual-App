@@ -83,57 +83,8 @@
             android:inputType="number" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/minPrice"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="37dp"
-        android:hint="min"
-        app:layout_constraintStart_toStartOf="@+id/byAgreementSwitch"
-        app:layout_constraintTop_toBottomOf="@+id/byAgreementSwitch">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/minPriceEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/maxPrice"
-
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="14dp"
-        android:hint="max"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/view3"
-        app:layout_constraintTop_toTopOf="@+id/minPrice">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/maxPriceEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="18dp"
-        android:layout_height="2.5dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/view_search_edit_text"
-        android:backgroundTint="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/minPrice"
-        app:layout_constraintStart_toEndOf="@+id/minPrice"
-        app:layout_constraintTop_toTopOf="@+id/minPrice" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout18"
+        android:id="@+id/priceConstraintLayout2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -146,9 +97,9 @@
             android:id="@+id/priceNextButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="73dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="73dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/view_registration_button"
             android:backgroundTint="@color/main"
@@ -158,11 +109,39 @@
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/priceGuideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/priceCancelButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/view_registration_button"
+            android:backgroundTint="@color/red"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/priceGuideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/priceGuideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.38" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/byAgreementSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

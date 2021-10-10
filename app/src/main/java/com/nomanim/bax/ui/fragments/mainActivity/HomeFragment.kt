@@ -1,6 +1,5 @@
 package com.nomanim.bax.ui.fragments.mainActivity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -39,6 +38,7 @@ class HomeFragment : Fragment(),MostViewedPhonesAdapter.Listener,AllPhonesAdapte
     private lateinit var lastValue: QuerySnapshot
     private var announcementsAreOver = false
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
@@ -59,15 +59,6 @@ class HomeFragment : Fragment(),MostViewedPhonesAdapter.Listener,AllPhonesAdapte
         for (text in resources.getStringArray(R.array.sort_data_texts) ) {
             sortTexts.add(text)
         }
-    }
-
-    private fun addOrUpdateLastRefreshTime() {
-
-        val sp = activity?.getSharedPreferences("sharedPreferences", Context.MODE_PRIVATE)
-        val editor = sp?.edit()
-        editor?.putString("refreshTime",System.currentTimeMillis().toString())
-        editor?.apply()
-
     }
 
     private fun getMostViewedPhonesFromFireStore() {
@@ -156,12 +147,12 @@ class HomeFragment : Fragment(),MostViewedPhonesAdapter.Listener,AllPhonesAdapte
 
     private fun setVerticalRecyclerView() {
 
-        val vrv = binding.verticalRecyclerView
-        vrv.isNestedScrollingEnabled = false
-        vrv.setHasFixedSize(true)
-        vrv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         context?.let {
 
+            val vrv = binding.verticalRecyclerView
+            vrv.isNestedScrollingEnabled = false
+            vrv.setHasFixedSize(true)
+            vrv.layoutManager = StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
             verticalRecyclerViewAdapter = AllPhonesAdapter(it,allPhones,this@HomeFragment)
             vrv.adapter = verticalRecyclerViewAdapter
         }
@@ -183,7 +174,18 @@ class HomeFragment : Fragment(),MostViewedPhonesAdapter.Listener,AllPhonesAdapte
         activity?.findViewById<NestedScrollView>(R.id.nestedScrollView)?.visibility = View.GONE
         binding.detailsFragmentContainer.visibility = View.VISIBLE
 
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.detailsFragmentContainer,ShowDetailsFragment())?.commit()
+        val bundle = Bundle()
+        bundle.putStringArrayList("images",allPhones[0].image)
+        bundle.putBundle("announcementData",bundle)
+        val detailsFragment = ShowDetailsFragment()
+        detailsFragment.arguments = bundle
+
+
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.detailsFragmentContainer,detailsFragment)
+            ?.commit()
+
         onBackPressInDetailsScreen()
     }
 

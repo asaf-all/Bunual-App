@@ -22,9 +22,6 @@
         <action
             android:id="@+id/action_modelsFragment_to_picturesFragment"
             app:destination="@id/picturesFragment" />
-        <action
-            android:id="@+id/action_modelsFragment_to_descriptionFragment"
-            app:destination="@id/descriptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/descriptionFragment"

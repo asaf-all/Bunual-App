@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.storage.FirebaseStorage
+import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bax.databinding.FragmentDownloadBinding
-import com.nomanim.bax.ui.other.ProgressBarInAlertDialog
 import java.util.*
 
 class DownloadFragment : Fragment() {
@@ -22,10 +22,7 @@ class DownloadFragment : Fragment() {
 
         _binding = FragmentDownloadBinding.inflate(inflater)
 
-        context?.let { ProgressBarInAlertDialog(it).showAlertDialog() }
-
-        val bundle = arguments?.getBundle("priceBundle")
-
+        loadingProgressBarInDialog()
 
         return binding.root
     }
@@ -41,5 +38,17 @@ class DownloadFragment : Fragment() {
             //navigateToNextFragment()
         }
 
+    }
+
+    private fun loadingProgressBarInDialog() {
+
+        KProgressHUD.create(requireContext())
+            .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+            .setLabel("Please wait")
+            .setDetailsLabel("Downloading data")
+            .setCancellable(true)
+            .setAnimationSpeed(2)
+            .setDimAmount(0.3f)
+            .show()
     }
 }

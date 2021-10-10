@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bax.databinding.LayoutCardViewPhoneModelsBinding
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
 import com.nomanim.bax.ui.other.downloadImageWithGlide
+import com.thekhaeng.pushdownanim.PushDownAnim
 
 class PhoneModelsAdapter (val context: Context, private val list: ArrayList<ModelPhoneModels>, val listener: Listener)
     : RecyclerView.Adapter<PhoneModelsAdapter.Holder>() {
@@ -24,8 +25,10 @@ class PhoneModelsAdapter (val context: Context, private val list: ArrayList<Mode
 
             binding.brandOrModelName.text = list[position].modelName
             binding.modelImageView.downloadImageWithGlide(itemView,list[position].modelImage)
-            binding.modelOrBrandCardView.setOnClickListener { listener.onCardViewClickListener(list[position].modelName) }
+            PushDownAnim.setPushDownAnimTo(binding.modelOrBrandCardView).setOnClickListener {
 
+                listener.onCardViewClickListener(list[position].modelName)
+            }
         }
     }
 

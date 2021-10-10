@@ -2,31 +2,22 @@ package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bax.R
 import com.nomanim.bax.adapters.PhoneModelsAdapter
 import com.nomanim.bax.databinding.FragmentModelsBinding
-import com.nomanim.bax.models.ModelImages
-import com.nomanim.bax.retrofit.builders.PhoneModelsApi
-import com.nomanim.bax.retrofit.listModels.PhoneModelsList
 import com.nomanim.bax.retrofit.models.ModelPhoneModels
 import com.nomanim.bax.room.database.RoomDB
 import com.nomanim.bax.ui.other.BaseCoroutineScope
 import com.nomanim.bax.ui.other.clearTextWhenClickClear
-import gun0912.tedimagepicker.builder.TedImagePicker
-import gun0912.tedimagepicker.builder.type.MediaType
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
+import com.nomanim.bax.ui.other.ktx.showDialogOfCloseActivity
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -53,27 +44,28 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
         binding.searchPhoneModels.clearTextWhenClickClear()
         binding.modelsToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
+        binding.closeActivityInModelsFragment.setOnClickListener { showDialogOfCloseActivity() }
 
-        getPhoneIdFromSharedPref()
         getModelNamesFromRoom()
 
         return binding.root
-    }
-
-    private fun getPhoneIdFromSharedPref() {
-
-        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-        phoneBrandId = sharedPref?.getString("phoneBrandId","error")
     }
 
     private fun getModelNamesFromRoom() {
 
         launch {
 
+            getPhoneIdFromSharedPref()
             val database = RoomDB(requireContext()).getDataFromRoom()
             val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelPhoneModels>
             filterPhoneModelNames(phoneModelNames)
         }
+    }
+
+    private fun getPhoneIdFromSharedPref() {
+
+        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        phoneBrandId = sharedPref?.getString("phoneBrandId","error")
     }
 
     private fun filterPhoneModelNames(modelNames: ArrayList<ModelPhoneModels>) {

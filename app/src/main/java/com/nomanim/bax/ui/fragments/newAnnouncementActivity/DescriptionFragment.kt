@@ -1,22 +1,18 @@
 package com.nomanim.bax.ui.fragments.newAnnouncementActivity
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bax.R
 import com.nomanim.bax.databinding.FragmentDescriptionBinding
 import com.nomanim.bax.room.database.RoomDB
 import com.nomanim.bax.ui.other.BaseCoroutineScope
-import gun0912.tedimagepicker.util.ToastUtil
+import com.nomanim.bax.ui.other.ktx.showDialogOfCloseActivity
 import kotlinx.coroutines.launch
 
 class DescriptionFragment : BaseCoroutineScope() {
@@ -31,6 +27,7 @@ class DescriptionFragment : BaseCoroutineScope() {
         binding.descriptionToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
         binding.descriptionNextButton.setOnClickListener { checkEditTextAndNavigate(it) }
         binding.descriptionNextToolbarButton.setOnClickListener { checkEditTextAndNavigate(it) }
+        binding.descriptionCancelButton.setOnClickListener { showDialogOfCloseActivity() }
 
         launch {
 
