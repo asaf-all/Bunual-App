@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="app_name">Bax</string>
+    <string name="app_name">Bunual</string>
     <string name="all_announcements">All Announcements</string>  <!-- Don't change -->
 
     <string name="add_announcement">Add Announcement</string>
@@ -38,6 +38,7 @@
     <string name="ok">OK</string>
     <string name="dismiss">Dismiss</string>
     <string name="cancel">Cancel</string>
+    <string name="start">Start</string>
     <string name="similar_announcements">Similar announcements</string>
     <string name="by_agreement">By agreement</string>
     <string name="more_reviews">More reviews</string>
@@ -71,7 +72,7 @@
     <string name="select_phone_model">Select Model</string>
     <string name="select_phone_image">Select Image(s)</string>
     <string name="select_images_text">On the screen that opens, select all the photos you want to share and click choose</string>
-    <string name="permission_needed">Permission needed!</string>
+    <string name="you_must_login">You must create an account or log in for share announcement</string>
     <string name="fill_phone_features">Fill features</string>
     <string name="fill_in_all">Please fill in all</string>
     <string name="fill_information">Fill information</string>
@@ -81,5 +82,7 @@
     <string name="choose_place">Choose your place</string>
     <string name="all_phone_models">All phone models</string>
     <string name="newest_first">Newest first</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

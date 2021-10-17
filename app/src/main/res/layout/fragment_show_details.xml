@@ -40,7 +40,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:sliderAnimationDuration="500"
+                app:sliderAnimationDuration="300"
                 app:sliderAutoCycleDirection="back_and_forth"
                 app:sliderAutoCycleEnabled="false"
                 app:sliderIndicatorAnimationDuration="300"
@@ -51,8 +51,30 @@
                 app:sliderIndicatorRadius="2dp"
                 app:sliderIndicatorSelectedColor="@color/white"
                 app:sliderIndicatorUnselectedColor="@color/status_bar_color"
-                app:sliderScrollTimeInSec="2"
-                app:sliderStartAutoCycle="true" />
+                app:sliderScrollTimeInSec="3"
+                app:sliderStartAutoCycle="true" >
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/showDetailsBackButton"
+                    android:layout_width="50dp"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginTop="17dp"
+                    android:background="@drawable/view_back_button_layout"
+                    android:backgroundTint="@color/background_color_gray">
+
+                    <ImageView
+                        android:id="@+id/imageView6"
+                        android:layout_width="12dp"
+                        android:layout_height="11dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/back" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.smarteist.autoimageslider.SliderView>
 
             <TextView
                 android:id="@+id/textView13"

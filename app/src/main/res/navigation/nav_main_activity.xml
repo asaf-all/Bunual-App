@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.HomeFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -17,18 +17,16 @@
     </fragment>
     <fragment
         android:id="@+id/newAnnouncementFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.NewAnnouncementFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.NewAnnouncementFragment"
         android:label="fragment_new_announcement"
         tools:layout="@layout/fragment_new_announcement" >
         <action
-            android:id="@+id/action_newAnnouncementFragment_to_registrationFragment"
-            app:destination="@id/registrationFragment"
-            app:popUpTo="@id/newAnnouncementFragment"
-            app:popUpToInclusive="true" />
+            android:id="@+id/action_newAnnouncementFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/favouritesFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.FavouritesFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.FavouritesFragment"
         android:label="fragment_favourites"
         tools:layout="@layout/fragment_favourites" >
         <action
@@ -39,7 +37,7 @@
     </fragment>
     <fragment
         android:id="@+id/profileFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.ProfileFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" >
         <action
@@ -47,10 +45,13 @@
             app:destination="@id/registrationFragment"
             app:popUpTo="@id/profileFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_profileFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.RegistrationFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" >
         <action
@@ -59,22 +60,31 @@
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.SearchFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.SearchFragment"
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/showDetailsFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.ShowDetailsFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.ShowDetailsFragment"
         android:label="fragment_show_details"
-        tools:layout="@layout/fragment_show_details" />
+        tools:layout="@layout/fragment_show_details" >
+        <action
+            android:id="@+id/action_showDetailsFragment_to_showPicturesFragment"
+            app:destination="@id/showPicturesFragment" />
+    </fragment>
     <fragment
         android:id="@+id/splashScreenFragment"
-        android:name="com.nomanim.bax.ui.fragments.mainActivity.SplashScreenFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.SplashScreenFragment"
         android:label="fragment_splash_screen"
         tools:layout="@layout/fragment_splash_screen" >
         <action
             android:id="@+id/action_splashScreenFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/showPicturesFragment"
+        android:name="com.nomanim.bunual.ui.fragments.mainActivity.ShowPicturesFragment"
+        android:label="fragment_show_pictures"
+        tools:layout="@layout/fragment_show_pictures" />
 
 </navigation>

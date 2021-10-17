@@ -1,6 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.mainActivity.NewAnnouncementFragment"/>
+    tools:context=".ui.fragments.mainActivity.NewAnnouncementFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/buttonInNewAdsFragment"
+        android:layout_width="146dp"
+        android:layout_height="46dp"
+        android:layout_marginTop="22dp"
+        android:background="@drawable/view_registration_button"
+        android:backgroundTint="@color/yellow"
+        app:layout_constraintEnd_toEndOf="@+id/newAdsTextView"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/newAdsTextView"
+        app:layout_constraintTop_toBottomOf="@+id/newAdsTextView">
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
+            android:text="@string/start"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/newAdsTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="75dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="75dp"
+        android:gravity="center"
+        android:text="@string/you_must_login"
+        android:textSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/newAdsImageView" />
+
+    <ImageView
+        android:id="@+id/newAdsImageView"
+        android:layout_width="123dp"
+        android:layout_height="78dp"
+        android:layout_marginTop="96dp"
+        android:src="@drawable/im_locked"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

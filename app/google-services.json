@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "636233979207-4o2ei2c83kfu856j42krmm5nitbqgkou.apps.googleusercontent.com",
+          "client_id": "636233979207-0kpqhrm64hlifjh6c3jsr65a1nsnfh3m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.nomanim.bax",
-            "certificate_hash": "c7dbb3a4a7a12a5f1f8bdaf7afbd9dff5a868af8"
+            "certificate_hash": "e8941cfad5ba375d9ca73a716d557524fe53b3d7"
           }
         },
         {

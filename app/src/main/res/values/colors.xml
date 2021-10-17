@@ -10,6 +10,17 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF4343</color>
     <color name="green">#4CAF50</color>
+    <color name="yellow">#FFE500</color>
+
+    <array name="progressBarColors">
+        <item>@color/red</item>
+        <item>@color/green</item>
+        <item>@color/main</item>
+        <item>@color/black</item>
+        <item>@color/yellow</item>
+        <item>#FF5722</item>
+        <item>@color/white</item>
+    </array>
 
 
     <color name="background_color_gray">#F2F2F2</color>

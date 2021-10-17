@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/brandsFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.BrandsFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.BrandsFragment"
         android:label="@string/select_phone_brand"
         tools:layout="@layout/fragment_brands" >
         <action
@@ -16,61 +16,63 @@
     </fragment>
     <fragment
         android:id="@+id/modelsFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.ModelsFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.ModelsFragment"
         android:label="@string/select_phone_model"
         tools:layout="@layout/fragment_models" >
         <action
-            android:id="@+id/action_modelsFragment_to_picturesFragment"
-            app:destination="@id/picturesFragment" />
+            android:id="@+id/action_modelsFragment_to_descriptionFragment"
+            app:destination="@id/descriptionFragment" />
+        <argument
+            android:name="fromDescriptionFragment"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_modelsFragment_to_brandsFragment"
+            app:destination="@id/brandsFragment" />
     </fragment>
     <fragment
         android:id="@+id/descriptionFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.DescriptionFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.DescriptionFragment"
         android:label="fragment_description"
         tools:layout="@layout/fragment_description" >
         <action
             android:id="@+id/action_descriptionFragment_to_featuresFragment"
             app:destination="@id/featuresFragment" />
+        <action
+            android:id="@+id/action_descriptionFragment_to_modelsFragment"
+            app:destination="@id/modelsFragment" />
     </fragment>
     <fragment
         android:id="@+id/featuresFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.FeaturesFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.FeaturesFragment"
         android:label="fragment_features"
         tools:layout="@layout/fragment_features" >
         <action
             android:id="@+id/action_featuresFragment_to_priceFragment"
             app:destination="@id/priceFragment" />
+        <action
+            android:id="@+id/action_featuresFragment_to_descriptionFragment"
+            app:destination="@id/descriptionFragment" />
     </fragment>
     <fragment
         android:id="@+id/priceFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.PriceFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.PriceFragment"
         android:label="fragment_price"
         tools:layout="@layout/fragment_price">
         <action
             android:id="@+id/action_priceFragment_to_userFragment"
             app:destination="@id/userFragment" />
+        <action
+            android:id="@+id/action_priceFragment_to_featuresFragment"
+            app:destination="@id/featuresFragment" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.UserFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" >
         <action
-            android:id="@+id/action_userFragment_to_downloadFragment"
-            app:destination="@id/downloadFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/downloadFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.DownloadFragment"
-        android:label="fragment_download"
-        tools:layout="@layout/fragment_download" />
-    <fragment
-        android:id="@+id/picturesFragment"
-        android:name="com.nomanim.bax.ui.fragments.newAnnouncementActivity.PicturesFragment"
-        android:label="fragment_pictures"
-        tools:layout="@layout/fragment_pictures" >
-        <action
-            android:id="@+id/action_picturesFragment_to_descriptionFragment"
-            app:destination="@id/descriptionFragment" />
+            android:id="@+id/action_userFragment_to_priceFragment"
+            app:destination="@id/priceFragment" />
     </fragment>
 </navigation>
