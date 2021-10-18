@@ -36,7 +36,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/roboto_medium"
                 android:maxLines="1"
-                android:text="@string/fill_information"
+                android:text="@string/fill_user_information"
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"

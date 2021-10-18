@@ -1,6 +1,7 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private var currentUser: FirebaseUser? = null
+    private var sharedPref: SharedPreferences? = null
     private var announcements = ArrayList<ModelAnnouncement>()
     private lateinit var recyclerViewAdapter: AllPhonesAdapter
     private lateinit var lastValue: QuerySnapshot
@@ -40,26 +42,39 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUser = auth.currentUser
+        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
         if (currentUser != null) {
 
-            binding.phoneNumberTextView.text = currentUser?.phoneNumber.toString()
-            binding.logoutTextView.setOnClickListener {
-
-                auth.signOut()
-                findNavController().navigate(R.id.action_profileFragment_to_homeFragment) }
-
+            binding.logoutTextView.setOnClickListener { pressLogOutAlgorithm() }
+            setUserPhoneNumber()
             getCurrentUserAnnouncements()
-            context?.let { setRecyclerView(it) }
+            setRecyclerView(requireContext())
 
-
-        }else {
-
-            findNavController().navigate(R.id.action_profileFragment_to_registrationFragment)
-        }
+        }else { findNavController().navigate(R.id.action_profileFragment_to_registrationFragment) }
 
         return binding.root
+    }
 
+    private fun setUserPhoneNumber() {
+
+        val userPhoneNumber = sharedPref?.getString("userPhoneNumber",null)
+
+        if (userPhoneNumber == null) {
+
+            val currentPhoneNumber = currentUser?.phoneNumber.toString()
+            val editor = sharedPref?.edit()
+            editor?.putString("userPhoneNumber",currentPhoneNumber)
+            editor?.apply()
+            binding.phoneNumberTextView.text = currentPhoneNumber
+
+        }else { binding.phoneNumberTextView.text = userPhoneNumber }
+    }
+
+    private fun pressLogOutAlgorithm() {
+
+        auth.signOut()
+        findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
     }
 
     private fun getCurrentUserAnnouncements() {
@@ -74,9 +89,7 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
                 value?.let { lastValue = it }
                 getMoreAnnouncements()
             }
-
         }
-
     }
 
     private fun getMoreAnnouncements() {

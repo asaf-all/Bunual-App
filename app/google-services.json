@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "636233979207",
-    "project_id": "bax-project-556dd",
-    "storage_bucket": "bax-project-556dd.appspot.com"
+    "project_number": "578151625745",
+    "project_id": "bunual-project",
+    "storage_bucket": "bunual-project.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:636233979207:android:ca0317182d7042dd0ae862",
+        "mobilesdk_app_id": "1:578151625745:android:ea6d65450d5e3f98d06db0",
         "android_client_info": {
-          "package_name": "com.nomanim.bax"
+          "package_name": "com.nomanim.bunual"
         }
       },
       "oauth_client": [
         {
-          "client_id": "636233979207-0kpqhrm64hlifjh6c3jsr65a1nsnfh3m.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.nomanim.bax",
-            "certificate_hash": "e8941cfad5ba375d9ca73a716d557524fe53b3d7"
-          }
-        },
-        {
-          "client_id": "636233979207-hheu71rik80ritm6kemhnlbuea9d8hc9.apps.googleusercontent.com",
+          "client_id": "578151625745-77uv4f1sqdajpp81bbrj570akhahtn8m.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCvWfzK3Qu3WWwnMW5_v4pRXPrmECDY0Kc"
+          "current_key": "AIzaSyBu16sBhXT02FTV0Abd_8mL9xRcWzW1BDc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "636233979207-hheu71rik80ritm6kemhnlbuea9d8hc9.apps.googleusercontent.com",
+              "client_id": "578151625745-77uv4f1sqdajpp81bbrj570akhahtn8m.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

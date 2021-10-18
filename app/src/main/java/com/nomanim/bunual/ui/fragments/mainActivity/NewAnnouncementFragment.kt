@@ -2,15 +2,22 @@ package com.nomanim.bunual.ui.fragments.mainActivity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentNewAnnouncementBinding
+import com.nomanim.bunual.models.ModelAnnouncement
+import com.nomanim.bunual.models.ModelPhone
+import com.nomanim.bunual.models.ModelUser
+import com.nomanim.bunual.retrofit.models.ModelPlaces
 import com.nomanim.bunual.ui.activities.NewAnnouncementActivity
 import com.thekhaeng.pushdownanim.PushDownAnim
 
@@ -37,8 +44,10 @@ class NewAnnouncementFragment : Fragment() {
             activity?.finish()
             activity?.startActivity(intent)
 
-           /* val imagesList = ArrayList<String>()
-            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/no3210b.gif")
+            /*val imagesList = ArrayList<String>()
+            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11-pro.jpg")
+            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11-pro-max-.jpg")
+            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11.jpg")
 
             val modelPhone = ModelPhone("Samsung","galaxy a71","423 AZN","purple","64 GB","4 GB","used","no",false)
             val modelPlaces = ModelPlaces("Baku","2M")
@@ -49,9 +58,9 @@ class NewAnnouncementFragment : Fragment() {
             firestore.collection("All Announcements").add(modelAnnouncement)
                 .addOnSuccessListener {
 
-                Toast.makeText(requireContext(),"Added",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),"Added",Toast.LENGTH_SHORT).show()
 
-            }*/
+                }*/
 
         }else {
 

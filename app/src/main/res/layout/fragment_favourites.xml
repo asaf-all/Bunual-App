@@ -12,6 +12,55 @@
         tools:context=".ui.fragments.mainActivity.FavouritesFragment">
 
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/withoutOfflineModeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/favouritesTextView">
+
+            <TextView
+                android:id="@+id/noDataTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/no_data"
+                app:layout_constraintEnd_toEndOf="@+id/noDataImageView"
+                app:layout_constraintStart_toStartOf="@+id/noDataImageView"
+                app:layout_constraintTop_toBottomOf="@+id/noDataImageView" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/favoritesPhones"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/favoritesPhonesProgressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/noDataTextView"
+                app:layout_constraintEnd_toEndOf="@+id/noDataImageView"
+                app:layout_constraintStart_toStartOf="@+id/noDataImageView"
+                app:layout_constraintTop_toTopOf="@+id/noDataImageView" />
+
+            <ImageView
+                android:id="@+id/noDataImageView"
+                android:layout_width="0dp"
+                android:layout_height="116dp"
+                android:layout_marginStart="150dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="150dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/favoritesPhones"
+                app:srcCompat="@drawable/im_nodata" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <TextView
             android:id="@+id/favouritesTextView"
             android:layout_width="0dp"
@@ -28,46 +77,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/favoritesPhones"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/favouritesTextView" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/withOfflineModeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@+id/withoutOfflineModeLayout"
+            tools:layout_editor_absoluteX="-16dp">
 
-        <ProgressBar
-            android:id="@+id/favoritesPhonesProgressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/favouritesTextView" />
+            <ImageView
+                android:id="@+id/imageView7"
+                android:layout_width="0dp"
+                android:layout_height="87dp"
+                android:layout_marginStart="135dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="135dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/im_noconnection" />
 
-        <ImageView
-            android:id="@+id/noDataImageView"
-            android:layout_width="0dp"
-            android:layout_height="116dp"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="60dp"
-            android:layout_marginEnd="150dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/favouritesTextView"
-            app:srcCompat="@drawable/im_nodata" />
-
-        <TextView
-            android:id="@+id/noDataTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/no_data"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noDataImageView" />
+            <TextView
+                android:id="@+id/textView8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/no_internet_connection"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/imageView7"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/imageView7"
+                app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

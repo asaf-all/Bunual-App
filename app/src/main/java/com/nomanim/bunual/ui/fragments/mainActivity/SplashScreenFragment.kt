@@ -40,6 +40,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
     private lateinit var firestore: FirebaseFirestore
     private var sharedPref: SharedPreferences? = null
     private val compositeDisposable = io.reactivex.disposables.CompositeDisposable()
+    private var brandNamesResponse: Response<PhoneBrandsList>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -49,27 +50,45 @@ class SplashScreenFragment : BaseCoroutineScope() {
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
-        firestore.collection("Important Data").document("api_version")
-            .get().addOnSuccessListener { value ->
+        checkInternetConnection()
+        //navigateIfProcessTakesLongTime()
 
-                val activeApiVersionCode = value.get("version_code").toString()
-                checkApiVersionCodeForLoadData(activeApiVersionCode)
-                val editor = sharedPref?.edit()
-                editor?.putBoolean("offlineMode",false)
-                editor?.apply()
+        return binding.root
+    }
 
-            }.addOnFailureListener {
+    private fun checkInternetConnection() {
+
+        val phoneService = PhoneBrandsApi.builder.getData()
+        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
+            override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
+
+                brandNamesResponse = response
+                getActiveApiVersionCode() }
+
+            override fun onFailure(call: Call<PhoneBrandsList>, t: Throwable) {
 
                 Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
                 val editor = sharedPref?.edit()
                 editor?.putBoolean("offlineMode",true)
                 editor?.apply()
-                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+                getActiveApiVersionCode()
             }
+        })
+    }
 
-        //navigateIfProcessTakesLongTime()
+    private fun getActiveApiVersionCode() {
 
-        return binding.root
+        firestore.collection("Important Data").document("api_version")
+            .get().addOnSuccessListener { value ->
+
+                val activeApiVersionCode = value.get("version_code").toString()
+                checkApiVersionCodeForLoadData(activeApiVersionCode)
+
+            }.addOnFailureListener { error ->
+
+                Toast.makeText(requireContext(),R.string.no_internet_connection,Toast.LENGTH_LONG).show()
+                error.localizedMessage
+            }
     }
 
     private fun checkApiVersionCodeForLoadData(activeApiVersionCode: String?) {
@@ -110,30 +129,18 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
     private fun getBrandNamesWithRetrofit() {
 
-        val phoneService = PhoneBrandsApi.builder.getData()
-        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
-            override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
+        if (brandNamesResponse != null) {
 
-                if (response != null) {
+            try {
 
-                    try {
+                val phoneBrands = brandNamesResponse!!.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
+                addPhoneBrandNamesAtRoom(phoneBrands)
+                getModelNamesWithRxJava()
 
-                        val phoneBrands = response.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
-                        addPhoneBrandNamesAtRoom(phoneBrands)
-                        getModelNamesWithRxJava()
-
-                    }catch (e: Exception) {
-
-                        context?.let {
-
-                            Toast.makeText(it,R.string.fail, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
+            } catch (e: Exception) {
+                context?.let { Toast.makeText(it, R.string.no_internet_connection, Toast.LENGTH_LONG).show() }
             }
-
-            override fun onFailure(call: Call<PhoneBrandsList>, t: Throwable) { }
-        })
+        }
     }
 
     private fun getModelNamesWithRxJava() {

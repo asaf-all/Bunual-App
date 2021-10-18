@@ -82,6 +82,9 @@ class RegistrationFragment : Fragment() {
 
     private fun requestAgainConfirmationCode(mView: View,activity: Activity) {
 
+        binding.sendAgainprogressBar.visibility = View.VISIBLE
+        binding.sendAgainTextView.visibility = View.INVISIBLE
+
         val options = PhoneAuthOptions.newBuilder(auth)
             .setPhoneNumber(binding.countryCodePicker.fullNumberWithPlus)
             .setTimeout(60L, TimeUnit.SECONDS)
@@ -91,6 +94,8 @@ class RegistrationFragment : Fragment() {
 
                 override fun onCodeSent(mVerificationId: String, mToken: PhoneAuthProvider.ForceResendingToken) {
 
+                    binding.sendAgainprogressBar.visibility = View.INVISIBLE
+                    binding.sendAgainTextView.visibility = View.VISIBLE
                     verificationId = mVerificationId
                     token = mToken
                     changeUIWhenCodeSend()
@@ -103,6 +108,8 @@ class RegistrationFragment : Fragment() {
 
                 override fun onVerificationFailed(exception: FirebaseException) {
 
+                    binding.sendAgainprogressBar.visibility = View.INVISIBLE
+                    binding.sendAgainTextView.visibility = View.VISIBLE
                     binding.createAccountProgressBar.visibility = View.INVISIBLE
                     binding.createAccountNextButton.visibility = View.VISIBLE
                     Snackbar.make(mView,resources.getString(R.string.enter_valid_phone_number), Snackbar.LENGTH_LONG).show()

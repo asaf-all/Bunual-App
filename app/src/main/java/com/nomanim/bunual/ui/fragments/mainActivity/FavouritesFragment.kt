@@ -1,5 +1,7 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +24,7 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
     private val binding get() = _binding!!
     private  lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private var sharedPref: SharedPreferences? = null
     private var allFavouritePhones = ArrayList<ModelAnnouncement>()
     private var favoritesPhones = ArrayList<String>()
     private var currentUser: FirebaseUser? = null
@@ -29,23 +32,40 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentFavouritesBinding.inflate(inflater,container,false)
-
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUser = auth.currentUser
+        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
         binding.noDataImageView.visibility = View.INVISIBLE
         binding.noDataTextView.visibility = View.INVISIBLE
 
-        if (currentUser != null) { getFavouritesPhonesFromFireStore() }
-        else {
-
-            binding.noDataImageView.visibility = View.VISIBLE
-            binding.noDataTextView.visibility = View.VISIBLE
-            binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
-        }
+        checkInternetConnection()
 
         return binding.root
+    }
+
+    private fun checkInternetConnection() {
+
+        val offlineMode = sharedPref?.getBoolean("offlineMode",false)
+        if (offlineMode!!) {
+
+            binding.withoutOfflineModeLayout.visibility = View.GONE
+            binding.withOfflineModeLayout.visibility = View.VISIBLE
+
+        }else {
+
+            binding.withoutOfflineModeLayout.visibility = View.VISIBLE
+            binding.withOfflineModeLayout.visibility = View.GONE
+
+            if (currentUser != null) { getFavouritesPhonesFromFireStore() }
+            else {
+
+                binding.noDataImageView.visibility = View.VISIBLE
+                binding.noDataTextView.visibility = View.VISIBLE
+                binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
+            }
+        }
     }
 
     private fun getFavouritesPhonesFromFireStore() {
