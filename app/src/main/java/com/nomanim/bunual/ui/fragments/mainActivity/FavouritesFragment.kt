@@ -3,6 +3,7 @@ package com.nomanim.bunual.ui.fragments.mainActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,12 @@ import com.nomanim.bunual.R
 import com.nomanim.bunual.ui.adapters.AllPhonesAdapter
 import com.nomanim.bunual.databinding.FragmentFavouritesBinding
 import com.nomanim.bunual.models.ModelAnnouncement
+import com.nomanim.bunual.retrofit.builders.SimpleDataApi
+import com.nomanim.bunual.retrofit.models.ModelSimpleData
 import com.nomanim.bunual.ui.other.getDataFromFireStore
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
 
@@ -37,6 +43,7 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
         currentUser = auth.currentUser
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
+        binding.withOfflineModeLayout.visibility = View.GONE
         binding.noDataImageView.visibility = View.INVISIBLE
         binding.noDataTextView.visibility = View.INVISIBLE
 
@@ -47,25 +54,28 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
 
     private fun checkInternetConnection() {
 
-        val offlineMode = sharedPref?.getBoolean("offlineMode",false)
-        if (offlineMode!!) {
+        val simpleDataService = SimpleDataApi.builder.getData()
+        simpleDataService.enqueue(object : Callback<ModelSimpleData> {
+            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>) {
 
-            binding.withoutOfflineModeLayout.visibility = View.GONE
-            binding.withOfflineModeLayout.visibility = View.VISIBLE
+                binding.withoutOfflineModeLayout.visibility = View.VISIBLE
+                binding.withOfflineModeLayout.visibility = View.GONE
 
-        }else {
+                if (currentUser != null) { getFavouritesPhonesFromFireStore() }
+                else {
 
-            binding.withoutOfflineModeLayout.visibility = View.VISIBLE
-            binding.withOfflineModeLayout.visibility = View.GONE
-
-            if (currentUser != null) { getFavouritesPhonesFromFireStore() }
-            else {
-
-                binding.noDataImageView.visibility = View.VISIBLE
-                binding.noDataTextView.visibility = View.VISIBLE
-                binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
+                    binding.noDataImageView.visibility = View.VISIBLE
+                    binding.noDataTextView.visibility = View.VISIBLE
+                    binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
+                }
             }
-        }
+
+            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {
+
+                binding.withoutOfflineModeLayout.visibility = View.GONE
+                binding.withOfflineModeLayout.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun getFavouritesPhonesFromFireStore() {

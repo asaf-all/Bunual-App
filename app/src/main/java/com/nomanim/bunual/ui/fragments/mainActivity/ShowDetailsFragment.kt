@@ -45,7 +45,8 @@ class ShowDetailsFragment : BaseCoroutineScope(), SimilarPhonesAdapter.Listener 
 
         BigImageViewer.initialize(FrescoImageLoader.with(requireContext()))
         BigImageViewer.prefetch(imagesLinksAsUri[0])
-        Log.e("********",imagesLinksAsUri.toString())
+
+        binding.addToFavouritesButton.setOnClickListener {  }
 
         setImagesInSlider()
         getSimilarPhonesFromFireStore()

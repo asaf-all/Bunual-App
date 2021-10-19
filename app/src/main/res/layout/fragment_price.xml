@@ -19,7 +19,6 @@
         app:sb_button_color="@color/main"
         app:sb_checked_color="@color/main"
         app:sb_checkline_color="@color/background_color_gray"
-        app:sb_shadow_color="@color/registration_activity_background"
         app:sb_uncheckcircle_color="@color/main" />
 
     <androidx.appcompat.widget.Toolbar

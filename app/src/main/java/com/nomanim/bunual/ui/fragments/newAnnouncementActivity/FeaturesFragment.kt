@@ -10,20 +10,27 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentFeaturesBinding
+import com.nomanim.bunual.databinding.LayoutBottomSheetColorsBinding
+import com.nomanim.bunual.models.ModelColors
+import com.nomanim.bunual.ui.adapters.ColorsAdapter
 import com.nomanim.bunual.ui.other.ktx.showDialogOfCloseActivity
 import com.nomanim.bunual.ui.other.ktx.showFeaturesBottomSheet
 
-class FeaturesFragment : Fragment() {
+class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
     private var sharedPref: SharedPreferences? = null
+    private lateinit var bottomSheetBinding: LayoutBottomSheetColorsBinding
+    private lateinit var bottomSheetDialog: BottomSheetDialog
     private val storageList = ArrayList<String>()
     private val ramList = ArrayList<String>()
-    private val colorList = ArrayList<String>()
+    private val colorList = ArrayList<ModelColors>()
     private var stringOfStorage: String = ""
     private var stringOfRam: String = ""
     private var stringOfColor: String = ""
@@ -32,11 +39,15 @@ class FeaturesFragment : Fragment() {
 
         _binding = FragmentFeaturesBinding.inflate(inflater,container,false)
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        bottomSheetBinding = LayoutBottomSheetColorsBinding.inflate(inflater)
 
+        getStorageCapacities()
+        getRamCapacities()
+        getColorNamesAndCodes()
         pressBackButton()
         getStrings()
 
-        if (sharedPref?.getBoolean("getDataFromSharedPref",false) == true) {
+        if (sharedPref?.getBoolean("getDataFromSharedPrefInFeaturesFragment",false) == true) {
 
             getAllDataIfHasAccess()
         }
@@ -47,18 +58,63 @@ class FeaturesFragment : Fragment() {
         binding.featuresCancelButton.setOnClickListener { showDialogOfCloseActivity() }
 
         binding.chooseStorageCardView.setOnClickListener {
-
-            showFeaturesBottomSheet(storageList,binding.storageTextView,R.string.choose_phone_storage) }
+            showFeaturesBottomSheet(storageList,binding.storageTextView,getString(R.string.choose_phone_storage)) }
 
         binding.chooseRamCardView.setOnClickListener {
+            showFeaturesBottomSheet(ramList,binding.ramTextView,getString(R.string.choose_phone_ram)) }
 
-            showFeaturesBottomSheet(ramList,binding.ramTextView,R.string.choose_phone_ram) }
-
-        binding.chooseColorCardView.setOnClickListener {
-
-            showFeaturesBottomSheet(colorList,binding.colorTextView,R.string.choose_phone_color) }
+        binding.chooseColorCardView.setOnClickListener { setColorsBottomSheet() }
 
         return binding.root
+    }
+
+    private fun getStorageCapacities() {
+
+        for (capacity in resources.getStringArray(R.array.storageCapacities) ) {
+            storageList.add(capacity)
+        }
+    }
+
+    private fun getRamCapacities() {
+
+        for (capacity in resources.getStringArray(R.array.ramCapacities) ) {
+            ramList.add(capacity)
+        }
+    }
+
+    private fun getColorNamesAndCodes() {
+
+        for (colorName in resources.getStringArray(R.array.colorNames) ) {
+
+            val modelColor = ModelColors(colorName,R.color.background_color_gray)
+            colorList.add(modelColor)
+        }
+    }
+
+    private fun setColorsBottomSheet() {
+
+        val bottomSheetView = bottomSheetBinding.root
+        if (bottomSheetView.parent != null) {
+
+            (bottomSheetView.parent as ViewGroup).removeAllViews()
+        }
+        context?.let {
+
+            bottomSheetDialog = BottomSheetDialog(it)
+            bottomSheetDialog.setContentView(bottomSheetView)
+            bottomSheetDialog.show()
+        }
+        setColorsRecyclerView()
+    }
+
+    private fun setColorsRecyclerView() {
+
+        val recyclerView = bottomSheetBinding.placesRecyclerView
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = ColorsAdapter(colorList,this@FeaturesFragment)
+        recyclerView.adapter = adapter
     }
 
     private fun getStrings() {
@@ -132,8 +188,14 @@ class FeaturesFragment : Fragment() {
         super.onDestroy()
 
         val editor = sharedPref?.edit()
-        editor?.putBoolean("getDataFromSharedPref",false)
+        editor?.putBoolean("getDataFromSharedPrefInFeaturesFragment",false)
         editor?.apply()
+    }
+
+    override fun setOnColorClickListener(buttonFinishText: String) {
+
+        binding.colorTextView.text = buttonFinishText
+        bottomSheetDialog.dismiss()
     }
 
 }

@@ -3,7 +3,7 @@ package com.nomanim.bunual.ui.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.nomanim.bunual.databinding.LayoutCardViewPhoneStorageBinding
+import com.nomanim.bunual.databinding.LayoutCardViewPhoneColorBinding
 import com.nomanim.bunual.retrofit.models.ModelPlaces
 
 class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: Listener)
@@ -15,7 +15,7 @@ class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: L
 
     }
 
-    class Holder(val binding: LayoutCardViewPhoneStorageBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(val binding: LayoutCardViewPhoneColorBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun run(list: List<ModelPlaces>, position: Int, listener: Listener) {
 
@@ -31,7 +31,7 @@ class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: L
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
 
-        return Holder(LayoutCardViewPhoneStorageBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return Holder(LayoutCardViewPhoneColorBinding.inflate(LayoutInflater.from(parent.context),parent,false))
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {

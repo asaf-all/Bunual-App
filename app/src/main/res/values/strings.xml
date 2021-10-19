@@ -34,6 +34,9 @@
     <string name="all_phones">All phones</string>
     <string name="more">More</string>
 
+    <!-- ShowDetails Fragment -->
+    <string name="add_to_favourites">Add to favourites</string>
+
     <!-- Search Fragment -->
     <string name="search">Search</string>
 
@@ -68,6 +71,57 @@
     <string name="new_">New</string>
     <string name="used">Used</string>
     <string name="as_spare_part">As a spare part</string>
+    <string-array name="storageCapacities">
+        <item>@string/other</item>
+        <item>4 GB</item>
+        <item>8 GB</item>
+        <item>16 GB</item>
+        <item>32 GB</item>
+        <item>64 GB</item>
+        <item>128 GB</item>
+        <item>256 GB</item>
+        <item>512 GB</item>
+        <item>512 GB+</item>
+        <item>1 TB (1000 GB)</item>
+        <item>1 TB (1000 GB)+</item>
+        <item>@string/other</item>
+    </string-array>
+    <string-array name="ramCapacities">
+        <item>@string/other</item>
+        <item>1 GB</item>
+        <item>2 GB</item>
+        <item>3 GB</item>
+        <item>4 GB</item>
+        <item>5 GB</item>
+        <item>6 GB</item>
+        <item>7 GB</item>
+        <item>8 GB</item>
+        <item>16 GB</item>
+        <item>32 GB</item>
+        <item>64 GB</item>
+        <item>128 GB</item>
+        <item>256 GB</item>
+        <item>@string/other</item>
+    </string-array>
+    <string-array name="colorNames">
+        <item>@string/other</item>
+        <item>silver</item>
+        <item>gray</item>
+        <item>maroon</item>
+        <item>red</item>
+        <item>purple</item>
+        <item>fuchsia</item>
+        <item>green</item>
+        <item>lime</item>
+        <item>olive</item>
+        <item>yellow</item>
+        <item>navy</item>
+        <item>blue</item>
+        <item>teal</item>
+        <item>aqua</item>
+        <item>@string/other</item>
+    </string-array>
+
 
     <!-- Price Fragment -->
     <string name="enter_phone_price">Enter price</string>
@@ -90,6 +144,7 @@
     <string name="ok">OK</string>
     <string name="dismiss">Dismiss</string>
     <string name="check">Check</string>
+    <string name="other">Other</string>
     <string name="confirmation">Confirmation</string>
     <string name="fail">Fail. Please try again.</string>
     <string name="storage">Storage</string>

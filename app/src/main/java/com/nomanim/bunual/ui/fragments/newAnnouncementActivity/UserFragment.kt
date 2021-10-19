@@ -16,35 +16,33 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.R
 import com.nomanim.bunual.ui.adapters.PlacesAdapter
 import com.nomanim.bunual.databinding.FragmentUserBinding
-import com.nomanim.bunual.databinding.LayoutBottomSheetPlacesBinding
+import com.nomanim.bunual.databinding.LayoutBottomSheetColorsBinding
 import com.nomanim.bunual.retrofit.builders.PlacesApi
 import com.nomanim.bunual.retrofit.models.ModelPlaces
+import com.nomanim.bunual.ui.other.ktx.showFeaturesBottomSheet
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 import java.util.*
+import kotlin.collections.ArrayList
 
-class UserFragment : Fragment(),PlacesAdapter.Listener {
+class UserFragment : Fragment() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
     private val compositeDisposable = CompositeDisposable()
     private lateinit var firebaseStorage: FirebaseStorage
-    private lateinit var bottomSheetBinding: LayoutBottomSheetPlacesBinding
-    private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var placesList: List<ModelPlaces>
     private val downloadUrlList = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentUserBinding.inflate(inflater)
-        bottomSheetBinding = LayoutBottomSheetPlacesBinding.inflate(inflater)
 
         pressBackButton()
         getPlacesFromInternet()
 
-        binding.userPlaceCardView.setOnClickListener { setBottomSheet(bottomSheetBinding.root) }
         binding.userToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
 
         return binding.root
@@ -60,7 +58,12 @@ class UserFragment : Fragment(),PlacesAdapter.Listener {
                 override fun onSuccess(list: List<ModelPlaces>) {
 
                     placesList = list.sortedWith(compareByDescending { it.population })
-                    setPlacesRecyclerView()
+                    binding.userPlaceCardView.setOnClickListener {
+
+                        val listForDialog = ArrayList<String>()
+                        for (i in 0 until placesList.size) { listForDialog.add(placesList[i].city) }
+
+                        showFeaturesBottomSheet(listForDialog,binding.placeTextView,getString(R.string.choose_place)) }
                 }
 
                 override fun onError(error: Throwable) {
@@ -71,37 +74,6 @@ class UserFragment : Fragment(),PlacesAdapter.Listener {
             }))
     }
 
-    private fun setBottomSheet(bottomSheetView:View) {
-
-        if (bottomSheetView.parent != null) {
-
-            (bottomSheetView.parent as ViewGroup).removeAllViews()
-        }
-        context?.let {
-
-            bottomSheetDialog = BottomSheetDialog(it)
-            bottomSheetDialog.setContentView(bottomSheetView)
-            bottomSheetDialog.show()
-        }
-    }
-
-    private fun setPlacesRecyclerView() {
-
-        val recyclerView = bottomSheetBinding.placesRecyclerView
-        recyclerView.isNestedScrollingEnabled = false
-        recyclerView.setHasFixedSize(true)
-        context?.let {
-
-            recyclerView.layoutManager = LinearLayoutManager(it)
-            val adapter = PlacesAdapter(placesList,this@UserFragment)
-            recyclerView.adapter = adapter
-        }
-    }
-
-    override fun setOnPlaceClickListener(buttonFinishText: String) {
-
-        bottomSheetDialog.dismiss()
-    }
 
     private fun uploadImagesToStorage(imagesList: List<Uri>) {
 

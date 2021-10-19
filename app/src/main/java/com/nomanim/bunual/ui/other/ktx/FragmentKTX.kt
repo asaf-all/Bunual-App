@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.crowdfire.cfalertdialog.CFAlertDialog
 import com.nomanim.bunual.R
+import com.nomanim.bunual.models.ModelColors
 import com.nomanim.bunual.ui.activities.MainActivity
 
 fun Fragment.showDialogOfCloseActivity() {
@@ -44,7 +45,7 @@ fun Fragment.showDialogOfCloseActivity() {
     builder.show()
 }
 
-fun Fragment.showFeaturesBottomSheet(list: ArrayList<String>, textView: TextView, dialogTitle: Int) {
+fun Fragment.showFeaturesBottomSheet(list: ArrayList<String>, textView: TextView, dialogTitle: String) {
 
     val builder = CFAlertDialog.Builder(requireContext())
         .setTitle(dialogTitle)

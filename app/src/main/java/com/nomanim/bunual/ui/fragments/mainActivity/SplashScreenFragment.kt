@@ -63,14 +63,12 @@ class SplashScreenFragment : BaseCoroutineScope() {
             override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
 
                 brandNamesResponse = response
-                getActiveApiVersionCode() }
+                getActiveApiVersionCode()
+            }
 
             override fun onFailure(call: Call<PhoneBrandsList>, t: Throwable) {
 
                 Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
-                val editor = sharedPref?.edit()
-                editor?.putBoolean("offlineMode",true)
-                editor?.apply()
                 getActiveApiVersionCode()
             }
         })
@@ -121,6 +119,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
             override fun onTick(millisUntilFinished: Long) {}
             override fun onFinish() {
+
                 Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
             }
