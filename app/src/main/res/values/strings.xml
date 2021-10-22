@@ -13,6 +13,7 @@
         <item>The most liked</item>
         <item>Mix time</item>
         <item>Most old</item>
+        <item>@string/last_ones</item>
     </string-array>
 
     <!-- Registration Fragment -->
@@ -31,11 +32,13 @@
     <string name="newest_first">Newest first</string>
     <string name="filter">Filter</string>
     <string name="most_viewed">The most viewed</string>
-    <string name="all_phones">All phones</string>
+    <string name="last_ones">The last ones</string>
     <string name="more">More</string>
 
     <!-- ShowDetails Fragment -->
     <string name="add_to_favourites">Add to favourites</string>
+    <string name="delete_from_favourites">Delete from favourites</string>
+    <string name="call">Call</string>
 
     <!-- Search Fragment -->
     <string name="search">Search</string>

@@ -1,5 +1,7 @@
 package com.nomanim.bunual.ui.fragments.newAnnouncementActivity
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -31,6 +33,7 @@ class UserFragment : Fragment() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
+    private var sharedPref: SharedPreferences? = null
     private val compositeDisposable = CompositeDisposable()
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var placesList: List<ModelPlaces>
@@ -39,6 +42,9 @@ class UserFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentUserBinding.inflate(inflater)
+        sharedPref = activity?.getSharedPreferences(
+            "sharedPrefInNewAnnouncementActivity"
+            , Context.MODE_PRIVATE)
 
         pressBackButton()
         getPlacesFromInternet()

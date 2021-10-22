@@ -100,6 +100,7 @@ dependencies {
     implementation 'io.github.ParkSangGwon:tedimagepicker:1.2.4'  // multi image picker
     implementation 'com.github.thekhaeng:pushdown-anim-click:1.1.1'  // widgets on click animation
     implementation 'com.crowdfire.cfalertdialog:cfalertdialog:1.1.0' // custom dialog
+    'com.github.blennerSilva:AwesomeDialog:2.0.5' // custom dialog 2
     implementation 'com.kaopiz:kprogresshud:1.0.2'  // custom loading dialog
     implementation 'com.7heaven.widgets:segmentcontrol:1.17' // custom radio group
     implementation 'com.github.zcweng:switch-button:0.0.3@aar'  // custom switch button

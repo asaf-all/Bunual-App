@@ -1,12 +1,9 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
-import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -18,13 +15,14 @@ import com.nomanim.bunual.ui.adapters.MostViewedPhonesAdapter
 import com.nomanim.bunual.ui.adapters.AllPhonesAdapter
 import com.nomanim.bunual.databinding.FragmentHomeBinding
 import com.nomanim.bunual.models.ModelAnnouncement
+import com.nomanim.bunual.ui.activities.AdsDetailsActivity
 import com.nomanim.bunual.ui.fragments.newAnnouncementActivity.BrandsFragment
 import com.nomanim.bunual.ui.other.BaseCoroutineScope
 import com.nomanim.bunual.ui.other.getDataFromFireStore
 import com.thekhaeng.pushdownanim.PushDownAnim
 import java.util.*
 import kotlin.collections.ArrayList
-class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPhonesAdapter.Listener{
+class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPhonesAdapter.Listener {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -110,8 +108,9 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
             }
 
         }.addOnFailureListener { exception ->
-            binding.allPhonesProgressBar.visibility = View.INVISIBLE
-            context?.let { Toast.makeText(it,exception.localizedMessage,Toast.LENGTH_SHORT).show() }
+
+                binding.allPhonesProgressBar.visibility = View.INVISIBLE
+                context?.let { Toast.makeText(it,exception.localizedMessage,Toast.LENGTH_SHORT).show() }
         }
     }
 
@@ -175,27 +174,25 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
         }
     }
 
-    override fun onMostViewedPhoneClick(position: Int) {
+    override fun onMostViewedPhoneClick(list: ArrayList<ModelAnnouncement>,position: Int) {
 
-        showDetailsFragmentAlgorithm(position)
+        intentToAdsDetailsActivityWithData(list,position)
     }
 
-    override fun setOnClickVerticalAnnouncement(position: Int) {
+    override fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int) {
 
-        showDetailsFragmentAlgorithm(position)
+        intentToAdsDetailsActivityWithData(list,position)
     }
 
-    private fun showDetailsFragmentAlgorithm(position: Int) {
+    private fun intentToAdsDetailsActivityWithData(list: ArrayList<ModelAnnouncement>,position: Int) {
 
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
-        binding.nestedScrollView.visibility = View.GONE
-        binding.detailsFragmentContainer.visibility = View.VISIBLE
-        pressBackButton()
-        addImagesLinkAtSharedPref(position)
-        replaceDetailsFragment()
+        val intent = Intent(requireContext(),AdsDetailsActivity::class.java)
+        intent.putExtra("selectedAnnouncementId",list[position].id)
+        intent.putExtra("imagesLinks",createListWithSelectedAdsImages(position).toString())
+        activity?.startActivity(intent)
     }
 
-    private fun addImagesLinkAtSharedPref(position: Int) {
+    private fun createListWithSelectedAdsImages(position: Int) : StringBuilder {
 
         val stringBuilder = StringBuilder()
 
@@ -207,14 +204,35 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
 
             }else { stringBuilder.append(allPhones[position].image[i] + "|") }
         }
+        return stringBuilder
+    }
+
+
+
+    /*private fun showDetailsFragmentAlgorithm(list: ArrayList<ModelAnnouncement>, position: Int) {
+
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
+        binding.nestedScrollView.visibility = View.GONE
+        binding.detailsFragmentContainer.visibility = View.VISIBLE
+        pressBackButton()
+        addImagesLinkToSharedPref(position)
+        addSelectedAnnouncementIdToSharedPref(list,position)
+        showDetailsFragment()
+    }
+
+
+
+    private fun addSelectedAnnouncementIdToSharedPref(list: ArrayList<ModelAnnouncement>, position: Int) {
+
+        val selectedAnnouncementId = list[position].id
 
         val sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
         val editor = sharedPref?.edit()
-        editor?.putString("imagesLinks",stringBuilder.toString())
+        editor?.putString("selected_announcement_id",selectedAnnouncementId)
         editor?.apply()
     }
 
-    private fun replaceDetailsFragment() {
+    private fun showDetailsFragment() {
 
         activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.detailsFragmentContainer,ShowDetailsFragment())
@@ -246,6 +264,11 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
         intent.addCategory(Intent.CATEGORY_HOME)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         activity?.startActivity(intent)
+    }*/
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
 }

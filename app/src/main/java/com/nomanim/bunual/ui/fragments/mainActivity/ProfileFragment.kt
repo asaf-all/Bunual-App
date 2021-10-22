@@ -144,7 +144,7 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
         recyclerView.adapter = recyclerViewAdapter
     }
 
-    override fun setOnClickVerticalAnnouncement(position: Int) {
+    override fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int) {
 
     }
 }

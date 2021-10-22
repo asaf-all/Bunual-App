@@ -24,7 +24,9 @@ class DescriptionFragment : BaseCoroutineScope() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentDescriptionBinding.inflate(inflater,container,false)
-        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        sharedPref = activity?.getSharedPreferences(
+            "sharedPrefInNewAnnouncementActivity"
+            ,Context.MODE_PRIVATE)
 
         pressBackButton()
 

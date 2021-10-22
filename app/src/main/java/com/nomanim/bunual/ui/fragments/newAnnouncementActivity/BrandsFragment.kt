@@ -113,7 +113,9 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
 
         try {
 
-            val sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+            val sharedPref = activity?.getSharedPreferences(
+                "sharedPrefInNewAnnouncementActivity"
+                ,Context.MODE_PRIVATE)
             val editor = sharedPref?.edit()
             editor?.putString("phoneBrandName",brandName)
             editor?.putString("phoneBrandId",brandId)

@@ -52,7 +52,9 @@ class PriceFragment : Fragment() {
 
     private fun navigateToNextFragment(view: View) {
 
-        val sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        val sharedPref = activity?.getSharedPreferences(
+            "sharedPrefInNewAnnouncementActivity"
+            ,Context.MODE_PRIVATE)
         val editor = sharedPref?.edit()
 
         if (!withAgreement) {

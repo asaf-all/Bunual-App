@@ -38,7 +38,9 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentFeaturesBinding.inflate(inflater,container,false)
-        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        sharedPref = activity?.getSharedPreferences(
+            "sharedPrefInNewAnnouncementActivity"
+            ,Context.MODE_PRIVATE)
         bottomSheetBinding = LayoutBottomSheetColorsBinding.inflate(inflater)
 
         getStorageCapacities()

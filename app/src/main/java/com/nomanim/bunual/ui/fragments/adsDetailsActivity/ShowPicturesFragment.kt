@@ -1,4 +1,4 @@
-package com.nomanim.bunual.ui.fragments.mainActivity
+package com.nomanim.bunual.ui.fragments.adsDetailsActivity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

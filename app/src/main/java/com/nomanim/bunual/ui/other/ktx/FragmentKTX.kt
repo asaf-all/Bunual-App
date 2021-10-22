@@ -21,7 +21,7 @@ fun Fragment.showDialogOfCloseActivity() {
         .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
         .addButton(getString(stringOfYesIdentifier),
             ContextCompat.getColor(requireContext(), R.color.white)
-            ,ContextCompat.getColor(requireContext(), R.color.red)
+            ,ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red)
             ,CFAlertDialog.CFAlertActionStyle.POSITIVE
             ,CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
             DialogInterface.OnClickListener { dialog, which ->
@@ -33,7 +33,7 @@ fun Fragment.showDialogOfCloseActivity() {
             })
         .addButton(getString(stringOfDismissIdentifier),
             ContextCompat.getColor(requireContext(), R.color.white)
-            ,ContextCompat.getColor(requireContext(),R.color.green)
+            ,ContextCompat.getColor(requireContext(),R.color.dismiss_button_color_green)
             ,CFAlertDialog.CFAlertActionStyle.NEGATIVE
             ,CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
             DialogInterface.OnClickListener { dialog, which ->

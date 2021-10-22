@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/background_color_gray"
-            tools:context=".ui.fragments.mainActivity.ShowDetailsFragment">
+            tools:context=".ui.fragments.adsDetailsActivity.AdsDetailsFragment">
 
             <com.smarteist.autoimageslider.SliderView
                 android:id="@+id/imageSlider"
@@ -55,7 +55,7 @@
                 app:sliderStartAutoCycle="true" >
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/showDetailsBackButton"
+                    android:id="@+id/adsDetailsBackButton"
                     android:layout_width="50dp"
                     android:layout_height="38dp"
                     android:layout_marginLeft="16dp"
@@ -113,29 +113,6 @@
                 android:textColor="@color/black"
                 app:layout_constraintStart_toStartOf="@+id/textView14"
                 app:layout_constraintTop_toBottomOf="@+id/textView14" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/similarPhonesRecyclerView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="13dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView16" />
-
-            <TextView
-                android:id="@+id/textView16"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="12dp"
-                android:fontFamily="@font/roboto_condensed_bold"
-                android:text="@string/similar_announcements"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout6" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout6"
@@ -307,23 +284,28 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/addToFavouritesButton"
         android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="10dp"
-        android:background="@drawable/view_registration_button"
+        android:background="@drawable/view_add_favourites_button"
         android:backgroundTint="@color/add_to_favourites_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/callUserPhoneNumberButton"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/textView12"
-            android:layout_width="wrap_content"
+            android:id="@+id/addFavouritesTextView"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
             android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:maxLines="1"
             android:text="@string/add_to_favourites"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -333,7 +315,68 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/deleteFromFavouritesButton"
         android:layout_width="0dp"
-        android:layout_height="0dp"/>
+        android:layout_height="55dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/view_add_favourites_button"
+        android:backgroundTint="@color/delete_from_favourites_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/addToFavouritesButton"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/deleteFromFavouritesTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/delete_from_favourites"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/callUserPhoneNumberButton"
+        android:layout_width="0dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/view_add_favourites_button"
+        android:backgroundTint="@color/call_user_phone_number_button_green"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/addToFavouritesButton">
+
+        <TextView
+            android:id="@+id/textViewrandom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/roboto_medium"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/call"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

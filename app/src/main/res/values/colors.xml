@@ -8,7 +8,12 @@
     <color name="background_color_gray">#F2F2F2</color>
     <color name="status_bar_color">#AFAFAF</color>
     <color name="toolbar_text_color">#807C7C</color>
-    <color name="add_to_favourites_button">#BFFF4D4D</color>
+    <color name="add_to_favourites_button">#E8FF4D4D</color>
+    <color name="delete_from_favourites_button">#009688</color>
+    <color name="cancel_button_color_red">#FF4343</color>
+    <color name="dismiss_button_color_green">#4CAF50</color>
+    <color name="call_user_phone_number_button_green">#03A9F4</color>
+
 
     <color name="silver">#C0C0C0</color>
     <color name="gray">#808080</color>

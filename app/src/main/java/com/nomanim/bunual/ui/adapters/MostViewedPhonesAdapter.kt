@@ -13,7 +13,7 @@ class MostViewedPhonesAdapter(private val list: ArrayList<ModelAnnouncement>, va
 
     interface Listener {
 
-        fun onMostViewedPhoneClick(position: Int)
+        fun onMostViewedPhoneClick(list: ArrayList<ModelAnnouncement>,position: Int)
     }
 
     class Holder(val binding: LayoutCardViewMostviewedPhonesBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -26,7 +26,7 @@ class MostViewedPhonesAdapter(private val list: ArrayList<ModelAnnouncement>, va
             binding.phoneImage.downloadImageWithGlide(binding.root,list[position].image[0])
             PushDownAnim.setPushDownAnimTo(binding.mostViewedPhonesLinearLayout).setOnClickListener {
 
-                listener.onMostViewedPhoneClick(position)
+                listener.onMostViewedPhoneClick(list,position)
             }
         }
     }

@@ -4,20 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragments.adsDetailsActivity.ShowPicturesFragment">
+    tools:context=".ui.activities.AdsDetailsActivity">
 
-    <com.github.piasy.biv.view.BigImageView
-        android:id="@+id/mBigImage"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:failureImage="@drawable/im_fail"
-        app:failureImageInitScaleType="center"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:optimizeDisplay="true" />
-
-
+        app:navGraph="@navigation/nav_ads_details_activity" />
 </androidx.constraintlayout.widget.ConstraintLayout>

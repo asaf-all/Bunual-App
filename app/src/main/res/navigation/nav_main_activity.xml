@@ -64,15 +64,6 @@
         android:label="fragment_search"
         tools:layout="@layout/fragment_search" />
     <fragment
-        android:id="@+id/showDetailsFragment"
-        android:name="com.nomanim.bunual.ui.fragments.mainActivity.ShowDetailsFragment"
-        android:label="fragment_show_details"
-        tools:layout="@layout/fragment_show_details" >
-        <action
-            android:id="@+id/action_showDetailsFragment_to_showPicturesFragment"
-            app:destination="@id/showPicturesFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/splashScreenFragment"
         android:name="com.nomanim.bunual.ui.fragments.mainActivity.SplashScreenFragment"
         android:label="fragment_splash_screen"
@@ -81,10 +72,5 @@
             android:id="@+id/action_splashScreenFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/showPicturesFragment"
-        android:name="com.nomanim.bunual.ui.fragments.mainActivity.ShowPicturesFragment"
-        android:label="fragment_show_pictures"
-        tools:layout="@layout/fragment_show_pictures" />
 
 </navigation>

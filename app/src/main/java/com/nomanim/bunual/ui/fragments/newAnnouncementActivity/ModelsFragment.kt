@@ -86,7 +86,9 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
     private fun getPhoneIdFromSharedPref() {
 
-        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        sharedPref = activity?.getSharedPreferences(
+            "sharedPrefInNewAnnouncementActivity"
+            ,Context.MODE_PRIVATE)
         phoneBrandId = sharedPref?.getString("phoneBrandId","error")
     }
 

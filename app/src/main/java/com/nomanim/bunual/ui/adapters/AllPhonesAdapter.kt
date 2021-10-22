@@ -14,7 +14,7 @@ class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncem
 
     interface Listener {
 
-        fun setOnClickVerticalAnnouncement(position: Int)
+        fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int)
 
     }
 
@@ -32,7 +32,7 @@ class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncem
             binding.announcementImageView.downloadImageWithGlide(binding.root,list[position].image[0])
             PushDownAnim.setPushDownAnimTo(binding.verticalLinearLayout).setOnClickListener {
 
-                listener.setOnClickVerticalAnnouncement(position)
+                listener.setOnClickVerticalAnnouncement(list,position)
             }
 
         }

@@ -125,7 +125,7 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
         fp.adapter = adapter
     }
 
-    override fun setOnClickVerticalAnnouncement(position: Int) {
+    override fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int) {
 
     }
 
