@@ -2,6 +2,7 @@ package com.nomanim.bunual.ui.fragments.newAnnouncementActivity
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -29,16 +30,19 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
 
     private var _binding: FragmentBrandsBinding? = null
     private val binding get() = _binding!!
+    private var sharedPref: SharedPreferences? = null
     private var phoneBrands = ArrayList<ModelPhoneBrands>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
 
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
         onBackPressed()
-        binding.searchPhoneBrands.clearTextWhenClickClear()
         binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
         binding.closeActivityInBrandsFragment.setOnClickListener { showDialogOfCloseActivity() }
+        binding.searchPhoneBrands.clearTextWhenClickClear()
+
         getBrandNamesWithRoom()
 
         return binding.root
@@ -113,9 +117,6 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
 
         try {
 
-            val sharedPref = activity?.getSharedPreferences(
-                "sharedPrefInNewAnnouncementActivity"
-                ,Context.MODE_PRIVATE)
             val editor = sharedPref?.edit()
             editor?.putString("phoneBrandName",brandName)
             editor?.putString("phoneBrandId",brandId)
@@ -124,6 +125,11 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
             findNavController().navigate(R.id.action_brandsFragment_to_modelsFragment)
 
         }catch (e: Exception) {}
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 
 }

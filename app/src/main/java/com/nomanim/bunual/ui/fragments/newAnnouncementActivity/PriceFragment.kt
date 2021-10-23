@@ -1,6 +1,7 @@
 package com.nomanim.bunual.ui.fragments.newAnnouncementActivity
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentPriceBinding
@@ -18,13 +20,20 @@ class PriceFragment : Fragment() {
 
     private var _binding: FragmentPriceBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<PriceFragmentArgs>()
+    private var sharedPref: SharedPreferences? = null
     private var withAgreement: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentPriceBinding.inflate(inflater,container,false)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
         pressBackButton()
+
+        if (args.fromUserFragment) {
+
+            binding.priceEditText.setText(sharedPref?.getString("price","")) }
 
         binding.byAgreementSwitch.isChecked = false
         binding.byAgreementSwitch.setOnCheckedChangeListener { view, isChecked -> checkSwitchButtonStatus(isChecked) }
@@ -52,9 +61,6 @@ class PriceFragment : Fragment() {
 
     private fun navigateToNextFragment(view: View) {
 
-        val sharedPref = activity?.getSharedPreferences(
-            "sharedPrefInNewAnnouncementActivity"
-            ,Context.MODE_PRIVATE)
         val editor = sharedPref?.edit()
 
         if (!withAgreement) {
@@ -64,8 +70,7 @@ class PriceFragment : Fragment() {
 
         }else {
 
-            val identifier = resources.getIdentifier("by_agreement","string",activity?.packageName)
-            editor?.putString("price",getString(identifier))
+            editor?.putString("price",getString(R.string.by_agreement))
             findNavController().navigate(R.id.action_priceFragment_to_userFragment)
         }
 
@@ -86,7 +91,8 @@ class PriceFragment : Fragment() {
 
     private fun navigateToPreviousFragment() {
 
-        findNavController().navigate(R.id.action_priceFragment_to_featuresFragment)
+        val action = PriceFragmentDirections.actionPriceFragmentToFeaturesFragment(true)
+        findNavController().navigate(action)
     }
 
     private fun pressBackButton() {

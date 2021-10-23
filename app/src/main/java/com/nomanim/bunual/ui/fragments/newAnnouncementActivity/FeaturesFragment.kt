@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -25,6 +26,7 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<FeaturesFragmentArgs>()
     private var sharedPref: SharedPreferences? = null
     private lateinit var bottomSheetBinding: LayoutBottomSheetColorsBinding
     private lateinit var bottomSheetDialog: BottomSheetDialog
@@ -38,21 +40,15 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentFeaturesBinding.inflate(inflater,container,false)
-        sharedPref = activity?.getSharedPreferences(
-            "sharedPrefInNewAnnouncementActivity"
-            ,Context.MODE_PRIVATE)
         bottomSheetBinding = LayoutBottomSheetColorsBinding.inflate(inflater)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
+        if (args.fromPriceFragment) { getAndSetAllDataIfHasAccess() }
+
+        pressBackButton()
         getStorageCapacities()
         getRamCapacities()
         getColorNamesAndCodes()
-        pressBackButton()
-        getStrings()
-
-        if (sharedPref?.getBoolean("getDataFromSharedPrefInFeaturesFragment",false) == true) {
-
-            getAllDataIfHasAccess()
-        }
 
         binding.featuresToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         binding.featuresNextToolbarButton.setOnClickListener { navigateToNextFragment(it) }
@@ -119,18 +115,11 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         recyclerView.adapter = adapter
     }
 
-    private fun getStrings() {
+    private fun getAndSetAllDataIfHasAccess() {
 
-        val storageIdentifier = resources.getIdentifier("choose_phone_storage","string",activity?.packageName)
-        val ramIdentifier = resources.getIdentifier("choose_phone_ram","string",activity?.packageName)
-        val colorIdentifier = resources.getIdentifier("choose_phone_color","string",activity?.packageName)
-
-        stringOfStorage = getString(storageIdentifier)
-        stringOfRam = getString(ramIdentifier)
-        stringOfColor = getString(colorIdentifier)
-    }
-
-    private fun getAllDataIfHasAccess() {
+        stringOfStorage = getString(R.string.choose_phone_storage)
+        stringOfRam = getString(R.string.choose_phone_ram)
+        stringOfColor = getString(R.string.choose_phone_color)
 
         val storageCapacity = sharedPref?.getString("storageCapacity",stringOfStorage)
         val ramCapacity = sharedPref?.getString("ramCapacity",stringOfRam)
@@ -173,7 +162,8 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
 
     private fun navigateToPreviousFragment() {
 
-        findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment)
+        val action = FeaturesFragmentDirections.actionFeaturesFragmentToDescriptionFragment(true)
+        findNavController().navigate(action)
     }
 
     private fun pressBackButton() {
@@ -184,14 +174,6 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
                 navigateToPreviousFragment()
             }
         })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        val editor = sharedPref?.edit()
-        editor?.putBoolean("getDataFromSharedPrefInFeaturesFragment",false)
-        editor?.apply()
     }
 
     override fun setOnColorClickListener(buttonFinishText: String) {

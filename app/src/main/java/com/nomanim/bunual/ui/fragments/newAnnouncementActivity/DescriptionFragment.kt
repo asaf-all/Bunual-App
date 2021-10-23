@@ -8,29 +8,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentDescriptionBinding
-import com.nomanim.bunual.ui.other.BaseCoroutineScope
 import com.nomanim.bunual.ui.other.ktx.showDialogOfCloseActivity
 
-class DescriptionFragment : BaseCoroutineScope() {
+class DescriptionFragment : Fragment() {
 
     private var _binding: FragmentDescriptionBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<DescriptionFragmentArgs>()
     private var sharedPref: SharedPreferences? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentDescriptionBinding.inflate(inflater,container,false)
-        sharedPref = activity?.getSharedPreferences(
-            "sharedPrefInNewAnnouncementActivity"
-            ,Context.MODE_PRIVATE)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
         pressBackButton()
 
-        binding.descriptionEditText.setText(sharedPref?.getString("description",""))
+        if (args.fromFeatures) {
+
+            binding.descriptionEditText.setText(sharedPref?.getString("description",""))
+
+        }else { binding.descriptionEditText.setText("") }
+
         binding.descriptionToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         binding.descriptionNextButton.setOnClickListener { checkEditTextAndNavigate(it) }
         binding.descriptionNextToolbarButton.setOnClickListener { checkEditTextAndNavigate(it) }
@@ -72,14 +77,6 @@ class DescriptionFragment : BaseCoroutineScope() {
         editor?.apply()
 
         findNavController().navigate(R.id.action_descriptionFragment_to_featuresFragment)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        val editor = sharedPref?.edit()
-        editor?.putString("description","")
-        editor?.apply()
     }
 
 }

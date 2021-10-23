@@ -9,6 +9,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -53,6 +54,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentModelsBinding.inflate(inflater,container,false)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
         pressBackButton()
 
@@ -60,8 +62,12 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
         binding.modelsToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         binding.closeActivityInModelsFragment.setOnClickListener { showDialogOfCloseActivity() }
 
-        if (args.fromDescriptionFragment) { getImagesUrlIfIsNotEmptyInRoom() }
-        else { getModelNamesFromRoom()
+        if (args.fromDescriptionFragment) {
+
+            getImagesUrlIfIsNotEmptyInRoom()
+            lifecycleScope.launch { getModelNamesFromRoom() }
+
+        } else { getModelNamesFromRoom()
 
             launch {
 
@@ -69,7 +75,6 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
                 database.deleteImagesUri()
             }
         }
-
         return binding.root
     }
 
@@ -77,20 +82,13 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
         launch {
 
-            getPhoneIdFromSharedPref()
+            phoneBrandId = sharedPref?.getString("phoneBrandId",null)
             val database = RoomDB(requireContext()).getDataFromRoom()
             val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelPhoneModels>
             filterPhoneModelNames(phoneModelNames)
         }
     }
 
-    private fun getPhoneIdFromSharedPref() {
-
-        sharedPref = activity?.getSharedPreferences(
-            "sharedPrefInNewAnnouncementActivity"
-            ,Context.MODE_PRIVATE)
-        phoneBrandId = sharedPref?.getString("phoneBrandId","error")
-    }
 
     private fun filterPhoneModelNames(modelNames: ArrayList<ModelPhoneModels>) {
 
@@ -295,6 +293,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
     override fun onDestroy() {
         super.onDestroy()
+        job.cancel()
     }
 
 }

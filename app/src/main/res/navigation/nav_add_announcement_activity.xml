@@ -41,6 +41,10 @@
         <action
             android:id="@+id/action_descriptionFragment_to_modelsFragment"
             app:destination="@id/modelsFragment" />
+        <argument
+            android:name="fromFeatures"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/featuresFragment"
@@ -53,6 +57,10 @@
         <action
             android:id="@+id/action_featuresFragment_to_descriptionFragment"
             app:destination="@id/descriptionFragment" />
+        <argument
+            android:name="fromPriceFragment"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/priceFragment"
@@ -65,6 +73,10 @@
         <action
             android:id="@+id/action_priceFragment_to_featuresFragment"
             app:destination="@id/featuresFragment" />
+        <argument
+            android:name="fromUserFragment"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"

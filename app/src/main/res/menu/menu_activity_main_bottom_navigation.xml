@@ -13,7 +13,7 @@
         android:menuCategory="secondary"/>
     <item
         android:id="@+id/newAnnouncementFragment"
-        android:icon="@drawable/ic_add_white"
+        android:icon="@drawable/ic_add"
         android:title="@string/add_announcement"
         android:menuCategory="secondary"/>
     <item

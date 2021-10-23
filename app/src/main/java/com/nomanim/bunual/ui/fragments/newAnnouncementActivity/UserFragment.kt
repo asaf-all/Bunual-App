@@ -9,45 +9,46 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.R
-import com.nomanim.bunual.ui.adapters.PlacesAdapter
 import com.nomanim.bunual.databinding.FragmentUserBinding
-import com.nomanim.bunual.databinding.LayoutBottomSheetColorsBinding
+import com.nomanim.bunual.models.ModelImages
 import com.nomanim.bunual.retrofit.builders.PlacesApi
 import com.nomanim.bunual.retrofit.models.ModelPlaces
+import com.nomanim.bunual.room.database.RoomDB
+import com.nomanim.bunual.ui.other.BaseCoroutineScope
 import com.nomanim.bunual.ui.other.ktx.showFeaturesBottomSheet
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-class UserFragment : Fragment() {
+class UserFragment : BaseCoroutineScope() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
     private var sharedPref: SharedPreferences? = null
     private val compositeDisposable = CompositeDisposable()
     private lateinit var firebaseStorage: FirebaseStorage
+    private lateinit var imagesUrl: List<ModelImages>
     private lateinit var placesList: List<ModelPlaces>
     private val downloadUrlList = ArrayList<String>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentUserBinding.inflate(inflater)
-        sharedPref = activity?.getSharedPreferences(
-            "sharedPrefInNewAnnouncementActivity"
-            , Context.MODE_PRIVATE)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
 
         pressBackButton()
         getPlacesFromInternet()
+        getImagesUrlWithRoom()
 
         binding.userToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
 
@@ -80,17 +81,30 @@ class UserFragment : Fragment() {
             }))
     }
 
+    private fun getImagesUrlWithRoom() {
 
-    private fun uploadImagesToStorage(imagesList: List<Uri>) {
+        launch {
+
+            imagesUrl = RoomDB(requireContext()).getDataFromRoom().getImagesUriFromDb()
+            uploadImagesToStorage(imagesUrl)
+        }
+    }
+
+
+    private fun uploadImagesToStorage(imagesList: List<ModelImages>) {
 
         val reference = firebaseStorage.reference
 
-        val child = reference.child("Pictures").child(UUID.randomUUID().toString())
-        child.putFile(imagesList[0]).addOnSuccessListener {
+        for (i in imagesList.indices) {
 
-            downloadUrlList.add(child.downloadUrl.toString())
-            //navigateToNextFragment()
+            val child = reference.child("Pictures").child(UUID.randomUUID().toString())
+            val uploadTask = child.putFile(imagesList[0].imageUri.toUri()).addOnSuccessListener {
+
+                downloadUrlList.add(child.downloadUrl.toString())
+                //navigateToNextFragment()
+            }
         }
+
 
     }
 
@@ -124,6 +138,7 @@ class UserFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         compositeDisposable.clear()
+        job.cancel()
     }
 
 }

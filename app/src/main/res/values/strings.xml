@@ -55,7 +55,6 @@
     <!-- Profile Fragment -->
     <string name="log_out">Log out</string>
 
-
     <!-- Brands Fragment -->
     <string name="select_phone_brand">Select Brand</string>
 
@@ -137,8 +136,9 @@
     <string name="name">Name</string>
     <string name="phone_number">Phone number</string>
     <string name="no_delivery">No delivery</string>
-    <string name="delivery_to_space">Delivery to space</string>
+    <string name="delivery_to_place">Delivery to place</string>
     <string name="subway_delivery">Subway delivery</string>
+    <string name="share_ads">Share Announcement</string>
 
 
     <string name="next">Next</string>

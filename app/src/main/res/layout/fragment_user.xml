@@ -81,8 +81,10 @@
             android:layout_marginBottom="10dp"
             android:background="@drawable/view_registration_button"
             android:backgroundTint="@color/main"
+            android:ellipsize="end"
             android:fontFamily="@font/roboto_medium"
-            android:text="@string/next"
+            android:maxLines="1"
+            android:text="@string/share_ads"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -112,12 +114,16 @@
 
             <TextView
                 android:id="@+id/placeTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="end"
                 android:fontFamily="@font/roboto_medium"
+                android:maxLines="1"
                 android:text="@string/choose_place"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -179,7 +185,7 @@
             android:id="@+id/radioButton5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/delivery_to_space" />
+            android:text="@string/delivery_to_place" />
 
         <RadioButton
             android:id="@+id/radioButton6"
