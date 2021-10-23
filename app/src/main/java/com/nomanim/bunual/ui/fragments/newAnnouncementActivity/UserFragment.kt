@@ -86,8 +86,22 @@ class UserFragment : BaseCoroutineScope() {
         launch {
 
             imagesUrl = RoomDB(requireContext()).getDataFromRoom().getImagesUriFromDb()
-            uploadImagesToStorage(imagesUrl)
+            getAllDataForUploadToFirestore()
         }
+    }
+
+    private fun getAllDataForUploadToFirestore() {
+
+        val phoneBrandName = sharedPref?.getString("phoneBrandName",null)
+        val phoneModelName = sharedPref?.getString("phoneModelName",null)
+        val description = sharedPref?.getString("description",null)
+        val storageCapacity = sharedPref?.getString("storageCapacity",null)
+        val ramCapacity = sharedPref?.getString("ramCapacity",null)
+        val color = sharedPref?.getString("color",null)
+        val status = sharedPref?.getString("status",null)
+        val price = sharedPref?.getString("price",null)
+
+
     }
 
 
@@ -98,12 +112,18 @@ class UserFragment : BaseCoroutineScope() {
         for (i in imagesList.indices) {
 
             val child = reference.child("Pictures").child(UUID.randomUUID().toString())
-            val uploadTask = child.putFile(imagesList[0].imageUri.toUri()).addOnSuccessListener {
+            val uploadTask = child.putFile(imagesList[i].imageUri.toUri()).addOnSuccessListener {
 
                 downloadUrlList.add(child.downloadUrl.toString())
-                //navigateToNextFragment()
             }
         }
+    }
+
+
+
+    private fun uploadAnnouncementToFirestore() {
+
+
 
 
     }

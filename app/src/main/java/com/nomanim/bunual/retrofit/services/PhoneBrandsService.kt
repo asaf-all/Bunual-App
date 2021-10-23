@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface PhoneBrandsService {
 
-    @GET("AsafHacioglu/bax-api-collection/master/brands.json")
+    @GET("iamasaf-profile/bunual-api-collection/master/brands.json")
     fun getData() : Call<PhoneBrandsList>
 }

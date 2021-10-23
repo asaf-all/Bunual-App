@@ -17,10 +17,12 @@ import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentSplashScreenBinding
 import com.nomanim.bunual.retrofit.builders.PhoneBrandsApi
 import com.nomanim.bunual.retrofit.builders.PhoneModelsApi
+import com.nomanim.bunual.retrofit.builders.SimpleDataApi
 import com.nomanim.bunual.retrofit.listModels.PhoneBrandsList
 import com.nomanim.bunual.retrofit.listModels.PhoneModelsList
 import com.nomanim.bunual.retrofit.models.ModelPhoneBrands
 import com.nomanim.bunual.retrofit.models.ModelPhoneModels
+import com.nomanim.bunual.retrofit.models.ModelSimpleData
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.other.BaseCoroutineScope
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,7 +42,6 @@ class SplashScreenFragment : BaseCoroutineScope() {
     private lateinit var firestore: FirebaseFirestore
     private var sharedPref: SharedPreferences? = null
     private val compositeDisposable = io.reactivex.disposables.CompositeDisposable()
-    private var brandNamesResponse: Response<PhoneBrandsList>? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
@@ -58,15 +59,14 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
     private fun checkInternetConnection() {
 
-        val phoneService = PhoneBrandsApi.builder.getData()
-        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
-            override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
+        val phoneService = SimpleDataApi.builder.getData()
+        phoneService.enqueue(object  : Callback<ModelSimpleData> {
+            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>?) {
 
-                brandNamesResponse = response
                 getActiveApiVersionCode()
             }
 
-            override fun onFailure(call: Call<PhoneBrandsList>, t: Throwable) {
+            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {
 
                 Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
                 getActiveApiVersionCode()
@@ -128,18 +128,31 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
     private fun getBrandNamesWithRetrofit() {
 
-        if (brandNamesResponse != null) {
+        val phoneService = PhoneBrandsApi.builder.getData()
+        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
+            override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
 
-            try {
+                if (response != null) {
 
-                val phoneBrands = brandNamesResponse!!.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
-                addPhoneBrandNamesAtRoom(phoneBrands)
-                getModelNamesWithRxJava()
+                    try {
 
-            } catch (e: Exception) {
-                context?.let { Toast.makeText(it, R.string.no_internet_connection, Toast.LENGTH_LONG).show() }
+                        val phoneBrands = response.body()?.modelPhoneBrands as ArrayList<ModelPhoneBrands>
+                        addPhoneBrandNamesAtRoom(phoneBrands)
+                        getModelNamesWithRxJava()
+
+                    } catch (e: Exception) {
+                        context?.let { Toast.makeText(it, R.string.no_internet_connection, Toast.LENGTH_LONG).show() }
+                    }
+                }
             }
-        }
+
+            override fun onFailure(call: Call<PhoneBrandsList>, t: Throwable) {
+
+                Toast.makeText(requireContext(), R.string.fail, Toast.LENGTH_LONG).show()
+            }
+        })
+
+
     }
 
     private fun getModelNamesWithRxJava() {

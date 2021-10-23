@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface PhoneModelsService {
 
-    @GET("AsafHacioglu/bax-api-collection/master/devices.json")
+    @GET("iamasaf-profile/bunual-api-collection/master/devices.json")
     fun getData() : Observable<PhoneModelsList>
 }
