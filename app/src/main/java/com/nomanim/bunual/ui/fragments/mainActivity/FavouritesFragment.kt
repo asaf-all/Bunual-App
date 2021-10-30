@@ -91,16 +91,19 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
                     favoritesPhones.add(originalAnnouncementId)
                 }
 
-                firestore.collection(resources.getString(R.string.all_announcements)).whereIn("id",favoritesPhones).get().addOnSuccessListener { values ->
+                if (context != null) {
 
-                    allFavouritePhones.getDataFromFireStore(firestore,resources.getString(R.string.all_announcements),values)
-                    binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
-                    setFavoritesPhonesRecyclerView()
+                    firestore.collection(resources.getString(R.string.all_announcements)).whereIn("id",favoritesPhones).get().addOnSuccessListener { values ->
 
-                }.addOnFailureListener {
+                        allFavouritePhones.getDataFromFireStore(firestore,resources.getString(R.string.all_announcements),values)
+                        binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
+                        setFavoritesPhonesRecyclerView()
 
-                    binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
-                    Toast.makeText(requireContext(),resources.getString(R.string.fail),Toast.LENGTH_SHORT).show()
+                    }.addOnFailureListener {
+
+                        binding.favoritesPhonesProgressBar.visibility = View.INVISIBLE
+                        Toast.makeText(requireContext(),resources.getString(R.string.fail),Toast.LENGTH_SHORT).show()
+                    }
                 }
 
             }else {

@@ -43,12 +43,11 @@ fun ArrayList<ModelAnnouncement>.getDataFromFireStore(fireStore: FirebaseFiresto
             val description = doc.get("description") as String
             val numberOfViews = doc.get("numberOfViews") as String
             val time = doc.get("time") as Timestamp
-            val numberOfLike = doc.get("numberOfLike") as String
 
             val phoneModel = ModelPhone(brand,model,price,color,storage,ram,currentStatus,delivery,agreementPrice)
             val placeModel = ModelPlaces(city,population)
             val userModel = ModelUser(userName,phoneNumber,placeModel)
-            val announcement = ModelAnnouncement(id,image,description,numberOfViews,time,numberOfLike,phoneModel,userModel)
+            val announcement = ModelAnnouncement(id,image,description,numberOfViews,time,phoneModel,userModel)
 
             list.add(announcement)
         }

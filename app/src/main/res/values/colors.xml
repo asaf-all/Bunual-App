@@ -12,7 +12,7 @@
     <color name="delete_from_favourites_button">#009688</color>
     <color name="cancel_button_color_red">#FF4343</color>
     <color name="dismiss_button_color_green">#4CAF50</color>
-    <color name="call_user_phone_number_button_green">#03A9F4</color>
+    <color name="call_user_phone_number_button_green">#E803A9F4</color>
 
 
     <color name="silver">#C0C0C0</color>

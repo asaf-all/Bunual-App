@@ -8,9 +8,10 @@
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="149dp"
-        android:layout_height="130dp"
-        android:src="@drawable/ic_phone"
+        android:layout_width="188dp"
+        android:layout_height="170dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/im_app_logo_ring"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

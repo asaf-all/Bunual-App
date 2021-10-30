@@ -4,11 +4,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -68,7 +70,9 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
             override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {
 
-                Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
+                val toast = Toast.makeText(requireContext(),R.string.no_internet_connection,Toast.LENGTH_LONG)
+                toast.setGravity(Gravity.CENTER,0,0)
+                toast.show()
                 getActiveApiVersionCode()
             }
         })
