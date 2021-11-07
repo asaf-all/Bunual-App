@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
 import androidx.lifecycle.lifecycleScope
@@ -56,26 +55,34 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
         _binding = FragmentModelsBinding.inflate(inflater,container,false)
         sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
-        pressBackButton()
+        return binding.root
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        pressBackButton()
         binding.searchPhoneModels.clearTextWhenClickClear()
         binding.modelsToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         binding.closeActivityInModelsFragment.setOnClickListener { showDialogOfCloseActivity() }
 
-        if (args.fromDescriptionFragment) {
+        checkImagesStatusInRoom()
+    }
 
-            getImagesUrlIfIsNotEmptyInRoom()
-            lifecycleScope.launch { getModelNamesFromRoom() }
+    private fun checkImagesStatusInRoom() {
 
-        } else { getModelNamesFromRoom()
+        sharedPref?.let { sharedPreferences ->
 
-            launch {
+            if (sharedPreferences.getBoolean("imagesIsEmptyInRoom",true)) {
 
-                val database = RoomDB(requireContext()).getDataFromRoom()
-                database.deleteImagesUri()
+                getModelNamesFromRoom()
+
+            }else {
+
+                getImagesUrlIfIsNotEmptyInRoom()
+                lifecycleScope.launch { getModelNamesFromRoom() }
             }
         }
-        return binding.root
     }
 
     private fun getModelNamesFromRoom() {
@@ -85,12 +92,12 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
             phoneBrandId = sharedPref?.getString("phoneBrandId",null)
             val database = RoomDB(requireContext()).getDataFromRoom()
             val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelPhoneModels>
-            filterPhoneModelNames(phoneModelNames)
+            filterPhoneModelNamesByBrandId(phoneModelNames)
         }
     }
 
 
-    private fun filterPhoneModelNames(modelNames: ArrayList<ModelPhoneModels>) {
+    private fun filterPhoneModelNamesByBrandId(modelNames: ArrayList<ModelPhoneModels>) {
 
         if (modelNames.isNotEmpty()) {
 
@@ -123,17 +130,15 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
     private fun setModelsRecyclerView(list: ArrayList<ModelPhoneModels>) {
 
-        context?.let { context ->
+        val recyclerView = binding.modelsRecyclerView
+        recyclerView.visibility = View.VISIBLE
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.isNestedScrollingEnabled = false
+        recyclerAdapter = PhoneModelsAdapter(requireContext(),list,this@ModelsFragment)
+        recyclerView.adapter = recyclerAdapter
 
-            val recyclerView = binding.modelsRecyclerView
-            recyclerView.visibility = View.VISIBLE
-            recyclerView.isNestedScrollingEnabled = false
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            recyclerView.setHasFixedSize(true)
-            recyclerView.isNestedScrollingEnabled = false
-            recyclerAdapter = PhoneModelsAdapter(context,list,this@ModelsFragment)
-            recyclerView.adapter = recyclerAdapter
-        }
     }
 
     private fun addMoreModelNamesAtRecyclerView(_remainingListSize: Int) {
@@ -216,7 +221,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
         try {
 
             saveModelNameAtSharedPref(modelName)
-            getImagesUrlIfIsNotEmptyInRoom()
+            openGallery()
 
         }catch (e:Exception){}
     }
@@ -272,6 +277,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
             val database = RoomDB(requireContext()).getDataFromRoom()
             database.deleteImagesUri()
             database.insertImagesUri(*list.toTypedArray())
+            sharedPref?.edit()?.putBoolean("imagesIsEmptyInRoom",false)?.apply()
             findNavController().navigate(R.id.action_modelsFragment_to_descriptionFragment)
         }
     }

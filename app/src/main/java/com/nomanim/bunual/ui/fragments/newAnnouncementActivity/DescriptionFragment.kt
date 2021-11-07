@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentDescriptionBinding
@@ -20,7 +19,6 @@ class DescriptionFragment : Fragment() {
 
     private var _binding: FragmentDescriptionBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<DescriptionFragmentArgs>()
     private var sharedPref: SharedPreferences? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -28,20 +26,19 @@ class DescriptionFragment : Fragment() {
         _binding = FragmentDescriptionBinding.inflate(inflater,container,false)
         sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         pressBackButton()
 
-        if (args.fromFeatures) {
-
-            binding.descriptionEditText.setText(sharedPref?.getString("description",""))
-
-        }else { binding.descriptionEditText.setText("") }
-
+        binding.descriptionEditText.setText(sharedPref?.getString("description",""))
         binding.descriptionToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         binding.descriptionNextButton.setOnClickListener { checkEditTextAndNavigate(it) }
         binding.descriptionNextToolbarButton.setOnClickListener { checkEditTextAndNavigate(it) }
         binding.descriptionCancelButton.setOnClickListener { showDialogOfCloseActivity() }
-
-        return binding.root
     }
 
     private fun checkEditTextAndNavigate(view: View) {
@@ -56,8 +53,10 @@ class DescriptionFragment : Fragment() {
 
     private fun navigateToPreviousFragment() {
 
-        val actionWithArgument = DescriptionFragmentDirections.actionDescriptionFragmentToModelsFragment(true)
-        findNavController().navigate(actionWithArgument)
+        val editor = sharedPref?.edit()
+        editor?.putString("description",binding.descriptionEditText.text.toString())
+        editor?.apply()
+        findNavController().navigate(R.id.action_descriptionFragment_to_modelsFragment)
     }
 
     private fun pressBackButton() {
@@ -75,7 +74,6 @@ class DescriptionFragment : Fragment() {
         val editor = sharedPref?.edit()
         editor?.putString("description",binding.descriptionEditText.text.toString())
         editor?.apply()
-
         findNavController().navigate(R.id.action_descriptionFragment_to_featuresFragment)
     }
 

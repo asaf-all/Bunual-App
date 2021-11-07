@@ -67,13 +67,13 @@ fun Fragment.addCurrentUserPhoneNumberToSharedPref(auth: FirebaseAuth, sharedPre
     editor?.apply()
 }
 
-fun Fragment.loadingProgressBarInDialog(label: String, detailsLabel: String) : KProgressHUD {
+fun Fragment.loadingProgressBarInDialog(label: String, detailsLabel: String, cancellable: Boolean) : KProgressHUD {
 
     val kProgressHUD = KProgressHUD.create(requireContext())
         .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
         .setLabel(label)
         .setDetailsLabel(detailsLabel)
-        .setCancellable(true)
+        .setCancellable(cancellable)
         .setAnimationSpeed(2)
         .setDimAmount(0.3f)
 

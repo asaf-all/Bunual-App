@@ -1,14 +1,14 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,10 +18,14 @@ import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.models.ModelPhone
 import com.nomanim.bunual.models.ModelUser
 import com.nomanim.bunual.retrofit.models.ModelPlaces
+import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.activities.NewAnnouncementActivity
+import com.nomanim.bunual.ui.other.BaseCoroutineScope
+import com.nomanim.bunual.ui.other.ktx.loadingProgressBarInDialog
 import com.thekhaeng.pushdownanim.PushDownAnim
+import kotlinx.coroutines.launch
 
-class NewAnnouncementFragment : Fragment() {
+class NewAnnouncementFragment : BaseCoroutineScope() {
 
     private var _binding: FragmentNewAnnouncementBinding? = null
     private val binding get() = _binding!!
@@ -40,27 +44,17 @@ class NewAnnouncementFragment : Fragment() {
 
         if (auth.currentUser != null) {
 
-            val intent = Intent(activity, NewAnnouncementActivity::class.java)
-            activity?.finish()
-            activity?.startActivity(intent)
+            val dialog = loadingProgressBarInDialog(getString(R.string.wait),getString(R.string.downloading_data),false)
+            dialog.show()
+            updateSharedPrefSomeArea()
 
-            /*val imagesList = ArrayList<String>()
-            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11-pro.jpg")
-            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11-pro-max-.jpg")
-            imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11.jpg")
+            launch {
 
-            val modelPhone = ModelPhone("Samsung","galaxy a71","423 AZN","purple","64 GB","4 GB","used","no",false)
-            val modelPlaces = ModelPlaces("Baku","2M")
-            val modelUser = ModelUser("randomName","randomNumber",modelPlaces)
-            val modelAnnouncement = ModelAnnouncement("",imagesList,"randomDescription","524", Timestamp.now(),"124",modelPhone,modelUser)
-
-            firestore = FirebaseFirestore.getInstance()
-            firestore.collection("All Announcements").add(modelAnnouncement)
-                .addOnSuccessListener {
-
-                    Toast.makeText(requireContext(),"Added",Toast.LENGTH_SHORT).show()
-
-                }*/
+                val database = RoomDB(requireContext()).getDataFromRoom()
+                database.deleteImagesUri()
+                dialog.dismiss()
+                intentActivityOfNewAds()
+            }
 
         }else {
 
@@ -74,5 +68,52 @@ class NewAnnouncementFragment : Fragment() {
             }
         }
         return binding.root
+    }
+
+    private fun updateSharedPrefSomeArea() {
+
+        val sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
+        val editor = sharedPref?.edit()
+        editor?.putBoolean("imagesIsEmptyInRoom",true)
+        editor?.putString("description","")
+        editor?.putString("storageCapacity",getString(R.string.choose_phone_storage))
+        editor?.putString("ramCapacity",getString(R.string.choose_phone_ram))
+        editor?.putString("color",getString(R.string.choose_phone_color))
+        editor?.putString("price","")
+        editor?.apply()
+    }
+
+    private fun intentActivityOfNewAds() {
+
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.INVISIBLE
+        val intent = Intent(activity, NewAnnouncementActivity::class.java)
+        activity?.finish()
+        activity?.startActivity(intent)
+    }
+
+    private fun addAdsToFieStore() {
+
+        val imagesList = ArrayList<String>()
+        imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11-pro.jpg")
+        imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11-pro-max-.jpg")
+        imagesList.add("https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-11.jpg")
+
+        val modelPhone = ModelPhone("Samsung","galaxy a71","423 AZN","purple","64 GB","4 GB","used","no",false)
+        val modelPlaces = ModelPlaces("Baku","2M")
+        val modelUser = ModelUser("randomName","randomNumber",modelPlaces)
+        val modelAnnouncement = ModelAnnouncement("",imagesList,"randomDescription","524", Timestamp.now(),modelPhone,modelUser)
+
+        firestore = FirebaseFirestore.getInstance()
+        firestore.collection("All Announcements").add(modelAnnouncement)
+            .addOnSuccessListener {
+
+                Toast.makeText(requireContext(),"Added",Toast.LENGTH_SHORT).show()
+
+            }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        job.cancel()
     }
 }

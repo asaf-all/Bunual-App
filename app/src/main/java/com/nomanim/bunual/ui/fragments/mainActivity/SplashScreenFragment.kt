@@ -4,13 +4,12 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.GravityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -52,9 +51,9 @@ class SplashScreenFragment : BaseCoroutineScope() {
         firestore = FirebaseFirestore.getInstance()
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
 
-        checkInternetConnection()
-        //navigateIfProcessTakesLongTime()
+        getActiveApiVersionCode()
 
         return binding.root
     }
@@ -63,18 +62,8 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
         val phoneService = SimpleDataApi.builder.getData()
         phoneService.enqueue(object  : Callback<ModelSimpleData> {
-            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>?) {
-
-                getActiveApiVersionCode()
-            }
-
-            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {
-
-                val toast = Toast.makeText(requireContext(),R.string.no_internet_connection,Toast.LENGTH_LONG)
-                toast.setGravity(Gravity.CENTER,0,0)
-                toast.show()
-                getActiveApiVersionCode()
-            }
+            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>?) {}
+            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {}
         })
     }
 
@@ -208,6 +197,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
                 val database = RoomDB(it).getDataFromRoom()
                 database.deleteModelNames()
                 database.insertModelNames(*phoneModels.toTypedArray())
+                activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.status_bar_color)
                 findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
             }
         }
@@ -215,6 +205,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         compositeDisposable.clear()
     }
 

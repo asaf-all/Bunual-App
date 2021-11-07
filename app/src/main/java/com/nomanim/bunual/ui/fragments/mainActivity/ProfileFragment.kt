@@ -1,15 +1,20 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crowdfire.cfalertdialog.CFAlertDialog
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
@@ -19,7 +24,13 @@ import com.nomanim.bunual.R
 import com.nomanim.bunual.ui.adapters.AllPhonesAdapter
 import com.nomanim.bunual.databinding.FragmentProfileBinding
 import com.nomanim.bunual.models.ModelAnnouncement
+import com.nomanim.bunual.retrofit.builders.SimpleDataApi
+import com.nomanim.bunual.retrofit.models.ModelSimpleData
+import com.nomanim.bunual.ui.activities.MainActivity
 import com.nomanim.bunual.ui.other.getDataFromFireStore
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
@@ -44,37 +55,44 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
         currentUser = auth.currentUser
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
-        if (currentUser != null) {
-
-            binding.logoutTextView.setOnClickListener { pressLogOutAlgorithm() }
-            setUserPhoneNumber()
-            getCurrentUserAnnouncements()
-            setRecyclerView(requireContext())
-
-        }else { findNavController().navigate(R.id.action_profileFragment_to_registrationFragment) }
+        binding.withOfflineModeLayout.visibility = View.INVISIBLE
+        binding.withoutOfflineModeLayout.visibility = View.INVISIBLE
+        binding.noDataImageView.visibility = View.INVISIBLE
+        binding.noDataTextView.visibility = View.INVISIBLE
 
         return binding.root
     }
 
-    private fun setUserPhoneNumber() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val userPhoneNumber = sharedPref?.getString("userPhoneNumber",null)
+        if (currentUser != null) {
 
-        if (userPhoneNumber == null) {
+            binding.logoutTextView.setOnClickListener { pressLogOutAlgorithm() }
+            setUserPhoneNumber()
+            checkInternetConnection()
 
-            val currentPhoneNumber = currentUser?.phoneNumber.toString()
-            val editor = sharedPref?.edit()
-            editor?.putString("userPhoneNumber",currentPhoneNumber)
-            editor?.apply()
-            binding.phoneNumberTextView.text = currentPhoneNumber
-
-        }else { binding.phoneNumberTextView.text = userPhoneNumber }
+        }else { findNavController().navigate(R.id.action_profileFragment_to_registrationFragment) }
     }
 
-    private fun pressLogOutAlgorithm() {
+    private fun checkInternetConnection() {
 
-        auth.signOut()
-        findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
+        val simpleDataService = SimpleDataApi.builder.getData()
+        simpleDataService.enqueue(object : Callback<ModelSimpleData> {
+            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>) {
+
+                binding.withoutOfflineModeLayout.visibility = View.VISIBLE
+                binding.withOfflineModeLayout.visibility = View.GONE
+
+                getCurrentUserAnnouncements()
+            }
+
+            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {
+
+                binding.withoutOfflineModeLayout.visibility = View.GONE
+                binding.withOfflineModeLayout.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun getCurrentUserAnnouncements() {
@@ -82,14 +100,23 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
         firestore.collection(currentUser?.phoneNumber.toString()).orderBy("time", Query.Direction.ASCENDING)
             .limit(10).addSnapshotListener { value, error ->
 
-            announcements.getDataFromFireStore(firestore,currentUser?.phoneNumber.toString(),value)
+                if (error != null) { Toast.makeText(requireContext(),R.string.fail, Toast.LENGTH_SHORT).show() }
 
-            if (value?.size() != 0) {
+                if (value?.size() != 0) {
 
-                value?.let { lastValue = it }
-                getMoreAnnouncements()
+                    announcements.getDataFromFireStore(firestore,currentUser?.phoneNumber.toString(),value)
+                    setRecyclerView()
+
+                    value?.let { lastValue = it }
+                    getMoreAnnouncements()
+
+                }else {
+
+                    binding.noDataImageView.visibility = View.VISIBLE
+                    binding.noDataTextView.visibility = View.VISIBLE
+                    binding.currentUserProgressBar.visibility = View.INVISIBLE
+                }
             }
-        }
     }
 
     private fun getMoreAnnouncements() {
@@ -134,14 +161,64 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
         })
     }
 
-    private fun setRecyclerView(context: Context) {
+    private fun setRecyclerView() {
 
         val recyclerView = binding.profilePhonesRecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerViewAdapter = AllPhonesAdapter(context,announcements,this@ProfileFragment)
+        recyclerViewAdapter = AllPhonesAdapter(requireContext(),announcements,this@ProfileFragment)
         recyclerView.adapter = recyclerViewAdapter
+    }
+
+    private fun setUserPhoneNumber() {
+
+        val userPhoneNumber = sharedPref?.getString("userPhoneNumber",null)
+
+        if (userPhoneNumber == null) {
+
+            val currentPhoneNumber = currentUser?.phoneNumber.toString()
+            val editor = sharedPref?.edit()
+            editor?.putString("userPhoneNumber",currentPhoneNumber)
+            editor?.apply()
+            binding.phoneNumberTextView.text = currentPhoneNumber
+
+        }else { binding.phoneNumberTextView.text = userPhoneNumber }
+    }
+
+    private fun pressLogOutAlgorithm() {
+
+        showAlertDialog()
+    }
+
+    private fun showAlertDialog() {
+
+        val builder = CFAlertDialog.Builder(requireContext())
+            .setTitle(R.string.are_you_sure)
+            .setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT)
+            .addButton(getString(R.string.log_out),
+                ContextCompat.getColor(requireContext(), R.color.white)
+                , ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red)
+                , CFAlertDialog.CFAlertActionStyle.POSITIVE
+                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
+                DialogInterface.OnClickListener { dialog, which ->
+
+                    auth.signOut()
+                    dialog.dismiss()
+                    findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
+
+                })
+            .addButton(getString(R.string.dismiss),
+                ContextCompat.getColor(requireContext(), R.color.white)
+                , ContextCompat.getColor(requireContext(),R.color.dismiss_button_color_green)
+                , CFAlertDialog.CFAlertActionStyle.NEGATIVE
+                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
+                DialogInterface.OnClickListener { dialog, which ->
+
+                    dialog.dismiss()
+                })
+
+        builder.show()
     }
 
     override fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int) {

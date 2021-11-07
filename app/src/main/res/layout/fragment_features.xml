@@ -226,7 +226,7 @@
         app:layout_constraintTop_toBottomOf="@+id/chooseColorCardView">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/newPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
@@ -234,14 +234,14 @@
             android:text="@string/new_" />
 
         <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/asSparePartPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"
             android:text="@string/as_spare_part" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
+            android:id="@+id/usedPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_medium"

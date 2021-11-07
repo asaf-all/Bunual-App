@@ -43,7 +43,8 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
         currentUser = auth.currentUser
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
-        binding.withOfflineModeLayout.visibility = View.GONE
+        binding.withOfflineModeLayout.visibility = View.INVISIBLE
+        binding.withoutOfflineModeLayout.visibility = View.INVISIBLE
         binding.noDataImageView.visibility = View.INVISIBLE
         binding.noDataTextView.visibility = View.INVISIBLE
 

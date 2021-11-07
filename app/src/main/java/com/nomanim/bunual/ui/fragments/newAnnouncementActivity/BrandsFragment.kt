@@ -38,14 +38,18 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
         _binding = FragmentBrandsBinding.inflate(inflater,container,false)
         sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         onBackPressed()
         binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
         binding.closeActivityInBrandsFragment.setOnClickListener { showDialogOfCloseActivity() }
         binding.searchPhoneBrands.clearTextWhenClickClear()
 
         getBrandNamesWithRoom()
-
-        return binding.root
     }
 
     private fun getBrandNamesWithRoom() {

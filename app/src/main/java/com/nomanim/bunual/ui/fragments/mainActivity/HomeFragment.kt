@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -47,14 +48,18 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
-
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.status_bar_color)
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         filterPhonesWithModelOrBrandNames()
         getMostViewedPhonesFromFireStore()
         getAllPhonesFromFireStore()
-
-        return binding.root
     }
 
     private fun filterPhonesWithModelOrBrandNames() {
@@ -62,7 +67,6 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
         PushDownAnim.setPushDownAnimTo(binding.cardView2).setOnClickListener {
 
             Snackbar.make(binding.root,"will be activate",Snackbar.LENGTH_SHORT).show()
-
 
             /*activity?.supportFragmentManager?.beginTransaction()
                 ?.replace(R.id.detailsFragmentContainer,BrandsFragment())

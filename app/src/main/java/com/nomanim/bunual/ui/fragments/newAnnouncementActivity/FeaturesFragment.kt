@@ -3,6 +3,7 @@ package com.nomanim.bunual.ui.fragments.newAnnouncementActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -26,13 +27,13 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<FeaturesFragmentArgs>()
     private var sharedPref: SharedPreferences? = null
     private lateinit var bottomSheetBinding: LayoutBottomSheetColorsBinding
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private val storageList = ArrayList<String>()
     private val ramList = ArrayList<String>()
     private val colorList = ArrayList<ModelColors>()
+    private var statusOfPhoneOfAds: String = ""
     private var stringOfStorage: String = ""
     private var stringOfRam: String = ""
     private var stringOfColor: String = ""
@@ -43,7 +44,14 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         bottomSheetBinding = LayoutBottomSheetColorsBinding.inflate(inflater)
         sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
 
-        if (args.fromPriceFragment) { getAndSetAllDataIfHasAccess() }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        getAndSetAllDataIfHasAccess()
+        checkRadioGroupOfPhoneStatus()
 
         pressBackButton()
         getStorageCapacities()
@@ -62,8 +70,6 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
             showFeaturesBottomSheet(ramList,binding.ramTextView,getString(R.string.choose_phone_ram)) }
 
         binding.chooseColorCardView.setOnClickListener { setColorsBottomSheet() }
-
-        return binding.root
     }
 
     private fun getStorageCapacities() {
@@ -121,49 +127,65 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         stringOfRam = getString(R.string.choose_phone_ram)
         stringOfColor = getString(R.string.choose_phone_color)
 
-        val storageCapacity = sharedPref?.getString("storageCapacity",stringOfStorage)
-        val ramCapacity = sharedPref?.getString("ramCapacity",stringOfRam)
-        val color = sharedPref?.getString("color",stringOfColor)
-        val radioGroupSelectedItemId = sharedPref?.getInt("radioGroupSelectedItemId",0)?.plus(1)
+        val lastStorageCapacity = sharedPref?.getString("storageCapacity",stringOfStorage)
+        val lastRamCapacity = sharedPref?.getString("ramCapacity",stringOfRam)
+        val lastColorName = sharedPref?.getString("color",stringOfColor)
 
-        binding.storageTextView.text = storageCapacity
-        binding.ramTextView.text = ramCapacity
-        binding.colorTextView.text = color
-        binding.phoneStatusRadioGroup.check(radioGroupSelectedItemId!!)
+        binding.storageTextView.text = lastStorageCapacity
+        binding.ramTextView.text = lastRamCapacity
+        binding.colorTextView.text = lastColorName
     }
 
     private fun navigateToNextFragment(view: View) {
 
         val storageCapacity = binding.storageTextView.text.toString()
         val ramCapacity = binding.ramTextView.text.toString()
-        val color = binding.colorTextView.text.toString()
-        val radioButtonId = binding.phoneStatusRadioGroup.checkedRadioButtonId
-        var status = ""
-        if (radioButtonId != -1) { status = binding.phoneStatusRadioGroup.findViewById<RadioButton>(radioButtonId).text.toString() }
+        val colorName = binding.colorTextView.text.toString()
 
-        if (storageCapacity == stringOfStorage || ramCapacity == stringOfRam || color == stringOfColor || status == "") {
+        if (storageCapacity != stringOfStorage && ramCapacity != stringOfRam
+            && colorName != stringOfColor && statusOfPhoneOfAds != "") {
+
+             addAllFeaturesAtSharedPreferences(storageCapacity, ramCapacity, colorName)
+             findNavController().navigate(R.id.action_featuresFragment_to_priceFragment)
+
+        }else  {
 
             Snackbar.make(view,resources.getString(R.string.fill_in_all),Snackbar.LENGTH_SHORT).show()
+        }
+    }
 
-        }else {
+    private fun addAllFeaturesAtSharedPreferences(storageCapacity: String, ramCapacity: String, colorName: String) {
 
-            val editor = sharedPref?.edit()
-            editor?.putString("storageCapacity",storageCapacity)
-            editor?.putString("ramCapacity",ramCapacity)
-            editor?.putString("color",color)
-            editor?.putString("status",status)
-            editor?.putInt("radioGroupSelectedItemId",radioButtonId)
-            editor?.putBoolean("getDataFromSharedPref",true)
-            editor?.apply()
+        val editor = sharedPref?.edit()
+        editor?.putString("storageCapacity",storageCapacity)
+        editor?.putString("ramCapacity",ramCapacity)
+        editor?.putString("color",colorName)
+        editor?.putString("status",statusOfPhoneOfAds)
+        editor?.apply()
+    }
 
-            findNavController().navigate(R.id.action_featuresFragment_to_priceFragment)
+    private fun checkRadioGroupOfPhoneStatus() {
+
+        binding.phoneStatusRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+
+            when(checkedId) {
+
+                R.id.newPhone -> { statusOfPhoneOfAds = getString(R.string.new_) }
+                R.id.asSparePartPhone -> { statusOfPhoneOfAds = getString(R.string.as_spare_part) }
+                R.id.usedPhone -> { statusOfPhoneOfAds = getString(R.string.used) }
+            }
         }
     }
 
     private fun navigateToPreviousFragment() {
 
-        val action = FeaturesFragmentDirections.actionFeaturesFragmentToDescriptionFragment(true)
-        findNavController().navigate(action)
+        val storageCapacity = binding.storageTextView.text.toString()
+        val ramCapacity = binding.ramTextView.text.toString()
+        val colorName = binding.colorTextView.text.toString()
+
+        addAllFeaturesAtSharedPreferences(storageCapacity, ramCapacity, colorName)
+
+        findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment)
     }
 
     private fun pressBackButton() {

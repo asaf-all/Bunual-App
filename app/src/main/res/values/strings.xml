@@ -47,6 +47,7 @@
 
     <!-- Search Fragment -->
     <string name="search">Search</string>
+    <string name="all_ads">All Announcements</string>
 
     <!-- NewAnnouncement Fragment -->
     <string name="you_must_login">You must create an account or log in for share announcement</string>
