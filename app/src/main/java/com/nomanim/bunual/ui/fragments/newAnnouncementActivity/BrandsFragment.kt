@@ -13,8 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.nomanim.bunual.R
-import com.nomanim.bunual.ui.adapters.PhoneBrandsAdapter
+import com.nomanim.bunual.adapters.PhoneBrandsAdapter
 import com.nomanim.bunual.databinding.FragmentBrandsBinding
 import com.nomanim.bunual.retrofit.models.ModelPhoneBrands
 import com.nomanim.bunual.room.database.RoomDB
@@ -115,6 +114,7 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
         val intent = Intent(activity,MainActivity::class.java)
         activity?.finish()
         activity?.startActivity(intent)
+        activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     override fun onCardViewClickListener(brandId: String, brandName: String) {
@@ -126,7 +126,8 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
             editor?.putString("phoneBrandId",brandId)
             editor?.apply()
 
-            findNavController().navigate(R.id.action_brandsFragment_to_modelsFragment)
+            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(true)
+            findNavController().navigate(action)
 
         }catch (e: Exception) {}
     }

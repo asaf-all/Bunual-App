@@ -69,7 +69,7 @@ class PriceFragment : Fragment() {
 
         if (!withAgreement) {
 
-            editor?.putString("price",binding.priceEditText.text.toString() + " AZN")
+            editor?.putString("price",binding.priceEditText.text.toString())
             checkPriceEditTextAndNavigate(view)
 
         }else {

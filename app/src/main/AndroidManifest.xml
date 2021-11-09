@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.nomanim.bunual">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -15,9 +16,11 @@
         android:theme="@style/Theme.Bunual">
         <activity
             android:name=".ui.activities.AdsDetailsActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ui.activities.NewAnnouncementActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <activity
             android:name=".ui.activities.MainActivity"

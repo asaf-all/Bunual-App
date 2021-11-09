@@ -1,4 +1,4 @@
-package com.nomanim.bunual.ui.adapters
+package com.nomanim.bunual.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

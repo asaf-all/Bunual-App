@@ -16,7 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bunual.R
-import com.nomanim.bunual.ui.adapters.PhoneModelsAdapter
+import com.nomanim.bunual.adapters.PhoneModelsAdapter
 import com.nomanim.bunual.databinding.FragmentModelsBinding
 import com.nomanim.bunual.models.ModelImages
 import com.nomanim.bunual.retrofit.models.ModelPhoneModels
@@ -79,8 +79,15 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
             }else {
 
-                getImagesUrlIfIsNotEmptyInRoom()
-                lifecycleScope.launch { getModelNamesFromRoom() }
+                if (args.navigateFromBrandsFragment) {
+
+                    getModelNamesFromRoom()
+
+                }else {
+
+                    getImagesUrlIfIsNotEmptyInRoom()
+                    lifecycleScope.launch { getModelNamesFromRoom() }
+                }
             }
         }
     }
@@ -95,7 +102,6 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
             filterPhoneModelNamesByBrandId(phoneModelNames)
         }
     }
-
 
     private fun filterPhoneModelNamesByBrandId(modelNames: ArrayList<ModelPhoneModels>) {
 
@@ -221,7 +227,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
         try {
 
             saveModelNameAtSharedPref(modelName)
-            openGallery()
+            getImagesUrlIfIsNotEmptyInRoom()
 
         }catch (e:Exception){}
     }

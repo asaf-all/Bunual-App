@@ -21,7 +21,6 @@ import com.nomanim.bunual.retrofit.models.ModelPlaces
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.activities.NewAnnouncementActivity
 import com.nomanim.bunual.ui.other.BaseCoroutineScope
-import com.nomanim.bunual.ui.other.ktx.loadingProgressBarInDialog
 import com.thekhaeng.pushdownanim.PushDownAnim
 import kotlinx.coroutines.launch
 
@@ -42,17 +41,21 @@ class NewAnnouncementFragment : BaseCoroutineScope() {
         binding.newAdsTextView.visibility = View.INVISIBLE
         binding.buttonInNewAdsFragment.visibility = View.INVISIBLE
 
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         if (auth.currentUser != null) {
 
-            val dialog = loadingProgressBarInDialog(getString(R.string.wait),getString(R.string.downloading_data),false)
-            dialog.show()
-            updateSharedPrefSomeArea()
+            updateSomeFieldOfSharedPreferences()
 
             launch {
 
                 val database = RoomDB(requireContext()).getDataFromRoom()
                 database.deleteImagesUri()
-                dialog.dismiss()
                 intentActivityOfNewAds()
             }
 
@@ -67,10 +70,9 @@ class NewAnnouncementFragment : BaseCoroutineScope() {
                 findNavController().navigate(R.id.action_newAnnouncementFragment_to_profileFragment)
             }
         }
-        return binding.root
     }
 
-    private fun updateSharedPrefSomeArea() {
+    private fun updateSomeFieldOfSharedPreferences() {
 
         val sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
         val editor = sharedPref?.edit()
@@ -89,6 +91,7 @@ class NewAnnouncementFragment : BaseCoroutineScope() {
         val intent = Intent(activity, NewAnnouncementActivity::class.java)
         activity?.finish()
         activity?.startActivity(intent)
+        activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
     private fun addAdsToFieStore() {

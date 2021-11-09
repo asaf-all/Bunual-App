@@ -3,15 +3,12 @@ package com.nomanim.bunual.ui.fragments.newAnnouncementActivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -19,7 +16,7 @@ import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentFeaturesBinding
 import com.nomanim.bunual.databinding.LayoutBottomSheetColorsBinding
 import com.nomanim.bunual.models.ModelColors
-import com.nomanim.bunual.ui.adapters.ColorsAdapter
+import com.nomanim.bunual.adapters.ColorsAdapter
 import com.nomanim.bunual.ui.other.ktx.showDialogOfCloseActivity
 import com.nomanim.bunual.ui.other.ktx.showFeaturesBottomSheet
 
@@ -52,7 +49,6 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
 
         getAndSetAllDataIfHasAccess()
         checkRadioGroupOfPhoneStatus()
-
         pressBackButton()
         getStorageCapacities()
         getRamCapacities()
@@ -203,5 +199,4 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         binding.colorTextView.text = buttonFinishText
         bottomSheetDialog.dismiss()
     }
-
 }

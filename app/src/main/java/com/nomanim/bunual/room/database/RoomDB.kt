@@ -7,11 +7,13 @@ import androidx.room.RoomDatabase
 import com.nomanim.bunual.models.ModelImages
 import com.nomanim.bunual.retrofit.models.ModelPhoneBrands
 import com.nomanim.bunual.retrofit.models.ModelPhoneModels
+import com.nomanim.bunual.retrofit.models.ModelPlaces
 import com.nomanim.bunual.room.services.RoomDatabaseDao
 
 @Database(entities = arrayOf(ModelPhoneBrands::class
     , ModelPhoneModels::class
-    , ModelImages::class),version = 1)
+    , ModelImages::class
+    ,ModelPlaces::class),version = 1)
 
 abstract class RoomDB : RoomDatabase() {
 

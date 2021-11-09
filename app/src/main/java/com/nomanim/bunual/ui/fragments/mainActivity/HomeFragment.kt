@@ -1,11 +1,13 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -14,14 +16,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bunual.R
-import com.nomanim.bunual.ui.adapters.MostViewedPhonesAdapter
-import com.nomanim.bunual.ui.adapters.AllPhonesAdapter
+import com.nomanim.bunual.adapters.MostViewedPhonesAdapter
+import com.nomanim.bunual.adapters.AllPhonesAdapter
 import com.nomanim.bunual.databinding.FragmentHomeBinding
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.ui.activities.AdsDetailsActivity
 import com.nomanim.bunual.ui.other.BaseCoroutineScope
 import com.nomanim.bunual.ui.other.getDataFromFireStore
-import com.nomanim.bunual.ui.other.ktx.loadingProgressBarInDialog
 import com.thekhaeng.pushdownanim.PushDownAnim
 import java.util.*
 import kotlin.collections.ArrayList
@@ -31,6 +32,7 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
+    private var sharedPref: SharedPreferences? = null
     private val sortTexts = ArrayList<String>()
     private var mostViewedPhones = ArrayList<ModelAnnouncement>()
     private var allPhones = ArrayList<ModelAnnouncement>()
@@ -47,9 +49,6 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
-        currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.status_bar_color)
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
 
         return binding.root
     }
@@ -57,9 +56,26 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.status_bar_color)
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
+
+        checkCodeForNavigateProfileFragment()
         filterPhonesWithModelOrBrandNames()
         getMostViewedPhonesFromFireStore()
         getAllPhonesFromFireStore()
+    }
+
+    private fun checkCodeForNavigateProfileFragment() {
+
+        val toProfileFragment = sharedPref?.getBoolean("toProfileFragment",false)
+
+        if (toProfileFragment != null && toProfileFragment) {
+
+            sharedPref?.edit()?.putBoolean("toProfileFragment",false)?.apply()
+            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
+        }
     }
 
     private fun filterPhonesWithModelOrBrandNames() {
@@ -106,9 +122,9 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
         firestore.collection("All Announcements")
             .limit(numberOfAnnouncement).orderBy("time",Query.Direction.ASCENDING).get().addOnSuccessListener { values ->
 
-            binding.allPhonesProgressBar.visibility = View.INVISIBLE
-            allPhones.getDataFromFireStore(firestore,"All Announcements",values)
-            setVerticalRecyclerView()
+                binding.allPhonesProgressBar.visibility = View.INVISIBLE
+                allPhones.getDataFromFireStore(firestore,"All Announcements",values)
+                setVerticalRecyclerView()
 
             if (values.size() != 0) {
 

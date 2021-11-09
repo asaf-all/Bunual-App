@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_add_announcement_activity"
-    app:startDestination="@id/featuresFragment">
+    app:startDestination="@id/brandsFragment">
 
     <fragment
         android:id="@+id/brandsFragment"
@@ -26,7 +26,7 @@
             android:id="@+id/action_modelsFragment_to_brandsFragment"
             app:destination="@id/brandsFragment" />
         <argument
-            android:name="navigateFromDescriptionFragment"
+            android:name="navigateFromBrandsFragment"
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>

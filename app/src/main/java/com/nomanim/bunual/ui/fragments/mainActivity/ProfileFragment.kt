@@ -1,8 +1,6 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -21,12 +19,11 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bunual.R
-import com.nomanim.bunual.ui.adapters.AllPhonesAdapter
+import com.nomanim.bunual.adapters.AllPhonesAdapter
 import com.nomanim.bunual.databinding.FragmentProfileBinding
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.retrofit.builders.SimpleDataApi
 import com.nomanim.bunual.retrofit.models.ModelSimpleData
-import com.nomanim.bunual.ui.activities.MainActivity
 import com.nomanim.bunual.ui.other.getDataFromFireStore
 import retrofit2.Call
 import retrofit2.Callback
@@ -57,7 +54,6 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
         binding.withOfflineModeLayout.visibility = View.INVISIBLE
         binding.withoutOfflineModeLayout.visibility = View.INVISIBLE
-        binding.noDataImageView.visibility = View.INVISIBLE
         binding.noDataTextView.visibility = View.INVISIBLE
 
         return binding.root
@@ -68,8 +64,9 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
         if (currentUser != null) {
 
+            val currentPhoneNumber = currentUser?.phoneNumber.toString()
+            binding.phoneNumberTextView.text = currentPhoneNumber
             binding.logoutTextView.setOnClickListener { pressLogOutAlgorithm() }
-            setUserPhoneNumber()
             checkInternetConnection()
 
         }else { findNavController().navigate(R.id.action_profileFragment_to_registrationFragment) }
@@ -112,7 +109,6 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
                 }else {
 
-                    binding.noDataImageView.visibility = View.VISIBLE
                     binding.noDataTextView.visibility = View.VISIBLE
                     binding.currentUserProgressBar.visibility = View.INVISIBLE
                 }
@@ -171,21 +167,6 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
         recyclerView.adapter = recyclerViewAdapter
     }
 
-    private fun setUserPhoneNumber() {
-
-        val userPhoneNumber = sharedPref?.getString("userPhoneNumber",null)
-
-        if (userPhoneNumber == null) {
-
-            val currentPhoneNumber = currentUser?.phoneNumber.toString()
-            val editor = sharedPref?.edit()
-            editor?.putString("userPhoneNumber",currentPhoneNumber)
-            editor?.apply()
-            binding.phoneNumberTextView.text = currentPhoneNumber
-
-        }else { binding.phoneNumberTextView.text = userPhoneNumber }
-    }
-
     private fun pressLogOutAlgorithm() {
 
         showAlertDialog()
@@ -200,23 +181,21 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
                 ContextCompat.getColor(requireContext(), R.color.white)
                 , ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red)
                 , CFAlertDialog.CFAlertActionStyle.POSITIVE
-                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
-                DialogInterface.OnClickListener { dialog, which ->
+                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED) { dialog, which ->
 
-                    auth.signOut()
-                    dialog.dismiss()
-                    findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
+                auth.signOut()
+                dialog.dismiss()
+                findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
 
-                })
+            }
             .addButton(getString(R.string.dismiss),
                 ContextCompat.getColor(requireContext(), R.color.white)
                 , ContextCompat.getColor(requireContext(),R.color.dismiss_button_color_green)
                 , CFAlertDialog.CFAlertActionStyle.NEGATIVE
-                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
-                DialogInterface.OnClickListener { dialog, which ->
+                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED) { dialog, which ->
 
-                    dialog.dismiss()
-                })
+                dialog.dismiss()
+            }
 
         builder.show()
     }

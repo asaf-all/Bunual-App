@@ -16,6 +16,8 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="50dp"
         android:hint="@string/enter_phone_description"
+        app:counterEnabled="true"
+        app:counterMaxLength="500"
         app:layout_constraintBottom_toTopOf="@+id/descriptionConstraintLayout2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -27,6 +29,8 @@
             android:layout_height="match_parent"
             android:fontFamily="@font/roboto"
             android:gravity="start|top"
+            android:maxLength="500"
+            android:paddingBottom="17dp"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 

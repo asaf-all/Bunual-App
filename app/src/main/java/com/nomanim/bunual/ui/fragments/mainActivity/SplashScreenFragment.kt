@@ -1,5 +1,6 @@
 package com.nomanim.bunual.ui.fragments.mainActivity
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -28,14 +29,17 @@ import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.other.BaseCoroutineScope
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
+import java.util.*
 import kotlin.collections.ArrayList
 
 
+@SuppressLint("CustomSplashScreen")
 class SplashScreenFragment : BaseCoroutineScope() {
 
     private var _binding: FragmentSplashScreenBinding? = null
@@ -51,21 +55,39 @@ class SplashScreenFragment : BaseCoroutineScope() {
         firestore = FirebaseFirestore.getInstance()
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
-
-        getActiveApiVersionCode()
 
         return binding.root
     }
 
-    private fun checkInternetConnection() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        val phoneService = SimpleDataApi.builder.getData()
-        phoneService.enqueue(object  : Callback<ModelSimpleData> {
-            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>?) {}
-            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {}
-        })
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
+        checkTimeInSharedPreferences()
     }
+
+    private fun checkTimeInSharedPreferences() {
+
+        val currentTime  = Calendar.getInstance().get(Calendar.MONTH)
+        val savedTime = sharedPref?.getString("timeWithMonth",(currentTime- 1).toString())
+
+        if (savedTime == currentTime.toString()) {
+
+            lifecycleScope.launch {
+
+                binding.splashScreenProgressBar.visibility = View.INVISIBLE
+                delay(1000)
+                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment) }
+
+        }else {
+
+            getActiveApiVersionCode()
+        }
+
+        updateTimeInSharedPreferences(currentTime)
+    }
+
+
 
     private fun getActiveApiVersionCode() {
 
@@ -94,9 +116,17 @@ class SplashScreenFragment : BaseCoroutineScope() {
             }
         }else {
 
+            binding.downloadingTextView.visibility = View.VISIBLE
             updateApiVersionCodeInSharedPref(activeApiVersionCode)
             getBrandNamesWithRetrofit()
         }
+    }
+
+    private fun updateTimeInSharedPreferences(currentTime: Int) {
+
+        val editor = sharedPref?.edit()
+        editor?.putString("timeWithMonth",currentTime.toString())
+        editor?.apply()
     }
 
     private fun updateApiVersionCodeInSharedPref(activeApiVersionCode: String?) {
@@ -104,19 +134,6 @@ class SplashScreenFragment : BaseCoroutineScope() {
         val editor = sharedPref?.edit()
         editor?.putString("api_version_code",activeApiVersionCode)
         editor?.apply()
-    }
-
-    private fun navigateIfProcessTakesLongTime() {
-
-        object : CountDownTimer(20000,1000) {
-
-            override fun onTick(millisUntilFinished: Long) {}
-            override fun onFinish() {
-
-                Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
-                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
-            }
-        }
     }
 
     private fun getBrandNamesWithRetrofit() {
@@ -134,6 +151,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
                         getModelNamesWithRxJava()
 
                     } catch (e: Exception) {
+
                         context?.let { Toast.makeText(it, R.string.no_internet_connection, Toast.LENGTH_LONG).show() }
                     }
                 }
@@ -144,8 +162,6 @@ class SplashScreenFragment : BaseCoroutineScope() {
                 Toast.makeText(requireContext(), R.string.fail, Toast.LENGTH_LONG).show()
             }
         })
-
-
     }
 
     private fun getModelNamesWithRxJava() {
@@ -155,7 +171,6 @@ class SplashScreenFragment : BaseCoroutineScope() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(this::handleResponseFromRxJava))
-
     }
 
     private fun handleResponseFromRxJava(list: PhoneModelsList?) {
@@ -169,7 +184,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
             }catch (e: Exception) {
 
-                context?.let { Toast.makeText(it,R.string.fail,Toast.LENGTH_SHORT).show() }
+                context?.let { Toast.makeText(it,R.string.no_internet_connection,Toast.LENGTH_SHORT).show() }
                 e.localizedMessage
             }
         }
@@ -197,7 +212,28 @@ class SplashScreenFragment : BaseCoroutineScope() {
                 val database = RoomDB(it).getDataFromRoom()
                 database.deleteModelNames()
                 database.insertModelNames(*phoneModels.toTypedArray())
-                activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.status_bar_color)
+                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+            }
+        }
+    }
+
+    private fun checkInternetConnection() {
+
+        val phoneService = SimpleDataApi.builder.getData()
+        phoneService.enqueue(object  : Callback<ModelSimpleData> {
+            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>?) {}
+            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {}
+        })
+    }
+
+    private fun navigateIfProcessTakesLongTime() {
+
+        object : CountDownTimer(20000,1000) {
+
+            override fun onTick(millisUntilFinished: Long) {}
+            override fun onFinish() {
+
+                Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
                 findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
             }
         }
@@ -205,7 +241,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-
+        job.cancel()
         compositeDisposable.clear()
     }
 

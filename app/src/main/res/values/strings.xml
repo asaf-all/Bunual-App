@@ -44,6 +44,9 @@
     <string name="color">Color</string>
     <string name="status">Status</string>
     <string name="delivery">Delivery</string>
+    <string name="user_place">User place</string>
+    <string name="user_name">User name</string>
+    <string name="user_phone_number">Phone number</string>
 
     <!-- Search Fragment -->
     <string name="search">Search</string>
@@ -145,6 +148,7 @@
     <string name="delivery_to_place">Delivery to place</string>
     <string name="subway_delivery">Subway delivery</string>
     <string name="share_ads">Share Announcement</string>
+    <string name="places_name_downloading">Places name are downloading..</string>
 
 
     <string name="wait">Please wait</string>
@@ -174,5 +178,7 @@
     <string name="favourite_announcements_limit">Favourite announcements limit is 10</string>
     <string name="select_images_text">On the screen that opens, select all the photos you want to share and click choose</string>
     <string name="fill_in_all">Please fill in all</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -1,5 +1,6 @@
 package com.nomanim.bunual.ui.other.ktx
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,6 +30,7 @@ fun Fragment.showDialogOfCloseActivity() {
                 val intent = Intent(activity, MainActivity::class.java)
                 activity?.finish()
                 activity?.startActivity(intent)
+                activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
 
             })
         .addButton(getString(R.string.dismiss),
@@ -52,19 +54,15 @@ fun Fragment.showFeaturesBottomSheet(list: ArrayList<String>, textView: TextView
         .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
         .setItems(list.toTypedArray()) { dialog, which ->
 
+            val sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
+            val editor = sharedPref?.edit()
+            editor?.putString("placeName",list[which])
+            editor?.apply()
             textView.text = list[which]
             dialog?.dismiss()
         }
 
     builder.show()
-}
-
-fun Fragment.addCurrentUserPhoneNumberToSharedPref(auth: FirebaseAuth, sharedPref: SharedPreferences?) {
-
-    val currentPhoneNumber = auth.currentUser?.phoneNumber.toString()
-    val editor = sharedPref?.edit()
-    editor?.putString("userPhoneNumber",currentPhoneNumber)
-    editor?.apply()
 }
 
 fun Fragment.loadingProgressBarInDialog(label: String, detailsLabel: String, cancellable: Boolean) : KProgressHUD {
