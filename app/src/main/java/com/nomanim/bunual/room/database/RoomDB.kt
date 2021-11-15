@@ -32,7 +32,7 @@ abstract class RoomDB : RoomDatabase() {
 
         private fun makeDatabase(context : Context) = Room.databaseBuilder(
             context.applicationContext,RoomDB::class.java,"roomDatabase")
-            .fallbackToDestructiveMigration()
+            //.fallbackToDestructiveMigration()
             .build()
     }
 }

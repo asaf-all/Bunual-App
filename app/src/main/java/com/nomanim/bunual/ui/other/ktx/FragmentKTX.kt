@@ -21,10 +21,10 @@ fun Fragment.showDialogOfCloseActivity() {
         .setMessage(R.string.changes_will_canceled)
         .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
         .addButton(getString(R.string.do_not_want_continue),
-            ContextCompat.getColor(requireContext(), R.color.white)
-            ,ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red)
-            ,CFAlertDialog.CFAlertActionStyle.POSITIVE
-            ,CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
+            ContextCompat.getColor(requireContext(), R.color.white),
+            ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red),
+            CFAlertDialog.CFAlertActionStyle.POSITIVE,
+            CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
             DialogInterface.OnClickListener { dialog, which ->
 
                 val intent = Intent(activity, MainActivity::class.java)
@@ -34,10 +34,10 @@ fun Fragment.showDialogOfCloseActivity() {
 
             })
         .addButton(getString(R.string.dismiss),
-            ContextCompat.getColor(requireContext(), R.color.white)
-            ,ContextCompat.getColor(requireContext(),R.color.dismiss_button_color_green)
-            ,CFAlertDialog.CFAlertActionStyle.NEGATIVE
-            ,CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
+            ContextCompat.getColor(requireContext(), R.color.white),
+            ContextCompat.getColor(requireContext(), R.color.dismiss_button_color_green),
+            CFAlertDialog.CFAlertActionStyle.NEGATIVE,
+            CFAlertDialog.CFAlertActionAlignment.JUSTIFIED,
             DialogInterface.OnClickListener { dialog, which ->
 
                 dialog.dismiss()
@@ -47,17 +47,28 @@ fun Fragment.showDialogOfCloseActivity() {
     builder.show()
 }
 
-fun Fragment.showFeaturesBottomSheet(list: ArrayList<String>, textView: TextView, dialogTitle: String) {
+fun Fragment.showFeaturesBottomSheet(
+    list: ArrayList<String>,
+    textView: TextView,
+    dialogTitle: String,
+    inUserFragment: Boolean
+) {
 
     val builder = CFAlertDialog.Builder(requireContext())
         .setTitle(dialogTitle)
         .setDialogStyle(CFAlertDialog.CFAlertStyle.BOTTOM_SHEET)
         .setItems(list.toTypedArray()) { dialog, which ->
 
-            val sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
-            val editor = sharedPref?.edit()
-            editor?.putString("placeName",list[which])
-            editor?.apply()
+            if (inUserFragment) {
+
+                val sharedPref = activity?.getSharedPreferences(
+                    "sharedPrefInNewAdsActivity",
+                    Context.MODE_PRIVATE
+                )
+                val editor = sharedPref?.edit()
+                editor?.putString("placeName", list[which])
+                editor?.apply()
+            }
             textView.text = list[which]
             dialog?.dismiss()
         }
@@ -65,7 +76,11 @@ fun Fragment.showFeaturesBottomSheet(list: ArrayList<String>, textView: TextView
     builder.show()
 }
 
-fun Fragment.loadingProgressBarInDialog(label: String, detailsLabel: String, cancellable: Boolean) : KProgressHUD {
+fun Fragment.loadingProgressBarInDialog(
+    label: String,
+    detailsLabel: String,
+    cancellable: Boolean
+): KProgressHUD {
 
     val kProgressHUD = KProgressHUD.create(requireContext())
         .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)

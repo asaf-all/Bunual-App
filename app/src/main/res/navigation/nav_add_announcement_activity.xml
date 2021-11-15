@@ -26,7 +26,7 @@
             android:id="@+id/action_modelsFragment_to_brandsFragment"
             app:destination="@id/brandsFragment" />
         <argument
-            android:name="navigateFromBrandsFragment"
+            android:name="cameFromBrandsFragment"
             app:argType="boolean"
             android:defaultValue="false" />
     </fragment>

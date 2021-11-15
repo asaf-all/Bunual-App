@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,15 +47,16 @@ class SplashScreenFragment : BaseCoroutineScope() {
     private val binding get() = _binding!!
     private lateinit var firestore: FirebaseFirestore
     private var sharedPref: SharedPreferences? = null
+    private var currentTime: Int = 0
     private val compositeDisposable = io.reactivex.disposables.CompositeDisposable()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
         _binding = FragmentSplashScreenBinding.inflate(inflater)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        firestore = FirebaseFirestore.getInstance()
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
-        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
         return binding.root
     }
@@ -62,14 +64,19 @@ class SplashScreenFragment : BaseCoroutineScope() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        firestore = FirebaseFirestore.getInstance()
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
+        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
+
         checkTimeInSharedPreferences()
     }
 
     private fun checkTimeInSharedPreferences() {
 
-        val currentTime  = Calendar.getInstance().get(Calendar.MONTH)
-        val savedTime = sharedPref?.getString("timeWithMonth",(currentTime- 1).toString())
+        currentTime = Calendar.getInstance().get(Calendar.MONTH)
+        val savedTime = sharedPref?.getString("timeWithMonth", (currentTime - 3).toString())
 
         if (savedTime == currentTime.toString()) {
 
@@ -77,17 +84,14 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
                 binding.splashScreenProgressBar.visibility = View.INVISIBLE
                 delay(1000)
-                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment) }
+                navigateToNextFragment()
+            }
 
-        }else {
+        } else {
 
             getActiveApiVersionCode()
         }
-
-        updateTimeInSharedPreferences(currentTime)
     }
-
-
 
     private fun getActiveApiVersionCode() {
 
@@ -99,22 +103,23 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
             }.addOnFailureListener { error ->
 
-                Toast.makeText(requireContext(),R.string.no_internet_connection,Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), R.string.no_internet_connection, Toast.LENGTH_LONG)
+                    .show()
                 error.localizedMessage
             }
     }
 
     private fun checkApiVersionCodeForLoadData(activeApiVersionCode: String?) {
 
-        val latestApiVersionCode = sharedPref?.getString("api_version_code","0")
+        val latestApiVersionCode = sharedPref?.getString("api_version_code", "0")
 
         if (activeApiVersionCode == latestApiVersionCode) {
 
             lifecycleScope.launchWhenResumed {
 
-                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+                navigateToNextFragment()
             }
-        }else {
+        } else {
 
             binding.downloadingTextView.visibility = View.VISIBLE
             updateApiVersionCodeInSharedPref(activeApiVersionCode)
@@ -125,22 +130,25 @@ class SplashScreenFragment : BaseCoroutineScope() {
     private fun updateTimeInSharedPreferences(currentTime: Int) {
 
         val editor = sharedPref?.edit()
-        editor?.putString("timeWithMonth",currentTime.toString())
+        editor?.putString("timeWithMonth", currentTime.toString())
         editor?.apply()
     }
 
     private fun updateApiVersionCodeInSharedPref(activeApiVersionCode: String?) {
 
         val editor = sharedPref?.edit()
-        editor?.putString("api_version_code",activeApiVersionCode)
+        editor?.putString("api_version_code", activeApiVersionCode)
         editor?.apply()
     }
 
     private fun getBrandNamesWithRetrofit() {
 
         val phoneService = PhoneBrandsApi.builder.getData()
-        phoneService.enqueue(object  : Callback<PhoneBrandsList> {
-            override fun onResponse(call: Call<PhoneBrandsList>, response: Response<PhoneBrandsList>?) {
+        phoneService.enqueue(object : Callback<PhoneBrandsList> {
+            override fun onResponse(
+                call: Call<PhoneBrandsList>,
+                response: Response<PhoneBrandsList>?
+            ) {
 
                 if (response != null) {
 
@@ -152,7 +160,13 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
                     } catch (e: Exception) {
 
-                        context?.let { Toast.makeText(it, R.string.no_internet_connection, Toast.LENGTH_LONG).show() }
+                        context?.let {
+                            Toast.makeText(
+                                it,
+                                R.string.no_internet_connection,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }
@@ -168,9 +182,10 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
         compositeDisposable.add(
             PhoneModelsApi.builder.getData()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(this::handleResponseFromRxJava))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::handleResponseFromRxJava)
+        )
     }
 
     private fun handleResponseFromRxJava(list: PhoneModelsList?) {
@@ -182,9 +197,15 @@ class SplashScreenFragment : BaseCoroutineScope() {
                 val phoneModels = list.modelPhoneModels as ArrayList<ModelPhoneModels>
                 addPhoneModelNamesAtRoom(phoneModels)
 
-            }catch (e: Exception) {
+            } catch (e: Exception) {
 
-                context?.let { Toast.makeText(it,R.string.no_internet_connection,Toast.LENGTH_SHORT).show() }
+                context?.let {
+                    Toast.makeText(
+                        it,
+                        R.string.no_internet_connection,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 e.localizedMessage
             }
         }
@@ -212,30 +233,37 @@ class SplashScreenFragment : BaseCoroutineScope() {
                 val database = RoomDB(it).getDataFromRoom()
                 database.deleteModelNames()
                 database.insertModelNames(*phoneModels.toTypedArray())
-                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
+                navigateToNextFragment()
             }
         }
+    }
+
+    private fun navigateToNextFragment() {
+
+        updateTimeInSharedPreferences(currentTime)
+        findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
     }
 
     private fun checkInternetConnection() {
 
         val phoneService = SimpleDataApi.builder.getData()
-        phoneService.enqueue(object  : Callback<ModelSimpleData> {
-            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>?) {}
+        phoneService.enqueue(object : Callback<ModelSimpleData> {
+            override fun onResponse(
+                call: Call<ModelSimpleData>,
+                response: Response<ModelSimpleData>?
+            ) {
+            }
+
             override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {}
         })
     }
 
     private fun navigateIfProcessTakesLongTime() {
 
-        object : CountDownTimer(20000,1000) {
+        object : CountDownTimer(20000, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {}
-            override fun onFinish() {
-
-                Toast.makeText(requireContext(),"Offline Mode",Toast.LENGTH_LONG).show()
-                findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
-            }
+            override fun onFinish() { navigateToNextFragment() }
         }
     }
 

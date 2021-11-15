@@ -47,11 +47,6 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
         _binding = FragmentProfileBinding.inflate(inflater,container,false)
 
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-        currentUser = auth.currentUser
-        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
-
         binding.withOfflineModeLayout.visibility = View.INVISIBLE
         binding.withoutOfflineModeLayout.visibility = View.INVISIBLE
         binding.noDataTextView.visibility = View.INVISIBLE
@@ -61,6 +56,14 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        currentUser = auth.currentUser
+        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
+
+
 
         if (currentUser != null) {
 

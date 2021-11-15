@@ -15,11 +15,11 @@ private fun ImageView.downloadImageWithPicasso(uri: String) {
         .into(this)*/
 }
 
-fun ImageView.downloadImageWithGlide(view: View,uri: String) {
+fun ImageView.downloadImageWithGlide(view: View,uri: String?) {
 
     Glide
         .with(view)
-        .load(uri.toUri())
+        .load(uri?.toUri())
         .centerCrop()
         .placeholder(R.drawable.im_whenloadingpictures)
         .into(this)

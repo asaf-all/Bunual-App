@@ -48,7 +48,16 @@ class NewAnnouncementFragment : BaseCoroutineScope() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (auth.currentUser != null) {
+        updateSomeFieldOfSharedPreferences()
+
+        launch {
+
+            val database = RoomDB(requireContext()).getDataFromRoom()
+            database.deleteImagesUri()
+            intentActivityOfNewAds()
+        }
+
+        /*if (auth.currentUser != null) {
 
             updateSomeFieldOfSharedPreferences()
 
@@ -69,7 +78,7 @@ class NewAnnouncementFragment : BaseCoroutineScope() {
 
                 findNavController().navigate(R.id.action_newAnnouncementFragment_to_profileFragment)
             }
-        }
+        }*/
     }
 
     private fun updateSomeFieldOfSharedPreferences() {

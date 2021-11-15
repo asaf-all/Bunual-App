@@ -31,7 +31,7 @@ import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
+class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
 
     private var _binding: FragmentModelsBinding? = null
     private val binding get() = _binding!!
@@ -50,10 +50,14 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
     private lateinit var recyclerAdapter: PhoneModelsAdapter
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
 
-        _binding = FragmentModelsBinding.inflate(inflater,container,false)
-        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
+        _binding = FragmentModelsBinding.inflate(inflater, container, false)
+        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
 
         return binding.root
     }
@@ -62,28 +66,28 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
         super.onViewCreated(view, savedInstanceState)
 
         pressBackButton()
-        binding.searchPhoneModels.clearTextWhenClickClear()
+        checkImagesStatusInRoom()
         binding.modelsToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         binding.closeActivityInModelsFragment.setOnClickListener { showDialogOfCloseActivity() }
+        binding.searchPhoneModels.clearTextWhenClickClear()
 
-        checkImagesStatusInRoom()
     }
 
     private fun checkImagesStatusInRoom() {
 
         sharedPref?.let { sharedPreferences ->
 
-            if (sharedPreferences.getBoolean("imagesIsEmptyInRoom",true)) {
+            if (sharedPreferences.getBoolean("imagesIsEmptyInRoom", true)) {
 
                 getModelNamesFromRoom()
 
-            }else {
+            } else {
 
-                if (args.navigateFromBrandsFragment) {
+                if (args.cameFromBrandsFragment) {
 
                     getModelNamesFromRoom()
 
-                }else {
+                } else {
 
                     getImagesUrlIfIsNotEmptyInRoom()
                     lifecycleScope.launch { getModelNamesFromRoom() }
@@ -96,7 +100,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
         launch {
 
-            phoneBrandId = sharedPref?.getString("phoneBrandId",null)
+            phoneBrandId = sharedPref?.getString("phoneBrandId", null)
             val database = RoomDB(requireContext()).getDataFromRoom()
             val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelPhoneModels>
             filterPhoneModelNamesByBrandId(phoneModelNames)
@@ -114,7 +118,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
                 numberOfModelName = filteredList.size
                 binding.moreModelsProgressBar.visibility = View.INVISIBLE
 
-            }else {
+            } else {
 
                 remainingFilteredListSize = filteredList.size
                 addMoreModelNamesAtRecyclerView(remainingFilteredListSize)
@@ -142,7 +146,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
         recyclerView.isNestedScrollingEnabled = false
-        recyclerAdapter = PhoneModelsAdapter(requireContext(),list,this@ModelsFragment)
+        recyclerAdapter = PhoneModelsAdapter(requireContext(), list, this@ModelsFragment)
         recyclerView.adapter = recyclerAdapter
 
     }
@@ -174,17 +178,19 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
                     lastLoudIndex += numberOfModelName
                     recyclerAdapter.notifyDataSetChanged()
 
-                }else { binding.moreModelsProgressBar.visibility = View.INVISIBLE }
+                } else {
+                    binding.moreModelsProgressBar.visibility = View.INVISIBLE
+                }
             }
         }
     }
 
     private fun searchInsidePhoneModels() {
 
-        binding.searchPhoneModels.addTextChangedListener( object : TextWatcher {
+        binding.searchPhoneModels.addTextChangedListener(object : TextWatcher {
 
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) { }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(text: Editable?) {
 
@@ -194,7 +200,9 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
                     val listAfterSearch = filteredList.filter { list ->
 
-                        (list.modelName.lowercase().contains(text.toString().lowercase())) } as ArrayList<ModelPhoneModels>
+                        (list.modelName.lowercase().contains(text.toString().lowercase()))
+
+                    } as ArrayList<ModelPhoneModels>
 
 
                     if (listAfterSearch.size < numberOfSearchedModelName) {
@@ -202,7 +210,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
                         numberOfSearchedModelName = listAfterSearch.size
                         binding.moreModelsProgressBar.visibility = View.INVISIBLE
 
-                    }else {
+                    } else {
 
                         remainingListAfterSearchSize = listAfterSearch.size
                         addMoreModelNamesAtRecyclerView(remainingListAfterSearchSize)
@@ -217,6 +225,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
                     }
 
                     setModelsRecyclerView(limitedListAfterSearch)
+                    binding.modelsProgressBar.visibility = View.INVISIBLE
                 }
             }
         })
@@ -229,13 +238,14 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
             saveModelNameAtSharedPref(modelName)
             getImagesUrlIfIsNotEmptyInRoom()
 
-        }catch (e:Exception){}
+        } catch (e: Exception) {
+        }
     }
 
     private fun saveModelNameAtSharedPref(modelName: String) {
 
         val editor = sharedPref?.edit()
-        editor?.putString("phoneModelName",modelName)
+        editor?.putString("phoneModelName", modelName)
         editor?.apply()
     }
 
@@ -283,7 +293,7 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
             val database = RoomDB(requireContext()).getDataFromRoom()
             database.deleteImagesUri()
             database.insertImagesUri(*list.toTypedArray())
-            sharedPref?.edit()?.putBoolean("imagesIsEmptyInRoom",false)?.apply()
+            sharedPref?.edit()?.putBoolean("imagesIsEmptyInRoom", false)?.apply()
             findNavController().navigate(R.id.action_modelsFragment_to_descriptionFragment)
         }
     }
@@ -295,12 +305,14 @@ class ModelsFragment : BaseCoroutineScope(),PhoneModelsAdapter.Listener {
 
     private fun pressBackButton() {
 
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
 
-                navigateToPreviousFragment()
-            }
-        })
+                    navigateToPreviousFragment()
+                }
+            })
     }
 
     override fun onDestroy() {

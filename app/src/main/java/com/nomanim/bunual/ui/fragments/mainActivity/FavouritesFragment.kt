@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -37,19 +38,25 @@ class FavouritesFragment : Fragment(),AllPhonesAdapter.Listener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentFavouritesBinding.inflate(inflater,container,false)
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-        currentUser = auth.currentUser
-        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
 
         binding.withOfflineModeLayout.visibility = View.INVISIBLE
         binding.withoutOfflineModeLayout.visibility = View.INVISIBLE
         binding.noDataImageView.visibility = View.INVISIBLE
         binding.noDataTextView.visibility = View.INVISIBLE
 
-        checkInternetConnection()
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        currentUser = auth.currentUser
+        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
+
+        checkInternetConnection()
     }
 
     private fun checkInternetConnection() {

@@ -26,6 +26,9 @@ import com.nomanim.bunual.ui.other.getDataFromFireStore
 import com.thekhaeng.pushdownanim.PushDownAnim
 import java.util.*
 import kotlin.collections.ArrayList
+
+
+
 class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPhonesAdapter.Listener {
 
     private var _binding: FragmentHomeBinding? = null
@@ -47,8 +50,6 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
 
         _binding = FragmentHomeBinding.inflate(inflater,container,false)
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
 
         return binding.root
     }
@@ -56,9 +57,11 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
         sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
         currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.status_bar_color)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.background_color_gray)
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.VISIBLE
 
         checkCodeForNavigateProfileFragment()
@@ -170,6 +173,7 @@ class HomeFragment : BaseCoroutineScope(),MostViewedPhonesAdapter.Listener,AllPh
                                 allPhones.add(morePhones[i])
 
                             }
+
                             verticalRecyclerViewAdapter.notifyDataSetChanged()
                         }
                 }

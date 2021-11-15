@@ -60,10 +60,10 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         binding.featuresCancelButton.setOnClickListener { showDialogOfCloseActivity() }
 
         binding.chooseStorageCardView.setOnClickListener {
-            showFeaturesBottomSheet(storageList,binding.storageTextView,getString(R.string.choose_phone_storage)) }
+            showFeaturesBottomSheet(storageList,binding.storageTextView,getString(R.string.choose_phone_storage),false) }
 
         binding.chooseRamCardView.setOnClickListener {
-            showFeaturesBottomSheet(ramList,binding.ramTextView,getString(R.string.choose_phone_ram)) }
+            showFeaturesBottomSheet(ramList,binding.ramTextView,getString(R.string.choose_phone_ram),false) }
 
         binding.chooseColorCardView.setOnClickListener { setColorsBottomSheet() }
     }
