@@ -6,11 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewPhoneModelsBinding
-import com.nomanim.bunual.retrofit.models.ModelPhoneBrands
+import com.nomanim.bunual.api.entity.ModelPhoneBrands
 import com.thekhaeng.pushdownanim.PushDownAnim
 
-class PhoneBrandsAdapter (val context: Context, private val list: ArrayList<ModelPhoneBrands>, val listener: Listener)
-    : RecyclerView.Adapter<PhoneBrandsAdapter.Holder>() {
+class PhoneBrandsAdapter(
+    val context: Context,
+    private val list: ArrayList<ModelPhoneBrands>,
+    val listener: Listener
+) : RecyclerView.Adapter<PhoneBrandsAdapter.Holder>() {
 
     interface Listener {
 
@@ -18,27 +21,37 @@ class PhoneBrandsAdapter (val context: Context, private val list: ArrayList<Mode
 
     }
 
-    class Holder(val binding: LayoutCardViewPhoneModelsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class Holder(val binding: LayoutCardViewPhoneModelsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun run(list: ArrayList<ModelPhoneBrands>, position: Int, listener: Listener, context: Context) {
+        fun run(
+            list: ArrayList<ModelPhoneBrands>,
+            position: Int,
+            listener: Listener,
+            context: Context
+        ) {
 
             binding.brandOrModelName.text = list[position].brandName
             binding.modelImageView.visibility = View.INVISIBLE
             PushDownAnim.setPushDownAnimTo(binding.modelOrBrandCardView).setOnClickListener {
 
-                listener.onCardViewClickListener(list[position].id,list[position].brandName)
+                listener.onCardViewClickListener(list[position].id, list[position].brandName)
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-
-        return Holder(LayoutCardViewPhoneModelsBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return Holder(
+            LayoutCardViewPhoneModelsBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-
-        holder.run(list,position,listener,context)
+        holder.run(list, position, listener, context)
     }
 
     override fun getItemCount(): Int {

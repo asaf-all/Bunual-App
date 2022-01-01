@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/detailContainerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,6 +15,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/adsDetailsBackButton"
+            android:layout_width="54dp"
+            android:layout_height="41dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/view_back_button_layout"
+            android:backgroundTint="@color/background_color_gray"
+            android:translationZ="90dp">
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="12dp"
+                android:layout_height="11dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView2"
@@ -27,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/background_color_gray"
-                tools:context=".ui.fragments.adsDetailsActivity.AdsDetailsFragment">
+                tools:context=".ui.fragments.adsdetailsactivity.AdsDetailsFragment">
 
                 <ProgressBar
                     android:id="@+id/allDataProgressBar"
@@ -60,26 +83,6 @@
                     app:sliderScrollTimeInSec="3"
                     app:sliderStartAutoCycle="true">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:id="@+id/adsDetailsBackButton"
-                        android:layout_width="50dp"
-                        android:layout_height="38dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="17dp"
-                        android:background="@drawable/view_back_button_layout"
-                        android:backgroundTint="@color/background_color_gray">
-
-                        <ImageView
-                            android:id="@+id/imageView6"
-                            android:layout_width="12dp"
-                            android:layout_height="11dp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:srcCompat="@drawable/back" />
-                    </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.smarteist.autoimageslider.SliderView>
 
                 <androidx.constraintlayout.widget.ConstraintLayout

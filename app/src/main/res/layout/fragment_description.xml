@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color_gray"
-    tools:context=".ui.fragments.newAnnouncementActivity.DescriptionFragment">
+    tools:context=".ui.fragments.newadsactivity.DescriptionFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"

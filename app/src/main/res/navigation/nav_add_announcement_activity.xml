@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/brandsFragment"
-        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.BrandsFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newadsactivity.BrandsFragment"
         android:label="@string/select_phone_brand"
         tools:layout="@layout/fragment_brands" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/modelsFragment"
-        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.ModelsFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newadsactivity.ModelsFragment"
         android:label="@string/select_phone_model"
         tools:layout="@layout/fragment_models" >
         <action
@@ -32,7 +32,7 @@
     </fragment>
     <fragment
         android:id="@+id/descriptionFragment"
-        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.DescriptionFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newadsactivity.DescriptionFragment"
         android:label="fragment_description"
         tools:layout="@layout/fragment_description" >
         <action
@@ -44,7 +44,7 @@
     </fragment>
     <fragment
         android:id="@+id/featuresFragment"
-        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.FeaturesFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newadsactivity.FeaturesFragment"
         android:label="fragment_features"
         tools:layout="@layout/fragment_features" >
         <action
@@ -56,7 +56,7 @@
     </fragment>
     <fragment
         android:id="@+id/priceFragment"
-        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.PriceFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newadsactivity.PriceFragment"
         android:label="fragment_price"
         tools:layout="@layout/fragment_price">
         <action
@@ -68,7 +68,7 @@
     </fragment>
     <fragment
         android:id="@+id/userFragment"
-        android:name="com.nomanim.bunual.ui.fragments.newAnnouncementActivity.UserFragment"
+        android:name="com.nomanim.bunual.ui.fragments.newadsactivity.UserFragment"
         android:label="fragment_user"
         tools:layout="@layout/fragment_user" >
         <action

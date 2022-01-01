@@ -21,7 +21,7 @@
         <activity
             android:name=".ui.activities.NewAnnouncementActivity"
             android:screenOrientation="portrait"
-            android:exported="true" />
+            android:exported="false" />
         <activity
             android:name=".ui.activities.MainActivity"
             android:exported="true"

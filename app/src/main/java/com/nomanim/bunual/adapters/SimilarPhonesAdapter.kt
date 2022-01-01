@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewSimilarPhonesBinding
 import com.nomanim.bunual.models.ModelAnnouncement
-import com.nomanim.bunual.ui.other.downloadImageWithGlide
+import com.nomanim.bunual.base.downloadImageWithGlide
 
 class SimilarPhonesAdapter (val context: Context, private val list: ArrayList<ModelAnnouncement>, val listener: Listener)
     : RecyclerView.Adapter<SimilarPhonesAdapter.Holder>() {

@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewMostviewedPhonesBinding
 import com.nomanim.bunual.models.ModelAnnouncement
-import com.nomanim.bunual.ui.other.downloadImageWithGlide
+import com.nomanim.bunual.base.downloadImageWithGlide
 import com.thekhaeng.pushdownanim.PushDownAnim
 
 class MostViewedPhonesAdapter(private val list: ArrayList<ModelAnnouncement>, val listener: Listener)

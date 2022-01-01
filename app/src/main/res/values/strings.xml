@@ -47,6 +47,7 @@
     <string name="user_place">User place</string>
     <string name="user_name">User name</string>
     <string name="user_phone_number">Phone number</string>
+    <string name="date">Date</string>
 
     <!-- Search Fragment -->
     <string name="search">Search</string>

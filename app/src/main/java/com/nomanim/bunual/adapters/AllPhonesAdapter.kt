@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewAllPhonesBinding
 import com.nomanim.bunual.models.ModelAnnouncement
-import com.nomanim.bunual.ui.other.downloadImageWithGlide
+import com.nomanim.bunual.base.downloadImageWithGlide
 import com.thekhaeng.pushdownanim.PushDownAnim
 
 class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)

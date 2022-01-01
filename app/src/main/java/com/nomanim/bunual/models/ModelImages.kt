@@ -10,7 +10,6 @@ data class ModelImages(
     @ColumnInfo(name = "imageUri")
     val imageUri: String) {
 
-
     @PrimaryKey(autoGenerate = true)
     var key: Int = 0
 }

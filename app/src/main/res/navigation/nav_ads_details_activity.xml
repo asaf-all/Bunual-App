@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/adsDetailsFragment"
-        android:name="com.nomanim.bunual.ui.fragments.adsDetailsActivity.AdsDetailsFragment"
+        android:name="com.nomanim.bunual.ui.fragments.adsdetailsactivity.AdsDetailsFragment"
         android:label="AdsDetailsFragment" />
 </navigation>

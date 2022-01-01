@@ -3,7 +3,7 @@ package com.nomanim.bunual.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.nomanim.bunual.databinding.LayoutCardViewImageSliderBinding
-import com.nomanim.bunual.ui.other.downloadImageWithGlide
+import com.nomanim.bunual.base.downloadImageWithGlide
 import com.smarteist.autoimageslider.SliderViewAdapter
 
 class ImagesSliderAdapter(private val imagesList: ArrayList<String>) : SliderViewAdapter<ImagesSliderAdapter.SliderAdapter>() {

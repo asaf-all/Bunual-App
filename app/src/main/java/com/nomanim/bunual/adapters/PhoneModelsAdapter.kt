@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewPhoneModelsBinding
-import com.nomanim.bunual.retrofit.models.ModelPhoneModels
-import com.nomanim.bunual.ui.other.downloadImageWithGlide
+import com.nomanim.bunual.api.entity.ModelPhoneModels
+import com.nomanim.bunual.base.downloadImageWithGlide
 import com.thekhaeng.pushdownanim.PushDownAnim
 
 class PhoneModelsAdapter (val context: Context, private val list: ArrayList<ModelPhoneModels>, val listener: Listener)

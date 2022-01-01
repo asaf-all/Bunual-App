@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewPhoneColorBinding
-import com.nomanim.bunual.retrofit.models.ModelPlaces
+import com.nomanim.bunual.api.entity.ModelPlaces
 
 class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: Listener)
     : RecyclerView.Adapter<PlacesAdapter.Holder>() {

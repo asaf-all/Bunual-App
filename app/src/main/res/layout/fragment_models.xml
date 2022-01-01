@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:background="@color/background_color_gray"
         android:backgroundTint="@color/background_color_gray"
-        tools:context=".ui.fragments.newAnnouncementActivity.ModelsFragment">
+        tools:context=".ui.fragments.newadsactivity.ModelsFragment">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/modelsRecyclerView"
