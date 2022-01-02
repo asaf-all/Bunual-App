@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,135 +26,107 @@ import com.nomanim.bunual.databinding.FragmentProfileBinding
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.api.entity.ModelSimpleData
 import com.nomanim.bunual.base.responseToList
+import com.nomanim.bunual.viewmodel.FavoritesViewModel
+import com.nomanim.bunual.viewmodel.ProfileViewModel
+import gun0912.tedimagepicker.util.ToastUtil
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
+class ProfileFragment : Fragment(), AllPhonesAdapter.Listener {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+
+    private val mProfileViewModel: ProfileViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var firestore: FirebaseFirestore
     private var currentUser: FirebaseUser? = null
     private var sharedPref: SharedPreferences? = null
+
     private var announcements = ArrayList<ModelAnnouncement>()
+    private lateinit var userPhoneNumber: String
+    private val numberOfAds: Long = 10
     private lateinit var recyclerViewAdapter: AllPhonesAdapter
     private lateinit var lastValue: QuerySnapshot
     private var announcementsAreOver = false
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
-
-        _binding = FragmentProfileBinding.inflate(inflater,container,false)
-
-        binding.withOfflineModeLayout.visibility = View.INVISIBLE
-        binding.withoutOfflineModeLayout.visibility = View.INVISIBLE
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
         binding.noDataTextView.visibility = View.INVISIBLE
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUser = auth.currentUser
-        sharedPref = activity?.getSharedPreferences("sharedPref",Context.MODE_PRIVATE)
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(),R.color.white)
-
-
+        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
 
         if (currentUser != null) {
+            userPhoneNumber = currentUser?.phoneNumber.toString()
+            binding.phoneNumberTextView.text = userPhoneNumber
+            binding.logoutTextView.setOnClickListener { showAlertDialog() }
 
-            val currentPhoneNumber = currentUser?.phoneNumber.toString()
-            binding.phoneNumberTextView.text = currentPhoneNumber
-            binding.logoutTextView.setOnClickListener { pressLogOutAlgorithm() }
-            checkInternetConnection()
-
-        }else { findNavController().navigate(R.id.action_profileFragment_to_registrationFragment) }
+            initProfileViewModel()
+            mProfileViewModel.getUserAds(firestore, userPhoneNumber, numberOfAds)
+        } else {
+            findNavController().navigate(R.id.action_profileFragment_to_registrationFragment)
+        }
     }
 
-    private fun checkInternetConnection() {
-
-        val simpleDataService = RetrofitBuilder.service.getSimpleData()
-        simpleDataService.enqueue(object : Callback<ModelSimpleData> {
-            override fun onResponse(call: Call<ModelSimpleData>, response: Response<ModelSimpleData>) {
-
-                binding.withoutOfflineModeLayout.visibility = View.VISIBLE
-                binding.withOfflineModeLayout.visibility = View.GONE
-
-                getCurrentUserAnnouncements()
+    private fun initProfileViewModel() {
+        mProfileViewModel.userAdsLiveData().observe(viewLifecycleOwner, { response ->
+            if (response.size() != 0) {
+                announcements.responseToList(firestore, userPhoneNumber, response)
+                setRecyclerView()
+                lastValue = response
+                getMoreAds()
+            } else {
+                binding.noDataTextView.visibility = View.VISIBLE
+                binding.currentUserProgressBar.visibility = View.INVISIBLE
             }
+        })
 
-            override fun onFailure(call: Call<ModelSimpleData>, t: Throwable) {
-
-                binding.withoutOfflineModeLayout.visibility = View.GONE
-                binding.withOfflineModeLayout.visibility = View.VISIBLE
+        mProfileViewModel.moreLiveData().observe(viewLifecycleOwner, { response ->
+            if (response.size() < 10) {
+                announcementsAreOver = true
             }
+            binding.currentUserProgressBar.visibility = View.INVISIBLE
+            lastValue = response
+            val morePhones = ArrayList<ModelAnnouncement>()
+                .responseToList(
+                    firestore,
+                    userPhoneNumber,
+                    response
+                )
+            for (i in 0 until morePhones.size) {
+                announcements.add(morePhones[i])
+            }
+            recyclerViewAdapter.notifyDataSetChanged()
+        })
+        mProfileViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+            binding.currentUserProgressBar.visibility = View.INVISIBLE
+            ToastUtil.showToast("error: $message")
         })
     }
 
-    private fun getCurrentUserAnnouncements() {
-
-        firestore.collection(currentUser?.phoneNumber.toString()).orderBy("time", Query.Direction.ASCENDING)
-            .limit(10).addSnapshotListener { value, error ->
-
-                if (error != null) { Toast.makeText(requireContext(),R.string.fail, Toast.LENGTH_SHORT).show() }
-
-                if (value?.size() != 0) {
-
-                    announcements.responseToList(firestore,currentUser?.phoneNumber.toString(),value)
-                    setRecyclerView()
-
-                    value?.let { lastValue = it }
-                    getMoreAnnouncements()
-
-                }else {
-
-                    binding.noDataTextView.visibility = View.VISIBLE
-                    binding.currentUserProgressBar.visibility = View.INVISIBLE
-                }
-            }
-    }
-
-    private fun getMoreAnnouncements() {
-
-        binding.profilePhonesRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
-
+    private fun getMoreAds() {
+        binding.profilePhonesRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
-                if (!recyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
-
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
                     if (!announcementsAreOver) {
-
                         binding.currentUserProgressBar.visibility = View.VISIBLE
-
-                        firestore.collection(currentUser?.phoneNumber.toString())
-                            .orderBy("time", Query.Direction.ASCENDING)
-                            .startAfter(lastValue.documents[lastValue.size()-1])
-                            .limit(10).get().addOnSuccessListener { values ->
-
-                                if (values.size() < 10) {
-
-                                    announcementsAreOver = true
-                                }
-                                binding.currentUserProgressBar.visibility = View.INVISIBLE
-
-                                lastValue = values
-
-                                val morePhones = ArrayList<ModelAnnouncement>()
-                                    .responseToList(firestore,currentUser?.phoneNumber.toString(),values)
-
-                                for (i in 0 until morePhones.size) {
-
-                                    announcements.add(morePhones[i])
-
-                                }
-                                recyclerViewAdapter.notifyDataSetChanged()
-                            }
+                        mProfileViewModel.getMoreAds(firestore, lastValue, numberOfAds)
                     }
                 }
             }
@@ -161,42 +134,37 @@ class ProfileFragment : Fragment(),AllPhonesAdapter.Listener {
     }
 
     private fun setRecyclerView() {
-
         val recyclerView = binding.profilePhonesRecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerViewAdapter = AllPhonesAdapter(requireContext(),announcements,this@ProfileFragment)
+        recyclerViewAdapter =
+            AllPhonesAdapter(requireContext(), announcements, this@ProfileFragment)
         recyclerView.adapter = recyclerViewAdapter
     }
 
-    private fun pressLogOutAlgorithm() {
-
-        showAlertDialog()
-    }
-
     private fun showAlertDialog() {
-
         val builder = CFAlertDialog.Builder(requireContext())
             .setTitle(R.string.are_you_sure)
             .setDialogStyle(CFAlertDialog.CFAlertStyle.ALERT)
-            .addButton(getString(R.string.log_out),
-                ContextCompat.getColor(requireContext(), R.color.white)
-                , ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red)
-                , CFAlertDialog.CFAlertActionStyle.POSITIVE
-                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED) { dialog, which ->
-
+            .addButton(
+                getString(R.string.log_out),
+                ContextCompat.getColor(requireContext(), R.color.white),
+                ContextCompat.getColor(requireContext(), R.color.cancel_button_color_red),
+                CFAlertDialog.CFAlertActionStyle.POSITIVE,
+                CFAlertDialog.CFAlertActionAlignment.JUSTIFIED
+            ) { dialog, which ->
                 auth.signOut()
                 dialog.dismiss()
                 findNavController().navigate(R.id.action_profileFragment_to_homeFragment)
-
             }
-            .addButton(getString(R.string.dismiss),
-                ContextCompat.getColor(requireContext(), R.color.white)
-                , ContextCompat.getColor(requireContext(),R.color.dismiss_button_color_green)
-                , CFAlertDialog.CFAlertActionStyle.NEGATIVE
-                , CFAlertDialog.CFAlertActionAlignment.JUSTIFIED) { dialog, which ->
-
+            .addButton(
+                getString(R.string.dismiss),
+                ContextCompat.getColor(requireContext(), R.color.white),
+                ContextCompat.getColor(requireContext(), R.color.dismiss_button_color_green),
+                CFAlertDialog.CFAlertActionStyle.NEGATIVE,
+                CFAlertDialog.CFAlertActionAlignment.JUSTIFIED
+            ) { dialog, which ->
                 dialog.dismiss()
             }
 

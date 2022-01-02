@@ -12,5 +12,4 @@ abstract class BaseCoroutineScope() : BaseFragment(), CoroutineScope {
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.Main
 
-
 }

@@ -19,7 +19,4 @@ interface RetrofitService {
 
     @GET("iamasaf-profile/bax-api-collection/master/az.json")
     fun getPlaces() : Single<List<ModelPlaces>>
-
-    @GET("iamasaf-profile/bunual-api-collection/master/simple_data.json")
-    fun getSimpleData() : Call<ModelSimpleData>
 }

@@ -95,7 +95,6 @@ class AdsDetailsFragment : BaseCoroutineScope(), AdsReviewAdapter.Listener {
     }
 
     private fun makeStatusBarTransparent() {
-
         requireActivity().window.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

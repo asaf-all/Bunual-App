@@ -10,16 +10,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
-import androidx.lifecycle.lifecycleScope
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.R
-import com.nomanim.bunual.api.builders.RxJavaBuilder
 import com.nomanim.bunual.databinding.FragmentUserBinding
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.models.ModelImages
@@ -31,10 +29,8 @@ import com.nomanim.bunual.ui.activities.MainActivity
 import com.nomanim.bunual.base.BaseCoroutineScope
 import com.nomanim.bunual.extensions.loadingProgressBarInDialog
 import com.nomanim.bunual.extensions.showFeaturesBottomSheet
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
+import com.nomanim.bunual.viewmodel.UserViewModel
+import gun0912.tedimagepicker.util.ToastUtil
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,8 +39,9 @@ class UserFragment : BaseCoroutineScope() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
+
+    private val mUserViewModel: UserViewModel by viewModels()
     private var sharedPref: SharedPreferences? = null
-    private val compositeDisposable = CompositeDisposable()
     private lateinit var firestore: FirebaseFirestore
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
@@ -62,76 +59,59 @@ class UserFragment : BaseCoroutineScope() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentUserBinding.inflate(inflater)
-        firestore = FirebaseFirestore.getInstance()
-        firebaseStorage = FirebaseStorage.getInstance()
-        auth = FirebaseAuth.getInstance()
-        sharedPref =
-            activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        firestore = FirebaseFirestore.getInstance()
+        firebaseStorage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        sharedPref =
+            activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
         savedPlaceName =
             sharedPref?.getString("placeName", getString(R.string.choose_place)).toString()
         savedUserName = sharedPref?.getString("userName", "").toString()
         savedPhoneNumber = auth.currentUser?.phoneNumber.toString()
 
-        lifecycleScope.launch { getPlacesNameFromInternet() }
+        initUserViewModel()
+        binding.placeTextView.text = getString(R.string.places_name_downloading)
+        binding.userNameEditText.setText(savedUserName)
+        binding.userPhoneNumberEditText.setText(savedPhoneNumber)
+        mUserViewModel.getPlaces()
+
         checkRadioGroupOfDeliveryStatus()
         pressBackButton()
         binding.userToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
         getImagesUrlFromRoom()
     }
 
-    private fun getPlacesNameFromInternet() {
-        binding.placeTextView.text = getString(R.string.places_name_downloading)
-        binding.userNameEditText.setText(savedUserName)
-        binding.userPhoneNumberEditText.setText(savedPhoneNumber)
-
-        compositeDisposable.add(
-            RxJavaBuilder.service.getPlaces()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<List<ModelPlaces>>() {
-
-                    override fun onSuccess(list: List<ModelPlaces>) {
-
-                        binding.placeTextView.text = savedPlaceName
-                        placesList = list.sortedWith(compareByDescending { it.population })
-                        binding.userPlaceCardView.setOnClickListener {
-
-                            val listForDialog = ArrayList<String>()
-                            for (element in placesList) {
-                                listForDialog.add(element.city)
-                            }
-                            showFeaturesBottomSheet(
-                                listForDialog,
-                                binding.placeTextView,
-                                getString(R.string.choose_place),
-                                true
-                            )
-                        }
-                    }
-
-                    override fun onError(error: Throwable) {
-
-                        Snackbar.make(binding.root, getString(R.string.fail), Snackbar.LENGTH_SHORT)
-                            .show()
-                        error.printStackTrace()
-                    }
-                })
-        )
+    private fun initUserViewModel() {
+        mUserViewModel.placesLiveData().observe(viewLifecycleOwner, { response ->
+            binding.placeTextView.text = savedPlaceName
+            placesList = response.sortedWith(compareByDescending { it.population })
+            binding.userPlaceCardView.setOnClickListener {
+                val listForDialog = ArrayList<String>()
+                for (element in placesList) {
+                    listForDialog.add(element.city)
+                }
+                showFeaturesBottomSheet(
+                    listForDialog,
+                    binding.placeTextView,
+                    getString(R.string.choose_place),
+                    true
+                )
+            }
+        })
+        mUserViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+            ToastUtil.showToast("error: $message")
+        })
     }
 
     private fun checkRadioGroupOfDeliveryStatus() {
         binding.deliveryRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
-
                 R.id.noDeliveryRadioButton -> {
                     deliveryStatus = getString(R.string.no_delivery)
                 }
@@ -171,11 +151,10 @@ class UserFragment : BaseCoroutineScope() {
             }
         }
         getAllDataForUploadToFirestore()
-        uploadAnnouncementToFirestore(dialog)
+        uploadAdsToFirestore(dialog)
     }
 
     private fun getAllDataForUploadToFirestore() {
-
         val brandName = sharedPref?.getString("phoneBrandName", null)
         val modelName = sharedPref?.getString("phoneModelName", null)
         val description = sharedPref?.getString("description", null)
@@ -193,7 +172,6 @@ class UserFragment : BaseCoroutineScope() {
         if (brandName != null && modelName != null && description != null && storage != null &&
             ram != null && color != null && status != null
         ) {
-
             val modelPhone = ModelPhone(
                 brandName,
                 modelName,
@@ -210,6 +188,7 @@ class UserFragment : BaseCoroutineScope() {
 
             modelAnnouncement = ModelAnnouncement(
                 "",
+                auth.currentUser?.phoneNumber.toString(),
                 downloadUrlList,
                 description,
                 "0",
@@ -220,7 +199,7 @@ class UserFragment : BaseCoroutineScope() {
         }
     }
 
-    private fun uploadAnnouncementToFirestore(loadingProgressBarInDialog: KProgressHUD) {
+    private fun uploadAdsToFirestore(loadingProgressBarInDialog: KProgressHUD) {
         val editor = sharedPref?.edit()
         editor?.putString("userName", binding.userNameEditText.text.toString())
         editor?.apply()
@@ -253,7 +232,6 @@ class UserFragment : BaseCoroutineScope() {
 
     override fun onDestroy() {
         super.onDestroy()
-        compositeDisposable.clear()
         job.cancel()
     }
 }
