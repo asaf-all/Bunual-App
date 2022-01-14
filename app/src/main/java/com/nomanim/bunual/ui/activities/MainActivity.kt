@@ -3,6 +3,8 @@ package com.nomanim.bunual.ui.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
@@ -20,33 +22,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         connectBottomNavWithNavHost()
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-
     }
 
     fun intentToAdsDetails(model: ModelAnnouncement) {

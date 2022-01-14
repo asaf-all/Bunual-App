@@ -66,10 +66,13 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pressBackButton()
         checkImagesStatusInRoom()
-        binding.modelsToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
-        binding.closeActivityInModelsFragment.setOnClickListener { showDialogOfCloseActivity() }
+        binding.modelsToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        binding.closeActivityInModelsFragment.setOnClickListener {
+            showDialogOfCloseActivity()
+        }
         binding.searchPhoneModels.clearTextWhenClickClear()
 
     }
@@ -244,22 +247,6 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
         val editor = sharedPref?.edit()
         editor?.putString("phoneModelName", modelName)
         editor?.apply()
-    }
-
-
-
-    private fun navigateToPreviousFragment() {
-        findNavController().navigate(R.id.action_modelsFragment_to_brandsFragment)
-    }
-
-    private fun pressBackButton() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    navigateToPreviousFragment()
-                }
-            })
     }
 
     override fun onDestroy() {
