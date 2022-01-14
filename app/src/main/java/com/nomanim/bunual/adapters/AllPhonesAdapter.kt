@@ -9,42 +9,54 @@ import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.base.downloadImageWithGlide
 import com.thekhaeng.pushdownanim.PushDownAnim
 
-class AllPhonesAdapter (val context: Context, val list: ArrayList<ModelAnnouncement>, val listener: Listener)
-    : RecyclerView.Adapter<AllPhonesAdapter.Holder>() {
+class AllPhonesAdapter(
+    val context: Context,
+    val list: ArrayList<ModelAnnouncement>,
+    val listener: Listener,
+    private val onClick: ((ModelAnnouncement) -> Unit)
+) : RecyclerView.Adapter<AllPhonesAdapter.Holder>() {
 
     interface Listener {
 
-        fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int)
-
     }
 
+    class Holder(val binding: LayoutCardViewAllPhonesBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-    class Holder(val binding: LayoutCardViewAllPhonesBinding) : RecyclerView.ViewHolder(binding.root) {
-
-        fun run(list: ArrayList<ModelAnnouncement>, position: Int, listener: Listener) {
+        fun run(
+            list: ArrayList<ModelAnnouncement>,
+            position: Int,
+            listener: Listener,
+            onClick: (ModelAnnouncement) -> Unit
+        ) {
 
             binding.announcementPrice.text = list[position].phone.price
             binding.announcementName.text = list[position].phone.brand
             binding.announcementDescription.text = list[position].description
             binding.announcementViews.text = list[position].numberOfViews
-            //val announcementUploadingTime = com.google.firebase.Timestamp.now().toDate()
-            //holder.allPhonesTime.text = announcementUploadingTime.toString()
-            binding.announcementImageView.downloadImageWithGlide(binding.root,list[position].image[0])
+            binding.announcementImageView.downloadImageWithGlide(
+                binding.root,
+                list[position].image[0]
+            )
             PushDownAnim.setPushDownAnimTo(binding.verticalLinearLayout).setOnClickListener {
-
-                listener.setOnClickVerticalAnnouncement(list,position)
+                onClick.invoke(list[position])
             }
-
         }
     }
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
-        return Holder(LayoutCardViewAllPhonesBinding.inflate(LayoutInflater.from(parent.context),parent,false))
+        return Holder(
+            LayoutCardViewAllPhonesBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.run(list,position,listener)
+        holder.run(list, position, listener, onClick)
     }
 
     override fun getItemCount(): Int {

@@ -1,7 +1,6 @@
 package com.nomanim.bunual.ui.fragments.mainactivity
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
@@ -14,17 +13,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.nomanim.bunual.Constants
 import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.MostViewedPhonesAdapter
 import com.nomanim.bunual.adapters.AllPhonesAdapter
 import com.nomanim.bunual.databinding.FragmentHomeBinding
 import com.nomanim.bunual.models.ModelAnnouncement
-import com.nomanim.bunual.ui.activities.AdsDetailsActivity
 import com.nomanim.bunual.base.BaseFragment
 import com.nomanim.bunual.base.responseToList
 import com.nomanim.bunual.viewmodel.HomeViewModel
 import com.thekhaeng.pushdownanim.PushDownAnim
-import gun0912.tedimagepicker.util.ToastUtil.showToast
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -34,7 +32,6 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-
     private val mHomeViewModel: HomeViewModel by viewModels()
 
     private lateinit var auth: FirebaseAuth
@@ -44,12 +41,11 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
     private val sortTexts = ArrayList<String>()
     private var mostViewedPhones = ArrayList<ModelAnnouncement>()
     private var allPhones = ArrayList<ModelAnnouncement>()
-    private lateinit var verticalRecyclerViewAdapter: AllPhonesAdapter
-
-    private var currentUserPhoneNumber: String = ""
+    private lateinit var verticalRVAdapter: AllPhonesAdapter
+    private var userPhoneNumber: String = ""
     private val numberOfAds = 10L  //for load data limit from fireStore for once
     private lateinit var lastValue: QuerySnapshot
-    private var announcementsAreOver = false
+    private var adsAreOver = false
 
 
     override fun onCreateView(
@@ -57,7 +53,6 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -68,20 +63,21 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-        currentUserPhoneNumber = auth.currentUser?.phoneNumber.toString()
+        userPhoneNumber = auth.currentUser?.phoneNumber.toString()
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.background_color_gray)
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility =
             View.VISIBLE
 
-        checkCodeForNavigateProfileFragment()
+        checkCodeForNavigate()
+
         initHomeViewModel()
         mHomeViewModel.getMostViewedAds(firestore, numberOfAds)
         mHomeViewModel.getAllAds(firestore, numberOfAds)
         initUi()
     }
 
-    private fun checkCodeForNavigateProfileFragment() {
+    private fun checkCodeForNavigate() {
         val toProfileFragment = sharedPref?.getBoolean("toProfileFragment", false)
         if (toProfileFragment != null && toProfileFragment) {
             sharedPref?.edit()?.putBoolean("toProfileFragment", false)?.apply()
@@ -95,7 +91,7 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
             setHorizontalRecyclerView()
         })
         mHomeViewModel.allLiveData().observe(viewLifecycleOwner, { response ->
-            allPhones.responseToList(firestore, "All Announcements", response)
+            allPhones.responseToList(firestore, Constants.ADS_COLLECTION_NAME, response)
             setVerticalRecyclerView()
 
             if (response.size() != 0) {
@@ -105,19 +101,19 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         })
         mHomeViewModel.moreLiveData().observe(viewLifecycleOwner, { response ->
             if (response.size() < numberOfAds) {
-                announcementsAreOver = true
+                adsAreOver = true
             }
             binding.morePhonesProgressBar.visibility = View.INVISIBLE
             lastValue = response
             val morePhones = ArrayList<ModelAnnouncement>()
-                .responseToList(firestore, "All Announcements", response)
+                .responseToList(firestore, Constants.ADS_COLLECTION_NAME, response)
             for (i in 0 until morePhones.size) {
                 allPhones.add(morePhones[i])
             }
-            verticalRecyclerViewAdapter.notifyDataSetChanged()
+            verticalRVAdapter.notifyDataSetChanged()
         })
         mHomeViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
-            showToast("error: $message")
+            showToastMessage("error: $message")
         })
     }
 
@@ -125,7 +121,7 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         val scrollView = binding.nestedScrollView
         scrollView.viewTreeObserver.addOnScrollChangedListener {
             if (scrollView.getChildAt(0).bottom <= (scrollView.height + scrollView.scrollY)) {
-                if (!announcementsAreOver) {
+                if (!adsAreOver) {
                     binding.morePhonesProgressBar.visibility = View.VISIBLE
                     mHomeViewModel.getMoreAds(firestore, lastValue, numberOfAds)
                 }
@@ -134,22 +130,24 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
     }
 
     private fun setHorizontalRecyclerView() {
+        val adapter = MostViewedPhonesAdapter(mostViewedPhones, this@HomeFragment) { model ->
+            mMainActivity.intentToAdsDetails(model)
+        }
         val hrv = binding.horizontalRecyclerView
         hrv.setHasFixedSize(true)
         hrv.layoutManager = StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL)
-        val horizontalRecyclerViewAdapter =
-            MostViewedPhonesAdapter(mostViewedPhones, this@HomeFragment)
-        hrv.adapter = horizontalRecyclerViewAdapter
+        hrv.adapter = adapter
     }
 
     private fun setVerticalRecyclerView() {
+        verticalRVAdapter = AllPhonesAdapter(requireContext(), allPhones, this@HomeFragment) { model ->
+            mMainActivity.intentToAdsDetails(model)
+        }
         val vrv = binding.verticalRecyclerView
         vrv.isNestedScrollingEnabled = false
         vrv.setHasFixedSize(true)
         vrv.layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        verticalRecyclerViewAdapter =
-            AllPhonesAdapter(requireContext(), allPhones, this@HomeFragment)
-        vrv.adapter = verticalRecyclerViewAdapter
+        vrv.adapter = verticalRVAdapter
     }
 
     private fun initUi() {
@@ -161,37 +159,18 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         }
     }
 
-    override fun onMostViewedPhoneClick(list: ArrayList<ModelAnnouncement>, position: Int) {
-        intentToAdsDetailsActivity(list, position)
-    }
-
-    override fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int) {
-        intentToAdsDetailsActivity(list, position)
-    }
-
-    private fun intentToAdsDetailsActivity(
-        list: ArrayList<ModelAnnouncement>,
-        position: Int
-    ) {
-        val intent = Intent(requireContext(), AdsDetailsActivity::class.java)
-        intent.putExtra("imagesLinks", createListWithSelectedAdsImages(list, position).toString())
-        intent.putExtra("selectedAnnouncementId", list[position].id)
-        //intent.putExtra("allData",list[position])
-        activity?.startActivity(intent)
-    }
-
-    private fun createListWithSelectedAdsImages(
-        list: ArrayList<ModelAnnouncement>,
-        position: Int
-    ): StringBuilder {
-        val stringBuilder = StringBuilder()
-        for (i in 0 until list[position].image.size) {
-            if (i == list[position].image.size - 1) {
-                stringBuilder.append(list[position].image[i])
-            } else {
-                stringBuilder.append(list[position].image[i] + "|")
-            }
-        }
-        return stringBuilder
-    }
+//  private fun createListWithSelectedAdsImages(
+//      list: ArrayList<ModelAnnouncement>,
+//      position: Int
+//  ): StringBuilder {
+//      val stringBuilder = StringBuilder()
+//      for (i in 0 until list[position].image.size) {
+//          if (i == list[position].image.size - 1) {
+//              stringBuilder.append(list[position].image[i])
+//          } else {
+//              stringBuilder.append(list[position].image[i] + "|")
+//          }
+//      }
+//      return stringBuilder
+//  }
 }

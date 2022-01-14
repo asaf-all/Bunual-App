@@ -90,7 +90,6 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
 
                 } else {
 
-                    getImagesUrlIfIsNotEmptyInRoom()
                     lifecycleScope.launch { getModelNamesFromRoom() }
                 }
             }
@@ -236,7 +235,7 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
     override fun onCardViewClickListener(modelName: String) {
         try {
             saveModelNameAtSharedPref(modelName)
-            getImagesUrlIfIsNotEmptyInRoom()
+            findNavController().navigate(R.id.action_modelsFragment_to_descriptionFragment)
         } catch (e: Exception) {
         }
     }
@@ -247,47 +246,7 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
         editor?.apply()
     }
 
-    private fun getImagesUrlIfIsNotEmptyInRoom() {
-        launch {
-            val imagesUrlAsModel = RoomDB(requireContext()).getDataFromRoom().getImagesUriFromDb()
-            for (index in imagesUrlAsModel.indices) {
-                imagesUrl.add(imagesUrlAsModel[index].imageUri.toUri())
-            }
-            openGallery()
-        }
-    }
 
-    private fun openGallery() {
-        TedImagePicker.with(requireContext())
-            .title(R.string.select_phone_image)
-            .backButton(R.drawable.back)
-            .buttonText(R.string.next)
-            .buttonBackground(R.color.main)
-            .mediaType(MediaType.IMAGE)
-            .selectedUri(imagesUrl)
-            .startMultiImage { imagesUri ->
-
-                val list = ArrayList<ModelImages>()
-
-                for (element in imagesUri) {
-
-                    val model = ModelImages(element.toString())
-                    list.add(model)
-                }
-
-                saveImagesUrlAtRoom(list)
-            }
-    }
-
-    private fun saveImagesUrlAtRoom(list: ArrayList<ModelImages>) {
-        launch {
-            val database = RoomDB(requireContext()).getDataFromRoom()
-            database.deleteImagesUri()
-            database.insertImagesUri(*list.toTypedArray())
-            sharedPref?.edit()?.putBoolean("imagesIsEmptyInRoom", false)?.apply()
-            findNavController().navigate(R.id.action_modelsFragment_to_descriptionFragment)
-        }
-    }
 
     private fun navigateToPreviousFragment() {
         findNavController().navigate(R.id.action_modelsFragment_to_brandsFragment)

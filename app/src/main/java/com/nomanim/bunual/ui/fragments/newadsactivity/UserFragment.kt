@@ -4,12 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
@@ -20,22 +18,24 @@ import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentUserBinding
 import com.nomanim.bunual.models.ModelAnnouncement
-import com.nomanim.bunual.models.ModelImages
 import com.nomanim.bunual.models.ModelPhone
 import com.nomanim.bunual.models.ModelUser
 import com.nomanim.bunual.api.entity.ModelPlaces
-import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.activities.MainActivity
-import com.nomanim.bunual.base.BaseCoroutineScope
+import com.nomanim.bunual.base.BaseFragment
+import com.nomanim.bunual.extensions.createScaledImageFromBitmap
+import com.nomanim.bunual.extensions.generateBitmapFromUri
 import com.nomanim.bunual.extensions.loadingProgressBarInDialog
-import com.nomanim.bunual.extensions.showFeaturesBottomSheet
+import com.nomanim.bunual.extensions.showCustomBottomSheet
 import com.nomanim.bunual.viewmodel.UserViewModel
+import gun0912.tedimagepicker.builder.TedImagePicker
+import gun0912.tedimagepicker.builder.type.MediaType
 import gun0912.tedimagepicker.util.ToastUtil
-import kotlinx.coroutines.launch
-import java.util.*
+import gun0912.tedimagepicker.util.ToastUtil.showToast
+import java.io.File
 import kotlin.collections.ArrayList
 
-class UserFragment : BaseCoroutineScope() {
+class UserFragment : BaseFragment() {
 
     private var _binding: FragmentUserBinding? = null
     private val binding get() = _binding!!
@@ -45,13 +45,10 @@ class UserFragment : BaseCoroutineScope() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var firebaseStorage: FirebaseStorage
     private lateinit var auth: FirebaseAuth
+
+    private lateinit var loadingDialog: KProgressHUD
     private lateinit var modelAnnouncement: ModelAnnouncement
     private lateinit var placesList: List<ModelPlaces>
-    private lateinit var imagesUrl: List<ModelImages>
-    private val downloadUrlList = ArrayList<String>()
-    private var savedUserName: String = ""
-    private var savedPhoneNumber: String = ""
-    private var savedPlaceName: String = ""
     private var deliveryStatus: String = ""
 
     override fun onCreateView(
@@ -70,46 +67,81 @@ class UserFragment : BaseCoroutineScope() {
         auth = FirebaseAuth.getInstance()
         sharedPref =
             activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
-        savedPlaceName =
-            sharedPref?.getString("placeName", getString(R.string.choose_place)).toString()
-        savedUserName = sharedPref?.getString("userName", "").toString()
-        savedPhoneNumber = auth.currentUser?.phoneNumber.toString()
 
+        loadingDialog = loadingProgressBarInDialog(
+            getString(R.string.download), getString(R.string.wait), false
+        )
         initUserViewModel()
-        binding.placeTextView.text = getString(R.string.places_name_downloading)
-        binding.userNameEditText.setText(savedUserName)
-        binding.userPhoneNumberEditText.setText(savedPhoneNumber)
+        initUi()
         mUserViewModel.getPlaces()
-
-        checkRadioGroupOfDeliveryStatus()
-        pressBackButton()
-        binding.userToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
-        getImagesUrlFromRoom()
     }
 
     private fun initUserViewModel() {
         mUserViewModel.placesLiveData().observe(viewLifecycleOwner, { response ->
-            binding.placeTextView.text = savedPlaceName
-            placesList = response.sortedWith(compareByDescending { it.population })
+            binding.txtPlaceNames.text =
+                sharedPref?.getString("placeName", getString(R.string.choose_place)).toString()
+            val placesList = response.sortedWith(compareByDescending { it.population })
             binding.userPlaceCardView.setOnClickListener {
-                val listForDialog = ArrayList<String>()
+                val listForSheet = ArrayList<String>()
                 for (element in placesList) {
-                    listForDialog.add(element.city)
+                    listForSheet.add(element.city)
                 }
-                showFeaturesBottomSheet(
-                    listForDialog,
-                    binding.placeTextView,
+                showCustomBottomSheet(
+                    listForSheet,
+                    binding.txtPlaceNames,
                     getString(R.string.choose_place),
                     true
                 )
             }
         })
+
+        mUserViewModel.uploadAdsImagesLiveData().observe(viewLifecycleOwner, { response ->
+            val editor = sharedPref?.edit()
+            editor?.putString("userName", binding.edtUserName.text.toString())
+            editor?.apply()
+            getAllDataForUploadToFirestore(response)
+            mUserViewModel.uploadAds(firestore, modelAnnouncement)
+        })
+
+        mUserViewModel.uploadAdsLiveData().observe(viewLifecycleOwner, { response ->
+            if (response == "success") {
+                loadingDialog.dismiss()
+                val intent = Intent(activity, MainActivity::class.java)
+                activity?.finish()
+                activity?.startActivity(intent)
+                activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+            }
+        })
         mUserViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
-            ToastUtil.showToast("error: $message")
+            binding.txtPlaceNames.text = "error! please try again"
+            showToast("error: $message")
         })
     }
 
-    private fun checkRadioGroupOfDeliveryStatus() {
+    private fun initUi() {
+        binding.edtUserName.setText(sharedPref?.getString("userName", "").toString())
+        binding.edtUserPhoneNumber.setText(auth.currentUser?.phoneNumber.toString())
+        initRadioButton()
+        pressBackButton()
+        binding.userToolbar.setNavigationOnClickListener {
+            navigateToPreviousFragment()
+        }
+        binding.shareAdsButton.setOnClickListener {
+            openGallery()
+        }
+    }
+
+    private fun pressBackButton() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    navigateToPreviousFragment()
+                }
+            })
+    }
+
+    private fun initRadioButton() {
         binding.deliveryRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.noDeliveryRadioButton -> {
@@ -125,36 +157,30 @@ class UserFragment : BaseCoroutineScope() {
         }
     }
 
-    private fun getImagesUrlFromRoom() {
-        launch {
-            imagesUrl = RoomDB(requireContext()).getDataFromRoom().getImagesUriFromDb()
-            //binding.shareAdsButton.setOnClickListener { uploadImagesToStorage(imagesUrl) }
-        }
-    }
+    private fun openGallery() {
+        TedImagePicker.with(requireContext())
+            .title(R.string.select_phone_image)
+            .backButton(R.drawable.back)
+            .buttonText("Share")
+            .buttonBackground(R.color.main)
+            .mediaType(MediaType.IMAGE)
+//          .startMultiImage { imagesUri ->
+            .start { uri ->
 
-    private fun uploadImagesToStorage(imagesList: List<ModelImages>) {
-
-        val dialog = loadingProgressBarInDialog(
-            getString(R.string.download), getString(R.string.wait), false
-        )
-        dialog.show()
-
-        val reference = firebaseStorage.reference
-
-        for (image in imagesList) {
-            val child = reference.child("Pictures").child(UUID.randomUUID().toString())
-            child.putFile(image.imageUri.toUri()).addOnSuccessListener {
-                child.downloadUrl.addOnSuccessListener { uri ->
-                    downloadUrlList.add(uri.toString())
-                    Log.e("******", downloadUrlList.toString())
+                val fileList = ArrayList<File>()
+                val generatedBitmap = activity?.generateBitmapFromUri(uri)
+                generatedBitmap?.let { bitmap ->
+                    val createdFile = createScaledImageFromBitmap(bitmap, 60)
+                    createdFile?.let { file ->
+                        fileList.add(file)
+                        loadingDialog.show()
+                        mUserViewModel.uploadAdsImages(firebaseStorage, fileList)
+                    }
                 }
             }
-        }
-        getAllDataForUploadToFirestore()
-        uploadAdsToFirestore(dialog)
     }
 
-    private fun getAllDataForUploadToFirestore() {
+    private fun getAllDataForUploadToFirestore(imagesUrl: ArrayList<String>) {
         val brandName = sharedPref?.getString("phoneBrandName", null)
         val modelName = sharedPref?.getString("phoneModelName", null)
         val description = sharedPref?.getString("description", null)
@@ -164,9 +190,9 @@ class UserFragment : BaseCoroutineScope() {
         val status = sharedPref?.getString("status", null)
         val price = sharedPref?.getString("price", null) + "AZN"
 
-        val city = binding.placeTextView.text.toString()
-        val userName = binding.userNameEditText.text.toString()
-        val phoneNumber = binding.userPhoneNumberEditText.text.toString()
+        val city = binding.txtPlaceNames.text.toString()
+        val userName = binding.edtUserName.text.toString()
+        val phoneNumber = binding.edtUserPhoneNumber.text.toString()
         val delivery = deliveryStatus
 
         if (brandName != null && modelName != null && description != null && storage != null &&
@@ -189,7 +215,7 @@ class UserFragment : BaseCoroutineScope() {
             modelAnnouncement = ModelAnnouncement(
                 "",
                 auth.currentUser?.phoneNumber.toString(),
-                downloadUrlList,
+                imagesUrl,
                 description,
                 "0",
                 Timestamp.now(),
@@ -199,39 +225,16 @@ class UserFragment : BaseCoroutineScope() {
         }
     }
 
-    private fun uploadAdsToFirestore(loadingProgressBarInDialog: KProgressHUD) {
-        val editor = sharedPref?.edit()
-        editor?.putString("userName", binding.userNameEditText.text.toString())
-        editor?.apply()
-        firestore.collection("All Announcements").add(modelAnnouncement).addOnSuccessListener {
+    private fun uploadAdsToFirestore() {
 
-            val intent = Intent(activity, MainActivity::class.java)
-            activity?.finish()
-            activity?.startActivity(intent)
-            activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
-            loadingProgressBarInDialog.dismiss()
-        }
+
     }
 
     private fun navigateToPreviousFragment() {
         val editor = sharedPref?.edit()
-        editor?.putString("userName", binding.userNameEditText.text.toString())
+        editor?.putString("userName", binding.edtUserName.text.toString())
         editor?.apply()
         findNavController().navigate(R.id.action_userFragment_to_priceFragment)
     }
 
-    private fun pressBackButton() {
-        activity?.onBackPressedDispatcher?.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    navigateToPreviousFragment()
-                }
-            })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        job.cancel()
-    }
 }

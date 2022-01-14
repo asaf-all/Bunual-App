@@ -60,24 +60,27 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/shareAdsButton"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="73dp"
+            android:layout_marginStart="23dp"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="73dp"
+            android:layout_marginEnd="23dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/view_registration_button"
             android:backgroundTint="@color/main"
             android:ellipsize="end"
             android:fontFamily="@font/roboto_medium"
             android:maxLines="1"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
             android:text="@string/share_ads"
             android:textAllCaps="false"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth="wrap_content_constrained" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.cardview.widget.CardView
@@ -100,7 +103,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/placeTextView"
+                android:id="@+id/txtPlaceNames"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
@@ -108,7 +111,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/roboto_medium"
                 android:maxLines="1"
-                android:text="@string/choose_place"
+                android:text="@string/places_name_downloading"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,7 +131,7 @@
         app:layout_constraintTop_toBottomOf="@+id/userPlaceCardView">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userNameEditText"
+            android:id="@+id/edtUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPersonName" />
@@ -146,7 +149,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/userPhoneNumberEditText"
+            android:id="@+id/edtUserPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal|phone" />

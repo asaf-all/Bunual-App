@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activities.NewAnnouncementActivity">
+    tools:context=".ui.activities.NewAdsActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/newAnnouncementActivityHost"
@@ -17,6 +17,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/nav_add_announcement_activity" />
+        app:navGraph="@navigation/nav_new_ads_activity" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

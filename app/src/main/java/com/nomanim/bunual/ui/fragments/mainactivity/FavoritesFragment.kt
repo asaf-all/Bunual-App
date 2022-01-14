@@ -1,7 +1,6 @@
 package com.nomanim.bunual.ui.fragments.mainactivity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,14 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.AllPhonesAdapter
+import com.nomanim.bunual.base.BaseFragment
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.base.responseToList
 import com.nomanim.bunual.databinding.FragmentFavoritesBinding
 import com.nomanim.bunual.viewmodel.FavoritesViewModel
 import gun0912.tedimagepicker.util.ToastUtil
 
-class FavoritesFragment : Fragment(), AllPhonesAdapter.Listener {
+class FavoritesFragment : BaseFragment(), AllPhonesAdapter.Listener {
 
     private var _binding: FragmentFavoritesBinding? = null
     private val binding get() = _binding!!
@@ -79,16 +79,18 @@ class FavoritesFragment : Fragment(), AllPhonesAdapter.Listener {
     }
 
     private fun setFavoritesPhonesRecyclerView() {
+        val adapter = AllPhonesAdapter(
+            requireContext(),
+            allFavoritePhones,
+            this@FavoritesFragment
+        ) { model ->
+            mMainActivity.intentToAdsDetails(model)
+        }
         val fp = binding.favoritesPhones
         fp.isNestedScrollingEnabled = false
         fp.setHasFixedSize(true)
         fp.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = AllPhonesAdapter(requireContext(), allFavoritePhones, this@FavoritesFragment)
         fp.adapter = adapter
-    }
-
-    override fun setOnClickVerticalAnnouncement(list: ArrayList<ModelAnnouncement>, position: Int) {
-
     }
 
 }

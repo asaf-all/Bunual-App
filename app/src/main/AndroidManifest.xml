@@ -19,7 +19,7 @@
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity
-            android:name=".ui.activities.NewAnnouncementActivity"
+            android:name=".ui.activities.NewAdsActivity"
             android:screenOrientation="portrait"
             android:exported="false" />
         <activity

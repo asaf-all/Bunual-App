@@ -65,6 +65,7 @@ fun ArrayList<ModelAnnouncement>.responseToList(
             val userModel = ModelUser(userName, phoneNumber, placeModel)
             val announcement = ModelAnnouncement(
                 id,
+                "",
                 image,
                 description,
                 numberOfViews,
@@ -81,7 +82,7 @@ fun ArrayList<ModelAnnouncement>.responseToList(
     return this
 }
 
-fun ArrayList<ModelAnnouncement>.getOneDocumentFromFireStore(
+fun ArrayList<ModelAnnouncement>.responseToItem(
     fireStore: FirebaseFirestore,
     collectionName: String?,
     doc: DocumentSnapshot
@@ -134,6 +135,7 @@ fun ArrayList<ModelAnnouncement>.getOneDocumentFromFireStore(
     val userModel = ModelUser(userName, phoneNumber, placeModel)
     val announcement = ModelAnnouncement(
         id,
+        "",
         image,
         description,
         numberOfViews,

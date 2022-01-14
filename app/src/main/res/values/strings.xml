@@ -148,8 +148,8 @@
     <string name="no_delivery">No delivery</string>
     <string name="delivery_to_place">Delivery to place</string>
     <string name="subway_delivery">Subway delivery</string>
-    <string name="share_ads">Share Announcement</string>
-    <string name="places_name_downloading">Places name are downloading..</string>
+    <string name="share_ads">Select Images and Share Announcement</string>
+    <string name="places_name_downloading">Place names are downloading..</string>
 
 
     <string name="wait">Please wait</string>

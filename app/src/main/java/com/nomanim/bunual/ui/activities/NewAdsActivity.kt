@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.nomanim.bunual.databinding.ActivityNewAnnouncementBinding
 
-class NewAnnouncementActivity : AppCompatActivity() {
+class NewAdsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityNewAnnouncementBinding
 
