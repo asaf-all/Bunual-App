@@ -13,30 +13,36 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.Timestamp
+import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.PhoneBrandsAdapter
 import com.nomanim.bunual.databinding.FragmentBrandsBinding
 import com.nomanim.bunual.api.entity.ModelPhoneBrands
+import com.nomanim.bunual.api.entity.ModelPlaces
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.activities.MainActivity
 import com.nomanim.bunual.base.BaseCoroutineScope
 import com.nomanim.bunual.extensions.showDialogOfCloseActivity
 import com.nomanim.bunual.base.clearTextWhenClickClear
+import com.nomanim.bunual.models.ModelAnnouncement
+import com.nomanim.bunual.models.ModelPhone
+import com.nomanim.bunual.models.ModelUser
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
-class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
+class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
 
     private var _binding: FragmentBrandsBinding? = null
     private val binding get() = _binding!!
-    private var sharedPref: SharedPreferences? = null
     private var phoneBrands = ArrayList<ModelPhoneBrands>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) : View {
-
-        _binding = FragmentBrandsBinding.inflate(inflater,container,false)
-        sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity",Context.MODE_PRIVATE)
-
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentBrandsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,8 +50,12 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
         super.onViewCreated(view, savedInstanceState)
 
         onBackPressed()
-        binding.brandsToolbar.setNavigationOnClickListener { intentToMainActivity() }
-        binding.closeActivityInBrandsFragment.setOnClickListener { showDialogOfCloseActivity() }
+        binding.brandsToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        binding.closeActivityInBrandsFragment.setOnClickListener {
+            showDialogOfCloseActivity()
+        }
         binding.searchPhoneBrands.clearTextWhenClickClear()
 
         getBrandNamesWithRoom()
@@ -62,20 +72,16 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
     }
 
     private fun searchInsidePhoneModels() {
-        binding.searchPhoneBrands.addTextChangedListener( object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) { }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { }
+        binding.searchPhoneBrands.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(text: Editable?) {
-
                 lifecycleScope.launch {
-
                     delay(1000)
-
                     val listAfterSearch = phoneBrands.filter { list ->
-
-                        (list.brandName.lowercase().contains(text.toString().lowercase())) } as ArrayList<ModelPhoneBrands>
-
+                        (list.brandName.lowercase().contains(text.toString().lowercase()))
+                    } as ArrayList<ModelPhoneBrands>
                     setBrandsRecyclerView(listAfterSearch)
                     binding.brandsProgressBar.visibility = View.INVISIBLE
                 }
@@ -84,47 +90,65 @@ class BrandsFragment : BaseCoroutineScope(),PhoneBrandsAdapter.Listener {
     }
 
     private fun setBrandsRecyclerView(list: ArrayList<ModelPhoneBrands>) {
-        context?.let {
-            val brv = binding.brandsRecyclerView
-            brv.isNestedScrollingEnabled = false
-            brv.layoutManager = LinearLayoutManager(it)
-            brv.setHasFixedSize(true)
-            val adapter = PhoneBrandsAdapter(it,list,this@BrandsFragment)
-            brv.adapter = adapter
-        }
-    }
-
-    private fun onBackPressed() {
-        activity?.onBackPressedDispatcher?.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                intentToMainActivity()
-            }
-        })
-    }
-
-    private fun intentToMainActivity() {
-        val intent = Intent(activity,MainActivity::class.java)
-        activity?.finish()
-        activity?.startActivity(intent)
-        activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+        val brv = binding.brandsRecyclerView
+        brv.isNestedScrollingEnabled = false
+        brv.layoutManager = LinearLayoutManager(requireContext())
+        brv.setHasFixedSize(true)
+        val adapter = PhoneBrandsAdapter(requireContext(), list, this@BrandsFragment)
+        brv.adapter = adapter
     }
 
     override fun onCardViewClickListener(brandId: String, brandName: String) {
         try {
-            val editor = sharedPref?.edit()
-            editor?.putString("phoneBrandName",brandName)
-            editor?.putString("phoneBrandId",brandId)
-            editor?.apply()
+            val sharedPref = activity?.getSharedPreferences("newAdsActivity", Context.MODE_PRIVATE)
+            sharedPref?.edit()?.putString("phoneBrandId", brandId)?.apply()
 
-            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(true)
+            val places = ModelPlaces("", "0")
+            val user = ModelUser("", "", places)
+            val phone = ModelPhone(
+                brandName,
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                false
+            )
+            val announcement = ModelAnnouncement(
+                "",
+                "",
+                ArrayList(),
+                "",
+                "0",
+                Timestamp.now(),
+                phone,
+                user
+            )
+            val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(announcement)
             findNavController().navigate(action)
+        } catch (e: Exception) {}
+    }
 
-        }catch (e: Exception) {}
+    private fun onBackPressed() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    val intent = Intent(activity, MainActivity::class.java)
+                    activity?.finish()
+                    activity?.startActivity(intent)
+                    activity?.overridePendingTransition(
+                        android.R.anim.fade_in,
+                        android.R.anim.fade_out
+                    )
+                }
+            })
     }
 
     override fun onDestroy() {
         super.onDestroy()
         job.cancel()
     }
-
 }

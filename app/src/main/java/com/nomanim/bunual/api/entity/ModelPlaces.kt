@@ -15,7 +15,6 @@ data class ModelPlaces(
     @ColumnInfo(name = "admin_name")
     @SerializedName("admin_name")
     val city: String,
-
     val population: String = "0" ) : Parcelable {
 
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_add_announcement_activity"
@@ -12,7 +13,7 @@
         tools:layout="@layout/fragment_brands" >
         <action
             android:id="@+id/action_brandsFragment_to_modelsFragment"
-            app:destination="@id/modelsFragment"/>
+            app:destination="@id/modelsFragment" />
     </fragment>
     <fragment
         android:id="@+id/modelsFragment"
@@ -22,13 +23,12 @@
         <action
             android:id="@+id/action_modelsFragment_to_descriptionFragment"
             app:destination="@id/descriptionFragment" />
+        <argument
+            android:name="announcement"
+            app:argType="com.nomanim.bunual.models.ModelAnnouncement" />
         <action
             android:id="@+id/action_modelsFragment_to_brandsFragment"
             app:destination="@id/brandsFragment" />
-        <argument
-            android:name="cameFromBrandsFragment"
-            app:argType="boolean"
-            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/descriptionFragment"
@@ -41,6 +41,9 @@
         <action
             android:id="@+id/action_descriptionFragment_to_modelsFragment"
             app:destination="@id/modelsFragment" />
+        <argument
+            android:name="announcement"
+            app:argType="com.nomanim.bunual.models.ModelAnnouncement" />
     </fragment>
     <fragment
         android:id="@+id/featuresFragment"
@@ -53,6 +56,9 @@
         <action
             android:id="@+id/action_featuresFragment_to_descriptionFragment"
             app:destination="@id/descriptionFragment" />
+        <argument
+            android:name="announcement"
+            app:argType="com.nomanim.bunual.models.ModelAnnouncement" />
     </fragment>
     <fragment
         android:id="@+id/priceFragment"
@@ -65,6 +71,9 @@
         <action
             android:id="@+id/action_priceFragment_to_featuresFragment"
             app:destination="@id/featuresFragment" />
+        <argument
+            android:name="announcement"
+            app:argType="com.nomanim.bunual.models.ModelAnnouncement" />
     </fragment>
     <fragment
         android:id="@+id/userFragment"
@@ -74,5 +83,8 @@
         <action
             android:id="@+id/action_userFragment_to_priceFragment"
             app:destination="@id/priceFragment" />
+        <argument
+            android:name="announcement"
+            app:argType="com.nomanim.bunual.models.ModelAnnouncement" />
     </fragment>
 </navigation>

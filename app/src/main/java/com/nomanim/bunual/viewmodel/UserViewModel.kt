@@ -5,8 +5,12 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.android.gms.tasks.Continuation
+import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.installations.remote.TokenResult
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.Constants
 import com.nomanim.bunual.api.builders.RxJavaBuilder
@@ -58,19 +62,21 @@ class UserViewModel(application: Application) : BaseViewModel(application) {
     //currently only 1 image can be uploaded
     fun uploadAdsImages(storage: FirebaseStorage, fileList: ArrayList<File>) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            val uploadTask = storage.reference.child(Constants.ADS_STORAGE_NAME)
+            val storageRef = storage.reference.child(Constants.ADS_STORAGE_NAME)
                 .child(UUID.randomUUID().toString())
-            uploadTask.putFile(Uri.fromFile(fileList[0]))
-                .addOnCompleteListener { response ->
-                    if (response.isSuccessful) {
-                        val imagesUrl = ArrayList<String>()
-                        //imagesUrl.add(uploadTask.downloadUrl.toString())
-                        imagesUrl.add(response.result.toString())
-                        uploadAdsImagesMutableLiveData.postValue(imagesUrl)
-                    } else {
-                        errorMutableLiveData.postValue(response.toString())
-                    }
+            val uploadTask = storageRef.putFile(Uri.fromFile(fileList[0]))
+            uploadTask.continueWithTask { task ->
+                storageRef.downloadUrl
+            }.addOnCompleteListener { response ->
+                if (response.isSuccessful) {
+                    val imagesUrl = ArrayList<String>()
+                    //imagesUrl.add(uploadTask.downloadUrl.toString())
+                    imagesUrl.add(response.result.toString())
+                    uploadAdsImagesMutableLiveData.postValue(imagesUrl)
+                } else {
+                    errorMutableLiveData.postValue(response.toString())
                 }
+            }
         }
     }
 

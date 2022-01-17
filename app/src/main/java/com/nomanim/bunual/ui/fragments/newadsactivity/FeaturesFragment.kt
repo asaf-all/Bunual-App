@@ -1,7 +1,5 @@
 package com.nomanim.bunual.ui.fragments.newadsactivity
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
@@ -24,13 +23,13 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
 
     private var _binding: FragmentFeaturesBinding? = null
     private val binding get() = _binding!!
-    private var sharedPref: SharedPreferences? = null
+    private val args by navArgs<FeaturesFragmentArgs>()
     private lateinit var bottomSheetBinding: LayoutBottomSheetColorsBinding
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private val storageList = ArrayList<String>()
     private val ramList = ArrayList<String>()
     private val colorList = ArrayList<ModelColors>()
-    private var statusOfPhoneOfAds: String = ""
+    private var statusOfPhone: String = ""
     private var stringOfStorage: String = ""
     private var stringOfRam: String = ""
     private var stringOfColor: String = ""
@@ -40,30 +39,30 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentFeaturesBinding.inflate(inflater, container, false)
         bottomSheetBinding = LayoutBottomSheetColorsBinding.inflate(inflater)
-        sharedPref =
-            activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getAndSetAllDataIfHasAccess()
-        checkRadioGroupOfPhoneStatus()
         pressBackButton()
-        getStorageCapacities()
-        getRamCapacities()
-        getColorNamesAndCodes()
+        getStringsFromRes()
+        initRadioButton()
 
-        binding.featuresToolbar.setNavigationOnClickListener { navigateToPreviousFragment() }
-        binding.featuresNextToolbarButton.setOnClickListener { navigateToNextFragment(it) }
-        binding.featuresNextButton.setOnClickListener { navigateToNextFragment(it) }
-        binding.featuresCancelButton.setOnClickListener { showDialogOfCloseActivity() }
-
+        binding.featuresToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        binding.featuresNextToolbarButton.setOnClickListener {
+            navigateToNextFragment(it)
+        }
+        binding.featuresNextButton.setOnClickListener {
+            navigateToNextFragment(it)
+        }
+        binding.featuresCancelButton.setOnClickListener {
+            showDialogOfCloseActivity()
+        }
         binding.chooseStorageCardView.setOnClickListener {
             showCustomBottomSheet(
                 storageList,
@@ -72,7 +71,6 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
                 false
             )
         }
-
         binding.chooseRamCardView.setOnClickListener {
             showCustomBottomSheet(
                 ramList,
@@ -81,26 +79,37 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
                 false
             )
         }
-
-        binding.chooseColorCardView.setOnClickListener { setColorsBottomSheet() }
+        binding.chooseColorCardView.setOnClickListener {
+            setColorsBottomSheet()
+        }
     }
 
-    private fun getStorageCapacities() {
+    private fun getStringsFromRes() {
         for (capacity in resources.getStringArray(R.array.storageCapacities)) {
             storageList.add(capacity)
         }
-    }
-
-    private fun getRamCapacities() {
         for (capacity in resources.getStringArray(R.array.ramCapacities)) {
             ramList.add(capacity)
         }
-    }
-
-    private fun getColorNamesAndCodes() {
         for (colorName in resources.getStringArray(R.array.colorNames)) {
             val modelColor = ModelColors(colorName, R.color.background_color_gray)
             colorList.add(modelColor)
+        }
+    }
+
+    private fun initRadioButton() {
+        binding.phoneStatusRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+            when (checkedId) {
+                R.id.newPhone -> {
+                    statusOfPhone = getString(R.string.new_)
+                }
+                R.id.asSparePartPhone -> {
+                    statusOfPhone = getString(R.string.as_spare_part)
+                }
+                R.id.usedPhone -> {
+                    statusOfPhone = getString(R.string.used)
+                }
+            }
         }
     }
 
@@ -109,11 +118,9 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         if (bottomSheetView.parent != null) {
             (bottomSheetView.parent as ViewGroup).removeAllViews()
         }
-        context?.let {
-            bottomSheetDialog = BottomSheetDialog(it)
-            bottomSheetDialog.setContentView(bottomSheetView)
-            bottomSheetDialog.show()
-        }
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(bottomSheetView)
+        bottomSheetDialog.show()
         setColorsRecyclerView()
     }
 
@@ -126,68 +133,34 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
         recyclerView.adapter = adapter
     }
 
-    private fun getAndSetAllDataIfHasAccess() {
-        stringOfStorage = getString(R.string.choose_phone_storage)
-        stringOfRam = getString(R.string.choose_phone_ram)
-        stringOfColor = getString(R.string.choose_phone_color)
-        val lastStorageCapacity = sharedPref?.getString("storageCapacity", stringOfStorage)
-        val lastRamCapacity = sharedPref?.getString("ramCapacity", stringOfRam)
-        val lastColorName = sharedPref?.getString("color", stringOfColor)
-        binding.storageTextView.text = lastStorageCapacity
-        binding.ramTextView.text = lastRamCapacity
-        binding.colorTextView.text = lastColorName
-    }
-
     private fun navigateToNextFragment(view: View) {
-        val storageCapacity = binding.storageTextView.text.toString()
-        val ramCapacity = binding.ramTextView.text.toString()
-        val colorName = binding.colorTextView.text.toString()
-        if (storageCapacity != stringOfStorage && ramCapacity != stringOfRam
-            && colorName != stringOfColor && statusOfPhoneOfAds != ""
+        val storage = binding.storageTextView.text.toString()
+        val ram = binding.ramTextView.text.toString()
+        val color = binding.colorTextView.text.toString()
+        if (storage != stringOfStorage &&
+            ram != stringOfRam &&
+            color != stringOfColor &&
+            statusOfPhone != ""
         ) {
-            addAllFeaturesAtSharedPreferences(storageCapacity, ramCapacity, colorName)
-            findNavController().navigate(R.id.action_featuresFragment_to_priceFragment)
+            val phone = args.announcement.phone.copy(
+                storage = storage,
+                ram = ram,
+                color = color,
+                currentStatus = statusOfPhone
+            )
+            val announcement = args.announcement.copy(phone = phone)
+            val action = FeaturesFragmentDirections.actionFeaturesFragmentToPriceFragment(
+                announcement
+            )
+            findNavController().navigate(action)
         } else {
-            Snackbar.make(view, resources.getString(R.string.fill_in_all), Snackbar.LENGTH_SHORT)
-                .show()
+            Snackbar.make(view, resources.getString(R.string.fill_in_all), Snackbar.LENGTH_SHORT).show()
         }
     }
 
-    private fun addAllFeaturesAtSharedPreferences(
-        storageCapacity: String,
-        ramCapacity: String,
-        colorName: String
-    ) {
-        val editor = sharedPref?.edit()
-        editor?.putString("storageCapacity", storageCapacity)
-        editor?.putString("ramCapacity", ramCapacity)
-        editor?.putString("color", colorName)
-        editor?.putString("status", statusOfPhoneOfAds)
-        editor?.apply()
-    }
-
-    private fun checkRadioGroupOfPhoneStatus() {
-        binding.phoneStatusRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-            when (checkedId) {
-                R.id.newPhone -> {
-                    statusOfPhoneOfAds = getString(R.string.new_)
-                }
-                R.id.asSparePartPhone -> {
-                    statusOfPhoneOfAds = getString(R.string.as_spare_part)
-                }
-                R.id.usedPhone -> {
-                    statusOfPhoneOfAds = getString(R.string.used)
-                }
-            }
-        }
-    }
-
-    private fun navigateToPreviousFragment() {
-        val storageCapacity = binding.storageTextView.text.toString()
-        val ramCapacity = binding.ramTextView.text.toString()
-        val colorName = binding.colorTextView.text.toString()
-        addAllFeaturesAtSharedPreferences(storageCapacity, ramCapacity, colorName)
-        findNavController().navigate(R.id.action_featuresFragment_to_descriptionFragment)
+    override fun setOnColorClickListener(buttonFinishText: String) {
+        binding.colorTextView.text = buttonFinishText
+        bottomSheetDialog.dismiss()
     }
 
     private fun pressBackButton() {
@@ -195,13 +168,12 @@ class FeaturesFragment : Fragment(), ColorsAdapter.Listener {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    navigateToPreviousFragment()
+                    findNavController().navigate(
+                        FeaturesFragmentDirections.actionFeaturesFragmentToDescriptionFragment(
+                            args.announcement
+                        )
+                    )
                 }
             })
-    }
-
-    override fun setOnColorClickListener(buttonFinishText: String) {
-        binding.colorTextView.text = buttonFinishText
-        bottomSheetDialog.dismiss()
     }
 }
