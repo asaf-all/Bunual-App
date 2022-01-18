@@ -16,7 +16,6 @@ private fun ImageView.downloadImageWithPicasso(uri: String) {
 }
 
 fun ImageView.downloadImageWithGlide(view: View,uri: String?) {
-
     Glide
         .with(view)
         .load(uri?.toUri())

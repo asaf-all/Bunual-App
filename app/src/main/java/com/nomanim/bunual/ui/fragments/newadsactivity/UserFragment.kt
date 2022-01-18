@@ -192,6 +192,7 @@ class UserFragment : BaseFragment() {
             )
             val phone = args.announcement.phone.copy(delivery = deliveryStatus)
             val announcement = args.announcement.copy(
+                user_token = auth.currentUser?.phoneNumber.toString(),
                 time = Timestamp.now(),
                 user = user,
                 phone = phone,

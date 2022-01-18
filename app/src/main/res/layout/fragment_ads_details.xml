@@ -62,10 +62,22 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/imageSlider" />
 
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:background="@android:color/transparent"
+                    android:backgroundTint="@android:color/transparent"
+                    android:translationZ="90dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
                 <com.smarteist.autoimageslider.SliderView
                     android:id="@+id/imageSlider"
                     android:layout_width="match_parent"
-                    android:layout_height="420dp"
+                    android:layout_height="400dp"
+                    android:background="@drawable/view_image_slider_background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -80,7 +92,7 @@
                     app:sliderIndicatorRadius="2dp"
                     app:sliderIndicatorSelectedColor="@color/white"
                     app:sliderIndicatorUnselectedColor="@color/status_bar_color"
-                    app:sliderScrollTimeInSec="3"
+                    app:sliderScrollTimeInSec="2"
                     app:sliderStartAutoCycle="true">
 
                 </com.smarteist.autoimageslider.SliderView>
@@ -100,17 +112,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="12dp"
-                        android:layout_marginTop="12dp"
                         android:layout_marginEnd="25dp"
                         android:ellipsize="end"
                         android:fontFamily="@font/roboto_condensed_bold"
                         android:maxLines="1"
-                        android:text="TextView"
+                        android:text="Price"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         app:layout_constraintEnd_toStartOf="@+id/imageView43"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageSlider" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
                         android:id="@+id/adsDescription"
@@ -134,7 +145,7 @@
                         android:ellipsize="end"
                         android:fontFamily="@font/roboto_medium"
                         android:maxLines="1"
-                        android:text="TextView"
+                        android:text="Brand"
                         android:textColor="@color/black"
                         app:layout_constraintEnd_toEndOf="@+id/adsPrice"
                         app:layout_constraintStart_toStartOf="@+id/adsPrice"
@@ -148,7 +159,7 @@
                         android:ellipsize="end"
                         android:fontFamily="@font/roboto_medium"
                         android:maxLines="1"
-                        android:text="TextView"
+                        android:text="Model"
                         android:textColor="@color/black"
                         app:layout_constraintEnd_toEndOf="@+id/adsBrandName"
                         app:layout_constraintStart_toStartOf="@+id/adsBrandName"
@@ -213,14 +224,13 @@
                         android:id="@+id/announcementViews2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="9dp"
                         android:layout_marginEnd="10dp"
                         android:fontFamily="@font/roboto_light"
-                        android:text="9999"
+                        android:text="0"
                         android:textColor="@color/black"
                         android:textSize="11sp"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imageSlider" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
                         android:id="@+id/imageView43"
@@ -240,7 +250,7 @@
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/addToFavouritesButton"
+        android:id="@+id/btnAddToFav"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginStart="15dp"
@@ -248,8 +258,9 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/view_add_favourites_button"
         android:backgroundTint="@color/add_to_favourites_button"
+        android:translationZ="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/callUserPhoneNumberButton"
+        app:layout_constraintEnd_toStartOf="@+id/btnCall"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -273,7 +284,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/deleteFromFavouritesButton"
+        android:id="@+id/btnDeleteFromFav"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginStart="15dp"
@@ -281,7 +292,7 @@
         android:background="@drawable/view_add_favourites_button"
         android:backgroundTint="@color/delete_from_favourites_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/addToFavouritesButton"
+        app:layout_constraintEnd_toEndOf="@+id/btnAddToFav"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -305,7 +316,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/callUserPhoneNumberButton"
+        android:id="@+id/btnCall"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginStart="15dp"
@@ -315,7 +326,7 @@
         android:backgroundTint="@color/call_user_phone_number_button_green"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/addToFavouritesButton">
+        app:layout_constraintStart_toEndOf="@+id/btnAddToFav">
 
         <TextView
             android:id="@+id/textViewrandom"

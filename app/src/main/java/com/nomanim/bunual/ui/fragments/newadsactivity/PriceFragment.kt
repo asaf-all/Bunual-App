@@ -79,7 +79,7 @@ class PriceFragment : Fragment() {
             if (TextUtils.isEmpty(priceText)) {
                 Snackbar.make(view, getString(R.string.fill_in_all), Snackbar.LENGTH_SHORT).show()
             } else {
-                phone = args.announcement.phone.copy(price = priceText)
+                phone = args.announcement.phone.copy(price = "$priceText AZN")
             }
         } else {
             editor?.putString("price", "By agreement")

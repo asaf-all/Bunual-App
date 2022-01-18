@@ -1,11 +1,12 @@
 package com.nomanim.bunual.ui.fragments.mainactivity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.nomanim.bunual.R
@@ -21,42 +22,32 @@ class NewAdsFragment : BaseFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
         _binding = FragmentNewAdsBinding.inflate(inflater,container,false)
-        auth = FirebaseAuth.getInstance()
-
-        binding.newAdsImageView.visibility = View.INVISIBLE
-        binding.newAdsTextView.visibility = View.INVISIBLE
-        binding.buttonInNewAdsFragment.visibility = View.INVISIBLE
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        auth = FirebaseAuth.getInstance()
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
 
-        updateSomeFieldOfSharedPreferences()
+        if (auth.currentUser != null) {
+            binding.imgFolder.visibility = View.INVISIBLE
+            binding.txtText.visibility = View.INVISIBLE
+            binding.btnStart.visibility = View.INVISIBLE
+            intentToNewAdsActivity()
+        }
+
+        binding.btnStart.setOnClickListener {
+            findNavController().navigate(R.id.action_newAnnouncementFragment_to_profileFragment)
+        }
     }
 
-    private fun updateSomeFieldOfSharedPreferences() {
-        val sharedPref = activity?.getSharedPreferences("sharedPrefInNewAdsActivity", Context.MODE_PRIVATE)
-        val editor = sharedPref?.edit()
-        editor?.putString("description","")
-        editor?.putString("storageCapacity",getString(R.string.choose_phone_storage))
-        editor?.putString("ramCapacity",getString(R.string.choose_phone_ram))
-        editor?.putString("color",getString(R.string.choose_phone_color))
-        editor?.putString("price","")
-        editor?.apply()
-
-        intentActivityOfNewAds()
-    }
-
-    private fun intentActivityOfNewAds() {
+    private fun intentToNewAdsActivity() {
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.INVISIBLE
         val intent = Intent(activity, NewAdsActivity::class.java)
         activity?.finish()
         activity?.startActivity(intent)
         activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
-
 }

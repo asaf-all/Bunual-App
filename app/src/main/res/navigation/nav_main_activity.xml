@@ -12,7 +12,7 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_homeFragment_to_favouritesFragment"
+            android:id="@+id/action_homeFragment_to_favoritesFragment"
             app:destination="@id/favouritesFragment" />
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
@@ -28,14 +28,14 @@
             app:destination="@id/profileFragment" />
     </fragment>
     <fragment
-        android:id="@+id/favouritesFragment"
+        android:id="@+id/favoritesFragment"
         android:name="com.nomanim.bunual.ui.fragments.mainactivity.FavoritesFragment"
-        android:label="fragment_favourites"
+        android:label="fragment_favorites"
         tools:layout="@layout/fragment_favorites" >
         <action
-            android:id="@+id/action_favouritesFragment_to_registrationFragment"
+            android:id="@+id/action_favoritesFragment_to_registrationFragment"
             app:destination="@id/registrationFragment"
-            app:popUpTo="@id/favouritesFragment"
+            app:popUpTo="@id/favoritesFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -61,11 +61,6 @@
             android:id="@+id/action_registrationFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/searchFragment"
-        android:name="com.nomanim.bunual.ui.fragments.mainactivity.SearchFragment"
-        android:label="fragment_search"
-        tools:layout="@layout/fragment_search" />
     <fragment
         android:id="@+id/splashScreenFragment"
         android:name="com.nomanim.bunual.ui.fragments.mainactivity.SplashScreenFragment"

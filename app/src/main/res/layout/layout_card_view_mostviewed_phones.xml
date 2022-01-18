@@ -28,7 +28,7 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/im_samsung" />
+                app:srcCompat="@drawable/im_whenloadingpictures" />
 
             <TextView
                 android:id="@+id/mostViewedPhonesName"

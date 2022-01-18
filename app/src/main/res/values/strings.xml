@@ -117,6 +117,7 @@
     </string-array>
     <string-array name="colorNames">
         <item>@string/other</item>
+        <item>black</item>
         <item>silver</item>
         <item>gray</item>
         <item>maroon</item>
@@ -179,7 +180,5 @@
     <string name="favourite_announcements_limit">Favourite announcements limit is 10</string>
     <string name="select_images_text">On the screen that opens, select all the photos you want to share and click choose</string>
     <string name="fill_in_all">Please fill in all</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

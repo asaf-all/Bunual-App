@@ -44,7 +44,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     fun getAllAds(firestore: FirebaseFirestore, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
             firestore.collection("All Announcements")
-                .limit(numberOfAds).orderBy("time", Query.Direction.ASCENDING).get()
+                .limit(numberOfAds).orderBy("time", Query.Direction.DESCENDING).get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
                         val documents = response.result
@@ -61,7 +61,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     fun getMoreAds(firestore: FirebaseFirestore, lastValue: QuerySnapshot, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
             firestore.collection("All Announcements")
-                .orderBy("time", Query.Direction.ASCENDING)
+                .orderBy("time", Query.Direction.DESCENDING)
                 .startAfter(lastValue.documents[lastValue.size() - 1])
                 .limit(numberOfAds).get()
                 .addOnCompleteListener { response ->

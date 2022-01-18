@@ -57,10 +57,12 @@ class FavoritesFragment : BaseFragment(), AllPhonesAdapter.Listener {
             if (response.size() != 0) {
                 val list = ArrayList<String>()
                 for (doc in response.documents) {
-                    val originalAnnouncementId = doc.get("originalAnnouncementId") as String
-                    list.add(originalAnnouncementId)
+                    val originalAdsId = doc.get("originalAdsId") as String
+                    list.add(originalAdsId)
                     mFavoritesViewModel.getFavorites(firestore, list)
                 }
+            } else {
+                binding.progressBar.visibility = View.INVISIBLE
             }
         })
         mFavoritesViewModel.favoritesLiveData().observe(viewLifecycleOwner, { response ->

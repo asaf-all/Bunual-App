@@ -69,20 +69,10 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility =
             View.VISIBLE
 
-        checkCodeForNavigate()
-
         initHomeViewModel()
         mHomeViewModel.getMostViewedAds(firestore, numberOfAds)
         mHomeViewModel.getAllAds(firestore, numberOfAds)
         initUi()
-    }
-
-    private fun checkCodeForNavigate() {
-        val toProfileFragment = sharedPref?.getBoolean("toProfileFragment", false)
-        if (toProfileFragment != null && toProfileFragment) {
-            sharedPref?.edit()?.putBoolean("toProfileFragment", false)?.apply()
-            findNavController().navigate(R.id.action_homeFragment_to_profileFragment)
-        }
     }
 
     private fun initHomeViewModel() {

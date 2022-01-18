@@ -13,85 +13,70 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.gson.Gson
 import com.nomanim.bunual.Constants
 import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.ImagesSliderAdapter
 import com.nomanim.bunual.databinding.FragmentAdsDetailsBinding
 import com.nomanim.bunual.models.ModelAdsReview
 import com.nomanim.bunual.models.ModelAnnouncement
-import com.nomanim.bunual.ui.activities.MainActivity
 import com.nomanim.bunual.adapters.AdsReviewAdapter
 import com.nomanim.bunual.base.BaseCoroutineScope
 import com.nomanim.bunual.base.responseToItem
+import com.nomanim.bunual.viewmodel.AdsDetailsViewModel
 import com.smarteist.autoimageslider.IndicatorView.animation.type.IndicatorAnimationType
 import com.smarteist.autoimageslider.SliderAnimations
-import com.thekhaeng.pushdownanim.PushDownAnim
 
 
 class AdsDetailsFragment : BaseCoroutineScope(), AdsReviewAdapter.Listener {
 
     private var _binding: FragmentAdsDetailsBinding? = null
     private val binding get() = _binding!!
+    private val mDetailsViewModel: AdsDetailsViewModel by viewModels()
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
+    private var announcement: ModelAnnouncement? = null
     private var sharedPref: SharedPreferences? = null
     private var dataOfCurrentAds = ArrayList<ModelAnnouncement>()
     private var userPhoneNumber: String? = null
-    private var currentAnnouncementId: String? = null
+    private var currentAdsId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
         _binding = FragmentAdsDetailsBinding.inflate(inflater)
-
-        binding.allDataLayout.visibility = View.INVISIBLE
-        binding.addToFavouritesButton.visibility = View.INVISIBLE
-        binding.deleteFromFavouritesButton.visibility = View.INVISIBLE
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
         sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        announcement = activity?.intent?.getParcelableExtra("announcement")
 
+        binding.allDataLayout.visibility = View.INVISIBLE
+
+        initDetailsViewModel()
         makeStatusBarTransparent()
         ViewCompat.setOnApplyWindowInsetsListener(binding.detailContainerLayout) { _, insets ->
             binding.adsDetailsBackButton.setMarginTop((insets.systemWindowInsetTop) + 20)
             insets.consumeSystemWindowInsets()
         }
 
-        binding.adsDetailsBackButton.setOnClickListener {
-            activity?.onBackPressed()
-        }
         userPhoneNumber = auth.currentUser?.phoneNumber.toString()
-
-        val announcement = activity?.intent?.getParcelableExtra<ModelAnnouncement>("announcement")
-
-        showImagesInSlider(announcement?.image)
-        getDataOfCurrentAds(announcement)
-        checkAdsIdForFavouritesButtonStatus()
-
-        PushDownAnim.setPushDownAnimTo(binding.addToFavouritesButton)
-            .setOnClickListener { addAdsToFavourites() }
-
-        PushDownAnim.setPushDownAnimTo(binding.deleteFromFavouritesButton)
-            .setOnClickListener { deleteAdsFromFavourites() }
-
-        PushDownAnim.setPushDownAnimTo(binding.callUserPhoneNumberButton)
-            .setOnClickListener { openPhoneNumberInAppOfCall() }
-
+        currentAdsId = announcement?.id
+        currentAdsId?.let { id ->
+            mDetailsViewModel.getCurrentAds(firestore, id)
+        }
     }
 
     private fun makeStatusBarTransparent() {
@@ -115,29 +100,78 @@ class AdsDetailsFragment : BaseCoroutineScope(), AdsReviewAdapter.Listener {
         this.layoutParams = menuLayoutParams
     }
 
-    private fun showImagesInSlider(imagesUrl: ArrayList<String>?) {
-        val imagesSlider = binding.imageSlider
-        if (imagesUrl != null) {
-            imagesSlider.setSliderAdapter(ImagesSliderAdapter(imagesUrl))
-            imagesSlider.setIndicatorAnimation(IndicatorAnimationType.WORM)
-            imagesSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
-            imagesSlider.startAutoCycle()
+    private fun initDetailsViewModel() {
+        mDetailsViewModel.currentAdsLiveData().observe(viewLifecycleOwner, { response ->
+            dataOfCurrentAds.responseToItem(firestore, Constants.ADS_COLLECTION_NAME, response)
+            setAdsGeneralInformation(dataOfCurrentAds)
+            binding.allDataProgressBar.visibility = View.INVISIBLE
+            binding.allDataLayout.visibility = View.VISIBLE
+            currentAdsId?.let { id ->
+                updateViewOfAds(id)
+            }
+            initUi(announcement)
+        })
+        mDetailsViewModel.addToFavoritesLiveData().observe(viewLifecycleOwner, { response ->
+            if (response == "success") {
+                checkAdsIdForFavouritesButtonStatus()
+            }
+        })
+        mDetailsViewModel.deleteFromFavoritesLiveData().observe(viewLifecycleOwner, { response ->
+            if (response == "success") {
+                checkAdsIdForFavouritesButtonStatus()
+            }
+        })
+        mDetailsViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+            binding.allDataProgressBar.visibility = View.INVISIBLE
+            showToastMessage("error: $message")
+        })
+    }
+
+    private fun initUi(announcement: ModelAnnouncement?) {
+        showImagesInSlider(announcement?.image)
+        checkAdsIdForFavouritesButtonStatus()
+
+        binding.adsDetailsBackButton.setOnClickListener {
+            activity?.onBackPressed()
+        }
+        binding.imageView7.setOnClickListener {
+            val intent = Intent(context, GalleryImageActivity::class.java)
+            intent.putExtra("photos", Gson().toJson(dataOfCurrentAds[0].image))
+            intent.putExtra("position", Gson().toJson(dataOfCurrentAds.map { it.image }))
+            context?.startActivity(intent)
+        }
+        binding.btnAddToFav.setOnClickListener {
+            binding.btnAddToFav.visibility = View.INVISIBLE
+            if (auth.currentUser != null) {
+                if (userPhoneNumber != null && currentAdsId != null) {
+                    mDetailsViewModel.addToFavorites(firestore, userPhoneNumber!!, currentAdsId!!)
+                }
+            } else {
+                showToastMessage("You must create an account.", lengthIsLong = true)
+            }
+        }
+        binding.btnCall.setOnClickListener {
+            openPhoneNumberInAppOfCall()
+        }
+        binding.btnDeleteFromFav.setOnClickListener {
+            if (userPhoneNumber != null && currentAdsId != null) {
+                mDetailsViewModel.deleteFromFavorites(
+                    firestore,
+                    userPhoneNumber!!,
+                    currentAdsId!!
+                )
+            }
         }
     }
 
-    private fun getDataOfCurrentAds(announcement: ModelAnnouncement?) {
-        currentAnnouncementId = announcement?.id
-        firestore.collection(Constants.ADS_COLLECTION_NAME)
-            .document(currentAnnouncementId.toString())
-            .get().addOnSuccessListener { document ->
-                dataOfCurrentAds.responseToItem(firestore, Constants.ADS_COLLECTION_NAME, document)
-                setAdsGeneralInformation(dataOfCurrentAds)
-                binding.allDataProgressBar.visibility = View.INVISIBLE
-                binding.allDataLayout.visibility = View.VISIBLE
-                currentAnnouncementId?.let { id ->
-                    updateViewOfAds(id)
-                }
-            }
+    private fun showImagesInSlider(imagesUrl: ArrayList<String>?) {
+        val slider = binding.imageSlider
+        if (imagesUrl != null) {
+            slider.setSliderAdapter(ImagesSliderAdapter(imagesUrl))
+            slider.setIndicatorAnimation(IndicatorAnimationType.WORM)
+            slider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION)
+            slider.startAutoCycle()
+        }
     }
 
     private fun setAdsGeneralInformation(list: ArrayList<ModelAnnouncement>) {
@@ -203,14 +237,14 @@ class AdsDetailsFragment : BaseCoroutineScope(), AdsReviewAdapter.Listener {
                 if (value.documents.isNotEmpty()) {
                     checkAdsIdAlgorithm(value)
                 } else {
-                    binding.addToFavouritesButton.visibility = View.VISIBLE
-                    binding.deleteFromFavouritesButton.visibility = View.INVISIBLE
+                    binding.btnAddToFav.visibility = View.VISIBLE
+                    binding.btnDeleteFromFav.visibility = View.INVISIBLE
                 }
             }
             if (error != null) {
                 Toast.makeText(requireContext(), R.string.fail, Toast.LENGTH_SHORT).show()
-                binding.addToFavouritesButton.visibility = View.VISIBLE
-                binding.deleteFromFavouritesButton.visibility = View.INVISIBLE
+                binding.btnAddToFav.visibility = View.VISIBLE
+                binding.btnDeleteFromFav.visibility = View.INVISIBLE
 
             }
         }
@@ -218,48 +252,16 @@ class AdsDetailsFragment : BaseCoroutineScope(), AdsReviewAdapter.Listener {
 
     private fun checkAdsIdAlgorithm(value: QuerySnapshot) {
         for (doc in value.documents) {
-            val originalAnnouncementId = doc.get("originalAnnouncementId") as String
-            if (originalAnnouncementId == currentAnnouncementId) {
-                binding.addToFavouritesButton.visibility = View.INVISIBLE
-                binding.deleteFromFavouritesButton.visibility = View.VISIBLE
+            val originalAdsId = doc.get("originalAdsId") as String
+            if (originalAdsId == currentAdsId) {
+                binding.btnAddToFav.visibility = View.INVISIBLE
+                binding.btnDeleteFromFav.visibility = View.VISIBLE
                 return
             } else {
-                binding.addToFavouritesButton.visibility = View.VISIBLE
-                binding.deleteFromFavouritesButton.visibility = View.INVISIBLE
+                binding.btnAddToFav.visibility = View.VISIBLE
+                binding.btnDeleteFromFav.visibility = View.INVISIBLE
             }
         }
-    }
-
-    private fun addAdsToFavourites() {
-        binding.addToFavouritesButton.visibility = View.INVISIBLE
-        if (auth.currentUser != null) {
-            if (currentAnnouncementId != null) {
-                addAdsIdToCollectionOfUserPhoneNumber()
-            } else {
-                activity?.onBackPressed()
-            }
-        } else {
-            val intentToProfileFragment = Intent(requireContext(), MainActivity::class.java)
-            sharedPref?.edit()?.putBoolean("toProfileFragment", true)?.apply()
-            activity?.finish()
-            activity?.startActivity(intentToProfileFragment)
-        }
-    }
-
-    private fun addAdsIdToCollectionOfUserPhoneNumber() {
-        val hashMap = HashMap<String, String>()
-        hashMap["originalAnnouncementId"] = currentAnnouncementId!!
-        firestore.collection(userPhoneNumber!!).document(currentAnnouncementId!!)
-            .set(hashMap).addOnSuccessListener {
-                checkAdsIdForFavouritesButtonStatus()
-            }
-    }
-
-    private fun deleteAdsFromFavourites() {
-        firestore.collection(userPhoneNumber!!).document(currentAnnouncementId!!).delete()
-            .addOnSuccessListener {
-                checkAdsIdForFavouritesButtonStatus()
-            }
     }
 
     private fun openPhoneNumberInAppOfCall() {

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.nomanim.bunual.Constants
 import com.nomanim.bunual.base.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +23,11 @@ class ProfileViewModel(application: Application) : BaseViewModel(application) {
 
     fun getUserAds(firestore: FirebaseFirestore, phoneNumber: String, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            firestore.collection("All Announcements")
+            firestore.collection(Constants.ADS_COLLECTION_NAME)
+                .whereEqualTo("user_token", phoneNumber)
                 .orderBy("time", Query.Direction.ASCENDING)
                 .limit(numberOfAds)
-                .whereEqualTo("user_token", phoneNumber).get()
+                .get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
                         val documents = response.result
@@ -41,7 +43,7 @@ class ProfileViewModel(application: Application) : BaseViewModel(application) {
 
     fun getMoreAds(firestore: FirebaseFirestore, lastValue: QuerySnapshot, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            firestore.collection("All Announcements")
+            firestore.collection(Constants.ADS_COLLECTION_NAME)
                 .orderBy("time", Query.Direction.ASCENDING)
                 .startAfter(lastValue.documents[lastValue.size() - 1])
                 .limit(numberOfAds).get()
