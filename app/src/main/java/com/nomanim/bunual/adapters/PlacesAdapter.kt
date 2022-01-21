@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewPhoneColorBinding
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.RegionsResponse
 
-class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: Listener)
+class PlacesAdapter(private val list: List<RegionsResponse>, private val listener: Listener)
     : RecyclerView.Adapter<PlacesAdapter.Holder>() {
 
     interface Listener {
@@ -17,7 +17,7 @@ class PlacesAdapter(private val list: List<ModelPlaces>, private val listener: L
 
     class Holder(val binding: LayoutCardViewPhoneColorBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun run(list: List<ModelPlaces>, position: Int, listener: Listener) {
+        fun run(list: List<RegionsResponse>, position: Int, listener: Listener) {
 
             binding.button.text = list[position].city
             binding.button.setOnClickListener {

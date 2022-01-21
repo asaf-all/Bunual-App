@@ -6,31 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nomanim.bunual.databinding.LayoutCardViewPhoneModelsBinding
-import com.nomanim.bunual.api.entity.ModelPhoneBrands
+import com.nomanim.bunual.api.entity.BrandsResponse
 import com.thekhaeng.pushdownanim.PushDownAnim
 
 class PhoneBrandsAdapter(
     val context: Context,
-    private val list: ArrayList<ModelPhoneBrands>,
+    private val list: ArrayList<BrandsResponse.Body>,
     val listener: Listener
 ) : RecyclerView.Adapter<PhoneBrandsAdapter.Holder>() {
 
     interface Listener {
-
         fun onCardViewClickListener(brandId: String, brandName: String)
-
     }
 
     class Holder(val binding: LayoutCardViewPhoneModelsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun run(
-            list: ArrayList<ModelPhoneBrands>,
+            list: ArrayList<BrandsResponse.Body>,
             position: Int,
             listener: Listener,
             context: Context
         ) {
-
             binding.brandOrModelName.text = list[position].brandName
             binding.modelImageView.visibility = View.INVISIBLE
             PushDownAnim.setPushDownAnimTo(binding.modelOrBrandCardView).setOnClickListener {

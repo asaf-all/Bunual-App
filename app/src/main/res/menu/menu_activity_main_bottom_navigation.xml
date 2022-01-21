@@ -4,7 +4,7 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/home"
-        android:title="@string/main"
+        android:title="@string/discover"
         android:menuCategory="secondary"/>
     <!--<item
         android:id="@+id/searchFragment"
@@ -17,13 +17,13 @@
         android:title="@string/add_announcement"
         android:menuCategory="secondary"/>
     <item
-        android:id="@+id/favouritesFragment"
+        android:id="@+id/favoritesFragment"
         android:icon="@drawable/favourites"
-        android:title="@string/favourites"
+        android:title="@string/favorites"
         android:menuCategory="secondary"/>
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/user"
-        android:title="@string/cabinet"
+        android:title="@string/profile"
         android:menuCategory="secondary"/>
 </menu>

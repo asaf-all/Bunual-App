@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,8 +17,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentSplashScreenBinding
-import com.nomanim.bunual.api.entity.ModelPhoneBrands
-import com.nomanim.bunual.api.entity.ModelPhoneModels
+import com.nomanim.bunual.api.entity.BrandsResponse
+import com.nomanim.bunual.api.entity.ModelsResponse
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.base.BaseCoroutineScope
 import com.nomanim.bunual.viewmodel.SplashViewModel
@@ -70,16 +69,18 @@ class SplashScreenFragment : BaseCoroutineScope() {
         })
         mSplashViewModel.brandsLiveData().observe(viewLifecycleOwner, { response ->
             if (response != null) {
-                val phoneBrands = response.modelPhoneBrands as ArrayList<ModelPhoneBrands>
-                addPhoneBrandNamesToRoom(phoneBrands)
+                val brandsList = response.body as ArrayList<BrandsResponse.Body>
+                addBrandsNamesToRoom(brandsList)
             }
         })
         mSplashViewModel.modelsLiveData().observe(viewLifecycleOwner, { response ->
-            val phoneModels = response.modelPhoneModels as ArrayList<ModelPhoneModels>
-            addPhoneModelNamesToRoom(phoneModels)
+            if (response != null) {
+                val modelsList = response.body as ArrayList<ModelsResponse.Body>
+                addModelsNamesToRoom(modelsList)
+            }
         })
         mSplashViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
-            ToastUtil.showToast("error: $message")
+            showToastMessage("error: $message")
         })
     }
 
@@ -95,20 +96,20 @@ class SplashScreenFragment : BaseCoroutineScope() {
         }
     }
 
-    private fun addPhoneBrandNamesToRoom(phoneBrands: ArrayList<ModelPhoneBrands>) {
+    private fun addBrandsNamesToRoom(brandsList: ArrayList<BrandsResponse.Body>) {
         launch {
             val database = RoomDB(requireContext()).getDataFromRoom()
             database.deleteBrandNames()
-            database.insertBrandNames(*phoneBrands.toTypedArray())
+            database.insertBrandNames(*brandsList.toTypedArray())
             mSplashViewModel.getPhoneModels()
         }
     }
 
-    private fun addPhoneModelNamesToRoom(phoneModels: ArrayList<ModelPhoneModels>) {
+    private fun addModelsNamesToRoom(modelsList: ArrayList<ModelsResponse.Body>) {
         launch {
             val database = RoomDB(requireContext()).getDataFromRoom()
             database.deleteModelNames()
-            database.insertModelNames(*phoneModels.toTypedArray())
+            database.insertModelNames(*modelsList.toTypedArray())
 
             val editor = sharedPref?.edit()
             editor?.putString("api_version_code", currentApiVersionCode)

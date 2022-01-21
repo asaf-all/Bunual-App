@@ -1,7 +1,6 @@
 package com.nomanim.bunual.ui.fragments.newadsactivity
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.PhoneModelsAdapter
 import com.nomanim.bunual.databinding.FragmentModelsBinding
-import com.nomanim.bunual.api.entity.ModelPhoneModels
+import com.nomanim.bunual.api.entity.ModelsResponse
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.base.BaseCoroutineScope
 import com.nomanim.bunual.extensions.showDialogOfCloseActivity
@@ -32,9 +31,9 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
     private val binding get() = _binding!!
     private val args by navArgs<ModelsFragmentArgs>()
 
-    private var filteredList = ArrayList<ModelPhoneModels>()
-    private val limitedAndFilteredList = ArrayList<ModelPhoneModels>()
-    private val limitedListAfterSearch = ArrayList<ModelPhoneModels>()
+    private var filteredList = ArrayList<ModelsResponse.Body>()
+    private val limitedAndFilteredList = ArrayList<ModelsResponse.Body>()
+    private val limitedListAfterSearch = ArrayList<ModelsResponse.Body>()
     private var lastLoudIndex: Int = 30
     private var numberOfModelName = 30
     private var numberOfSearchedModelName = 20
@@ -69,17 +68,17 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
     private fun getModelsNamesFromRoom() {
         launch {
             val database = RoomDB(requireContext()).getDataFromRoom()
-            val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelPhoneModels>
+            val phoneModelNames = database.getModelNamesFromDb() as ArrayList<ModelsResponse.Body>
             filterPhoneModelNamesByBrandId(phoneModelNames)
         }
     }
 
-    private fun filterPhoneModelNamesByBrandId(modelNames: ArrayList<ModelPhoneModels>) {
-        if (modelNames.isNotEmpty()) {
+    private fun filterPhoneModelNamesByBrandId(modelsList: ArrayList<ModelsResponse.Body>) {
+        if (modelsList.isNotEmpty()) {
             val sharedPref = activity?.getSharedPreferences("newAdsActivity", Context.MODE_PRIVATE)
             val phoneBrandId = sharedPref?.getString("phoneBrandId", null)
             filteredList =
-                modelNames.filter { (it.brandId) == phoneBrandId } as ArrayList<ModelPhoneModels>
+                modelsList.filter { (it.brandId) == phoneBrandId } as ArrayList<ModelsResponse.Body>
             if (filteredList.size < numberOfModelName) {
                 numberOfModelName = filteredList.size
                 binding.moreModelsProgressBar.visibility = View.INVISIBLE
@@ -97,14 +96,14 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
         binding.modelsProgressBar.visibility = View.INVISIBLE
     }
 
-    private fun setModelsRecyclerView(list: ArrayList<ModelPhoneModels>) {
+    private fun setModelsRecyclerView(modelsList: ArrayList<ModelsResponse.Body>) {
         val recyclerView = binding.modelsRecyclerView
         recyclerView.visibility = View.VISIBLE
         recyclerView.isNestedScrollingEnabled = false
         recyclerView.layoutManager = LinearLayoutManager(context)
         recyclerView.setHasFixedSize(true)
         recyclerView.isNestedScrollingEnabled = false
-        recyclerAdapter = PhoneModelsAdapter(requireContext(), list, this@ModelsFragment)
+        recyclerAdapter = PhoneModelsAdapter(requireContext(), modelsList, this@ModelsFragment)
         recyclerView.adapter = recyclerAdapter
     }
 
@@ -140,7 +139,7 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
                     delay(1000)
                     val listAfterSearch = filteredList.filter { list ->
                         (list.modelName.lowercase().contains(text.toString().lowercase()))
-                    } as ArrayList<ModelPhoneModels>
+                    } as ArrayList<ModelsResponse.Body>
                     if (listAfterSearch.size < numberOfSearchedModelName) {
                         numberOfSearchedModelName = listAfterSearch.size
                         binding.moreModelsProgressBar.visibility = View.INVISIBLE
@@ -165,9 +164,11 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
             val phone = args.announcement.phone.copy(model = modelName)
             val announcement = args.announcement.copy(phone = phone)
 
-            val action = ModelsFragmentDirections.actionModelsFragmentToDescriptionFragment(announcement)
+            val action =
+                ModelsFragmentDirections.actionModelsFragmentToDescriptionFragment(announcement)
             findNavController().navigate(action)
-        } catch (e: Exception) { }
+        } catch (e: Exception) {
+        }
     }
 
     private fun pressBackButton() {

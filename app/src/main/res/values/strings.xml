@@ -58,7 +58,7 @@
     <string name="start">Start</string>
 
     <!-- Favorites Fragment -->
-    <string name="favourites">Favourites</string>
+    <string name="favorites">Favorites</string>
     <string name="no_data">No any data</string>
     <string name="no_internet_connection">No internet connection</string>
 
@@ -164,8 +164,8 @@
     <string name="other">Other</string>
     <string name="confirmation">Confirmation</string>
     <string name="fail">Fail. Please try again.</string>
-    <string name="main">Main</string>
-    <string name="cabinet">Cabinet</string>
+    <string name="discover">Discover</string>
+    <string name="profile">Profile</string>
     <string name="similar_announcements">Similar announcements</string>
     <string name="more_reviews">More reviews</string>
     <string name="is_executed">Is executed..</string>
@@ -177,7 +177,7 @@
     <string name="retrofit_exception">There was a problem loading data</string>
 
     <string name="account_opened_successfully">Account opened successfully</string>
-    <string name="favourite_announcements_limit">Favourite announcements limit is 10</string>
+    <string name="favourite_announcements_limit">Favorite announcements limit is 10</string>
     <string name="select_images_text">On the screen that opens, select all the photos you want to share and click choose</string>
     <string name="fill_in_all">Please fill in all</string>
 

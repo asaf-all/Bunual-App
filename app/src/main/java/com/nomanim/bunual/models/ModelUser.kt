@@ -1,12 +1,12 @@
 package com.nomanim.bunual.models
 
 import android.os.Parcelable
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.RegionsResponse
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ModelUser(
     val name: String,
     val phoneNumber: String,
-    val places: ModelPlaces
+    val places: RegionsResponse
 ) : Parcelable

@@ -2,19 +2,13 @@ package com.nomanim.bunual.viewmodel
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.android.gms.tasks.Continuation
-import com.google.android.gms.tasks.Task
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.installations.remote.TokenResult
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.UploadTask
-import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.Constants
 import com.nomanim.bunual.api.builders.RxJavaBuilder
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.RegionsResponse
 import com.nomanim.bunual.base.BaseViewModel
 import com.nomanim.bunual.models.ModelAnnouncement
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -31,8 +25,8 @@ import kotlin.collections.ArrayList
 class UserViewModel(application: Application) : BaseViewModel(application) {
 
     private val disposable = CompositeDisposable()
-    fun placesLiveData(): LiveData<List<ModelPlaces>> = placesMutableLiveData
-    private val placesMutableLiveData = MutableLiveData<List<ModelPlaces>>()
+    fun placesLiveData(): LiveData<List<RegionsResponse>> = placesMutableLiveData
+    private val placesMutableLiveData = MutableLiveData<List<RegionsResponse>>()
 
     fun uploadAdsImagesLiveData(): LiveData<ArrayList<String>> = uploadAdsImagesMutableLiveData
     private val uploadAdsImagesMutableLiveData = MutableLiveData<ArrayList<String>>()
@@ -46,8 +40,8 @@ class UserViewModel(application: Application) : BaseViewModel(application) {
                 RxJavaBuilder.service.getPlaces()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<ModelPlaces>>() {
-                        override fun onSuccess(list: List<ModelPlaces>) {
+                    .subscribeWith(object : DisposableSingleObserver<List<RegionsResponse>>() {
+                        override fun onSuccess(list: List<RegionsResponse>) {
                             placesMutableLiveData.postValue(list)
                         }
 

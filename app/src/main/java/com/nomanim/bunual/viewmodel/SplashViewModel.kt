@@ -1,15 +1,14 @@
 package com.nomanim.bunual.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.nomanim.bunual.api.builders.RetrofitBuilder
 import com.nomanim.bunual.api.builders.RxJavaBuilder
-import com.nomanim.bunual.api.entity.body.PhoneBrandsList
-import com.nomanim.bunual.api.entity.body.PhoneModelsList
+import com.nomanim.bunual.api.entity.BrandsResponse
+import com.nomanim.bunual.api.entity.ModelsResponse
 import com.nomanim.bunual.base.BaseViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -27,18 +26,17 @@ class SplashViewModel(application: Application) : BaseViewModel(application) {
     fun apiVersionLiveData(): LiveData<DocumentSnapshot> = apiVersionMutableLiveData
     private val apiVersionMutableLiveData = MutableLiveData<DocumentSnapshot>()
 
-    fun brandsLiveData(): LiveData<PhoneBrandsList> = brandsMutableLiveData
-    private val brandsMutableLiveData = MutableLiveData<PhoneBrandsList>()
+    fun brandsLiveData(): LiveData<BrandsResponse> = brandsMutableLiveData
+    private val brandsMutableLiveData = MutableLiveData<BrandsResponse>()
 
     private val disposable = CompositeDisposable()
-    fun modelsLiveData(): LiveData<PhoneModelsList> = modelsMutableLiveData
-    private val modelsMutableLiveData = MutableLiveData<PhoneModelsList>()
+    fun modelsLiveData(): LiveData<ModelsResponse> = modelsMutableLiveData
+    private val modelsMutableLiveData = MutableLiveData<ModelsResponse>()
 
     fun getApiVersionCode(firestore: FirebaseFirestore) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
             firestore.collection("Important Data")
-                .document("api_version")
-                .get()
+                .document("api_version").get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
                         val document = response.result
@@ -55,10 +53,10 @@ class SplashViewModel(application: Application) : BaseViewModel(application) {
     fun getPhoneBrands() {
         CoroutineScope(Dispatchers.IO).launch(handler) {
             val request = RetrofitBuilder.service.getPhoneBrands()
-            request.enqueue(object : Callback<PhoneBrandsList> {
+            request.enqueue(object : Callback<BrandsResponse> {
                 override fun onResponse(
-                    call: Call<PhoneBrandsList>,
-                    response: Response<PhoneBrandsList>?
+                    call: Call<BrandsResponse>,
+                    response: Response<BrandsResponse>?
                 ) {
                     if (response != null) {
                         if (response.isSuccessful) {
@@ -69,7 +67,7 @@ class SplashViewModel(application: Application) : BaseViewModel(application) {
                     }
                 }
 
-                override fun onFailure(call: Call<PhoneBrandsList>, error: Throwable) {
+                override fun onFailure(call: Call<BrandsResponse>, error: Throwable) {
                     errorMutableLiveData.postValue(error.message.toString())
                 }
             })
@@ -82,8 +80,8 @@ class SplashViewModel(application: Application) : BaseViewModel(application) {
                 RxJavaBuilder.service.getPhoneModels()
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<PhoneModelsList>() {
-                        override fun onSuccess(response: PhoneModelsList) {
+                    .subscribeWith(object : DisposableSingleObserver<ModelsResponse>() {
+                        override fun onSuccess(response: ModelsResponse) {
                             modelsMutableLiveData.postValue(response)
                         }
 

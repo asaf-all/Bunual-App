@@ -2,7 +2,6 @@ package com.nomanim.bunual.ui.fragments.newadsactivity
 
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,11 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
-import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.PhoneBrandsAdapter
 import com.nomanim.bunual.databinding.FragmentBrandsBinding
-import com.nomanim.bunual.api.entity.ModelPhoneBrands
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.BrandsResponse
+import com.nomanim.bunual.api.entity.RegionsResponse
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.ui.activities.MainActivity
 import com.nomanim.bunual.base.BaseCoroutineScope
@@ -35,7 +33,7 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
 
     private var _binding: FragmentBrandsBinding? = null
     private val binding get() = _binding!!
-    private var phoneBrands = ArrayList<ModelPhoneBrands>()
+    private var phoneBrands = ArrayList<BrandsResponse.Body>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,13 +56,13 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
         }
         binding.searchPhoneBrands.clearTextWhenClickClear()
 
-        getBrandNamesWithRoom()
+        getBrandNamesFromRoom()
     }
 
-    private fun getBrandNamesWithRoom() {
+    private fun getBrandNamesFromRoom() {
         launch {
             val database = RoomDB(requireContext()).getDataFromRoom()
-            phoneBrands = database.getBrandNamesFromDb() as ArrayList<ModelPhoneBrands>
+            phoneBrands = database.getBrandNamesFromDb() as ArrayList<BrandsResponse.Body>
             setBrandsRecyclerView(phoneBrands)
             binding.brandsProgressBar.visibility = View.INVISIBLE
             searchInsidePhoneModels()
@@ -81,7 +79,7 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
                     delay(1000)
                     val listAfterSearch = phoneBrands.filter { list ->
                         (list.brandName.lowercase().contains(text.toString().lowercase()))
-                    } as ArrayList<ModelPhoneBrands>
+                    } as ArrayList<BrandsResponse.Body>
                     setBrandsRecyclerView(listAfterSearch)
                     binding.brandsProgressBar.visibility = View.INVISIBLE
                 }
@@ -89,12 +87,12 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
         })
     }
 
-    private fun setBrandsRecyclerView(list: ArrayList<ModelPhoneBrands>) {
+    private fun setBrandsRecyclerView(brandsList: ArrayList<BrandsResponse.Body>) {
         val brv = binding.brandsRecyclerView
         brv.isNestedScrollingEnabled = false
         brv.layoutManager = LinearLayoutManager(requireContext())
         brv.setHasFixedSize(true)
-        val adapter = PhoneBrandsAdapter(requireContext(), list, this@BrandsFragment)
+        val adapter = PhoneBrandsAdapter(requireContext(), brandsList, this@BrandsFragment)
         brv.adapter = adapter
     }
 
@@ -103,7 +101,7 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
             val sharedPref = activity?.getSharedPreferences("newAdsActivity", Context.MODE_PRIVATE)
             sharedPref?.edit()?.putString("phoneBrandId", brandId)?.apply()
 
-            val places = ModelPlaces("", "0")
+            val places = RegionsResponse("", "0")
             val user = ModelUser("", "", places)
             val phone = ModelPhone(
                 brandName,
@@ -128,7 +126,8 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
             )
             val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(announcement)
             findNavController().navigate(action)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     private fun onBackPressed() {

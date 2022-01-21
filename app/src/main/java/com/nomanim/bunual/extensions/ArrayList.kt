@@ -7,7 +7,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.models.ModelPhone
 import com.nomanim.bunual.models.ModelUser
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.RegionsResponse
 
 
 fun ArrayList<ModelAnnouncement>.responseToList(
@@ -61,7 +61,7 @@ fun ArrayList<ModelAnnouncement>.responseToList(
                 delivery,
                 agreementPrice
             )
-            val placeModel = ModelPlaces(city, population)
+            val placeModel = RegionsResponse(city, population)
             val userModel = ModelUser(userName, phoneNumber, placeModel)
             val announcement = ModelAnnouncement(
                 id,
@@ -131,7 +131,7 @@ fun ArrayList<ModelAnnouncement>.responseToItem(
         delivery,
         agreementPrice
     )
-    val placeModel = ModelPlaces(city, population)
+    val placeModel = RegionsResponse(city, population)
     val userModel = ModelUser(userName, phoneNumber, placeModel)
     val announcement = ModelAnnouncement(
         id,

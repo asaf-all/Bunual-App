@@ -3,33 +3,32 @@ package com.nomanim.bunual.room
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import com.nomanim.bunual.models.ModelImages
-import com.nomanim.bunual.api.entity.ModelPhoneBrands
-import com.nomanim.bunual.api.entity.ModelPhoneModels
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.BrandsResponse
+import com.nomanim.bunual.api.entity.ModelsResponse
+import com.nomanim.bunual.api.entity.RegionsResponse
 
 @Dao
 interface RoomServices {
 
     @Insert
-    suspend fun insertModelNames(vararg phoneModel: ModelPhoneModels) : List<Long>
+    suspend fun insertModelNames(vararg phoneModelResponse: ModelsResponse.Body)
 
     @Insert
-    suspend fun insertBrandNames(vararg phoneBrand: ModelPhoneBrands)
+    suspend fun insertBrandNames(vararg phoneBrandResponse: BrandsResponse.Body)
 
     @Insert
-    suspend fun insertPlaceNames(vararg placeName: ModelPlaces)
+    suspend fun insertPlaceNames(vararg placeName: RegionsResponse)
 
-    @Query("DELETE FROM phoneBrandsTable")
+    @Query("DELETE FROM phone_brands_table")
     suspend fun deleteBrandNames()
 
-    @Query("DELETE FROM phoneModelsTable")
+    @Query("DELETE FROM phone_models_table")
     suspend fun deleteModelNames()
 
-    @Query("SELECT * FROM phoneBrandsTable")
-    suspend fun getBrandNamesFromDb() : List<ModelPhoneBrands>
+    @Query("SELECT * FROM phone_brands_table")
+    suspend fun getBrandNamesFromDb() : List<BrandsResponse.Body>
 
-    @Query("SELECT * FROM phoneModelsTable")
-    suspend fun getModelNamesFromDb() : List<ModelPhoneModels>
+    @Query("SELECT * FROM phone_models_table")
+    suspend fun getModelNamesFromDb() : List<ModelsResponse.Body>
 
 }

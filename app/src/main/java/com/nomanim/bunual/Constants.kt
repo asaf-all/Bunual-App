@@ -6,5 +6,4 @@ object Constants {
     const val ADS_COLLECTION_NAME = "All Announcements"
     const val ADS_STORAGE_NAME = "Images"
 
-
 }

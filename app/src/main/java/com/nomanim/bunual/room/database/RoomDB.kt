@@ -4,15 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.nomanim.bunual.models.ModelImages
-import com.nomanim.bunual.api.entity.ModelPhoneBrands
-import com.nomanim.bunual.api.entity.ModelPhoneModels
-import com.nomanim.bunual.api.entity.ModelPlaces
+import com.nomanim.bunual.api.entity.BrandsResponse
+import com.nomanim.bunual.api.entity.ModelsResponse
+import com.nomanim.bunual.api.entity.RegionsResponse
 import com.nomanim.bunual.room.RoomServices
 
 @Database(
     entities = arrayOf(
-        ModelPhoneBrands::class, ModelPhoneModels::class, ModelImages::class, ModelPlaces::class
+        BrandsResponse.Body::class,
+        ModelsResponse.Body::class,
+        RegionsResponse::class
     ), version = 1
 )
 
@@ -32,7 +33,7 @@ abstract class RoomDB : RoomDatabase() {
         }
 
         private fun makeDatabase(context: Context) = Room.databaseBuilder(
-            context.applicationContext, RoomDB::class.java, "roomDatabase"
+            context.applicationContext, RoomDB::class.java, "room_database"
         )
             .fallbackToDestructiveMigration()
             .build()

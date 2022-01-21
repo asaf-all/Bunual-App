@@ -13,7 +13,7 @@
         tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_favoritesFragment"
-            app:destination="@id/favouritesFragment" />
+            app:destination="@id/favoritesFragment" />
         <action
             android:id="@+id/action_homeFragment_to_profileFragment"
             app:destination="@id/profileFragment" />
