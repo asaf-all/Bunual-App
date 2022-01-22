@@ -32,6 +32,7 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
     private val mHomeViewModel: HomeViewModel by viewModels()
 
     private lateinit var auth: FirebaseAuth
@@ -43,7 +44,6 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
     private var allPhones = ArrayList<ModelAnnouncement>()
     private lateinit var verticalRVAdapter: AllPhonesAdapter
     private var userPhoneNumber: String = ""
-    private val numberOfAds = 10L  //for load data limit from fireStore for once
     private lateinit var lastValue: QuerySnapshot
     private var adsAreOver = false
 
@@ -59,19 +59,20 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        auth = FirebaseAuth.getInstance()
-        firestore = FirebaseFirestore.getInstance()
-        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-        userPhoneNumber = auth.currentUser?.phoneNumber.toString()
         activity?.window?.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.background_color_gray)
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility =
             View.VISIBLE
 
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
+        sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
+        userPhoneNumber = auth.currentUser?.phoneNumber.toString()
+
+
         initHomeViewModel()
-        mHomeViewModel.getMostViewedAds(firestore, numberOfAds)
-        mHomeViewModel.getAllAds(firestore, numberOfAds)
+        mHomeViewModel.getMostViewedAds(firestore, Constants.NUMBER_OF_ADS)
+        mHomeViewModel.getAllAds(firestore, Constants.NUMBER_OF_ADS)
         initUi()
     }
 
@@ -90,15 +91,15 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
             }
         })
         mHomeViewModel.moreLiveData().observe(viewLifecycleOwner, { response ->
-            if (response.size() < numberOfAds) {
+            if (response.size() < Constants.NUMBER_OF_ADS) {
                 adsAreOver = true
             }
             binding.morePhonesProgressBar.visibility = View.INVISIBLE
             lastValue = response
             val morePhones = ArrayList<ModelAnnouncement>()
                 .responseToList(firestore, Constants.ADS_COLLECTION_NAME, response)
-            for (i in 0 until morePhones.size) {
-                allPhones.add(morePhones[i])
+            for (element in morePhones) {
+                allPhones.add(element)
             }
             verticalRVAdapter.notifyDataSetChanged()
         })
@@ -113,7 +114,7 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
             if (scrollView.getChildAt(0).bottom <= (scrollView.height + scrollView.scrollY)) {
                 if (!adsAreOver) {
                     binding.morePhonesProgressBar.visibility = View.VISIBLE
-                    mHomeViewModel.getMoreAds(firestore, lastValue, numberOfAds)
+                    mHomeViewModel.getMoreAds(firestore, lastValue, Constants.NUMBER_OF_ADS)
                 }
             }
         }
@@ -130,7 +131,11 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
     }
 
     private fun setVerticalRecyclerView() {
-        verticalRVAdapter = AllPhonesAdapter(requireContext(), allPhones, this@HomeFragment) { model ->
+        verticalRVAdapter = AllPhonesAdapter(
+            requireContext(),
+            allPhones,
+            this@HomeFragment
+        ) { model ->
             mMainActivity.intentToAdsDetails(model)
         }
         val vrv = binding.verticalRecyclerView
@@ -146,6 +151,12 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
             for (text in resources.getStringArray(R.array.sort_data_texts)) {
                 sortTexts.add(text)
             }
+        }
+
+        binding.txtMore.setOnClickListener {
+            findNavController().navigate(
+                HomeFragmentDirections.actionHomeFragmentToResultFragment(ResultType.MOST_VIEWED)
+            )
         }
     }
 

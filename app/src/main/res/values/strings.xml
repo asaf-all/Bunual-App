@@ -31,7 +31,7 @@
     <string name="all_phone_models">All phone models</string>
     <string name="newest_first">Newest first</string>
     <string name="filter">Filter</string>
-    <string name="most_viewed">The most viewed</string>
+    <string name="most_viewed">Most viewed</string>
     <string name="last_ones">The last ones</string>
     <string name="more">More</string>
 
@@ -162,6 +162,7 @@
     <string name="dismiss">Dismiss</string>
     <string name="check">Check</string>
     <string name="other">Other</string>
+    <string name="result">Result</string>
     <string name="confirmation">Confirmation</string>
     <string name="fail">Fail. Please try again.</string>
     <string name="discover">Discover</string>

@@ -42,11 +42,11 @@ class FavoritesFragment : BaseFragment(), AllPhonesAdapter.Listener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
         currentUser = auth.currentUser
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
+
 
         mFavoritesViewModel.getIds(firestore, auth.currentUser?.phoneNumber.toString())
         initFavoritesViewModel()

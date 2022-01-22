@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +19,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.R
-import com.nomanim.bunual.api.entity.RegionsResponse
 import com.nomanim.bunual.base.*
 import com.nomanim.bunual.databinding.FragmentUserBinding
 import com.nomanim.bunual.ui.activities.MainActivity

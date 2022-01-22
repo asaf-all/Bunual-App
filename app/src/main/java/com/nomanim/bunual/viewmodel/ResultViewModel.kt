@@ -3,31 +3,34 @@ package com.nomanim.bunual.viewmodel
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.nomanim.bunual.Constants
-import com.nomanim.bunual.R
 import com.nomanim.bunual.base.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class FavoritesViewModel(application: Application) : BaseViewModel(application) {
+class ResultViewModel(application: Application) : BaseViewModel(application) {
 
-    fun idsLiveData(): LiveData<QuerySnapshot> = idsMutableLiveData
-    private val idsMutableLiveData = MutableLiveData<QuerySnapshot>()
+    fun mostViewedLiveData(): LiveData<QuerySnapshot> = mostViewedMutableLiveData
+    private val mostViewedMutableLiveData = MutableLiveData<QuerySnapshot>()
 
-    fun favoritesLiveData(): LiveData<QuerySnapshot> = favoritesMutableLiveData
-    private val favoritesMutableLiveData = MutableLiveData<QuerySnapshot>()
+    fun moreMostViewedLiveData(): LiveData<QuerySnapshot> = moreMostViewedMutableLiveData
+    private val moreMostViewedMutableLiveData = MutableLiveData<QuerySnapshot>()
 
-    fun getIds(firestore: FirebaseFirestore, phoneNumber: String) {
+    fun getMostViewedAds(firestore: FirebaseFirestore, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            firestore.collection(phoneNumber).get()
+            firestore.collection(Constants.ADS_COLLECTION_NAME)
+                .orderBy("numberOfViews", Query.Direction.DESCENDING)
+                .limit(numberOfAds).get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
                         val documents = response.result
                         if (documents != null) {
-                            idsMutableLiveData.postValue(documents!!)
+                            mostViewedMutableLiveData.postValue(documents!!)
                         }
                     } else {
                         errorMutableLiveData.postValue(response.exception.toString())
@@ -36,15 +39,17 @@ class FavoritesViewModel(application: Application) : BaseViewModel(application) 
         }
     }
 
-    fun getFavorites(firestore: FirebaseFirestore, favoritesPhones: ArrayList<String>) {
+    fun getMoreMostViewedAds(firestore: FirebaseFirestore, lastValue: QuerySnapshot, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
             firestore.collection(Constants.ADS_COLLECTION_NAME)
-                .whereIn("id", favoritesPhones).get()
+                .orderBy("numberOfViews", Query.Direction.DESCENDING)
+                .startAfter(lastValue.documents[lastValue.size() - 1])
+                .limit(numberOfAds).get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
                         val documents = response.result
                         if (documents != null) {
-                            favoritesMutableLiveData.postValue(documents!!)
+                            moreMostViewedMutableLiveData.postValue(documents!!)
                         }
                     } else {
                         errorMutableLiveData.postValue(response.exception.toString())
