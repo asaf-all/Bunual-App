@@ -74,7 +74,7 @@ class FavoritesFragment : BaseFragment(), AllPhonesAdapter.Listener {
             binding.progressBar.visibility = View.INVISIBLE
             setFavoritesPhonesRecyclerView()
         })
-        mFavoritesViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+        mFavoritesViewModel.errorLiveData().observe(viewLifecycleOwner, { message ->
             binding.progressBar.visibility = View.INVISIBLE
             ToastUtil.showToast("error: $message")
         })

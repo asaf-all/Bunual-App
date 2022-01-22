@@ -44,7 +44,7 @@ fun Fragment.showDialogOfCloseActivity() {
 }
 
 fun Fragment.showCustomBottomSheet(
-    list: ArrayList<String>,
+    list: List<String>,
     textView: TextView,
     dialogTitle: String,
     inUserFragment: Boolean

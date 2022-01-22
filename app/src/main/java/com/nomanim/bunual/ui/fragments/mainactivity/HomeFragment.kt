@@ -102,7 +102,7 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
             }
             verticalRVAdapter.notifyDataSetChanged()
         })
-        mHomeViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+        mHomeViewModel.errorLiveData().observe(viewLifecycleOwner, { message ->
             showToastMessage("error: $message")
         })
     }

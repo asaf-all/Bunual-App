@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,9 +20,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kaopiz.kprogresshud.KProgressHUD
 import com.nomanim.bunual.R
+import com.nomanim.bunual.api.entity.RegionsResponse
+import com.nomanim.bunual.base.*
 import com.nomanim.bunual.databinding.FragmentUserBinding
 import com.nomanim.bunual.ui.activities.MainActivity
-import com.nomanim.bunual.base.BaseFragment
 import com.nomanim.bunual.extensions.createScaledImageFromBitmap
 import com.nomanim.bunual.extensions.generateBitmapFromUri
 import com.nomanim.bunual.extensions.loadingProgressBarInDialog
@@ -76,14 +78,26 @@ class UserFragment : BaseFragment() {
         mUserViewModel.placesLiveData().observe(viewLifecycleOwner, { response ->
             binding.txtPlaceNames.text =
                 sharedPref?.getString("placeName", getString(R.string.choose_place)).toString()
-            val placesList = response.sortedWith(compareByDescending { it.population })
+
             binding.userPlaceCardView.setOnClickListener {
-                val listForSheet = ArrayList<String>()
-                for (element in placesList) {
-                    listForSheet.add(element.city)
+                val regionsList = response.sortedByDescending { regions ->
+                    regions.population
+                }
+                val citiesList = mutableListOf<String>()
+                for (element in regionsList) {
+                    citiesList.add(element.city)
+                }
+
+                val uniqueCities = mutableListOf<String>()
+                val iterator = citiesList.iterator() // for remove recurring city names
+                while (iterator.hasNext()) {
+                    val element = iterator.next()
+                    if (!uniqueCities.contains(element)) {
+                        uniqueCities.add(element)
+                    }
                 }
                 showCustomBottomSheet(
-                    listForSheet,
+                    uniqueCities,
                     binding.txtPlaceNames,
                     getString(R.string.choose_place),
                     true
@@ -112,6 +126,8 @@ class UserFragment : BaseFragment() {
             showToast("error: $message")
         })
     }
+
+
 
     private fun initUi() {
         binding.edtUserName.setText(

@@ -8,15 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.nomanim.bunual.R
+import com.nomanim.bunual.base.BaseFragment
 import com.nomanim.bunual.databinding.FragmentDescriptionBinding
 import com.nomanim.bunual.extensions.showDialogOfCloseActivity
 
-class DescriptionFragment : Fragment() {
+class DescriptionFragment : BaseFragment() {
 
     private var _binding: FragmentDescriptionBinding? = null
     private val binding get() = _binding!!

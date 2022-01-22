@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.Timestamp
+import com.nomanim.bunual.R
 import com.nomanim.bunual.adapters.PhoneBrandsAdapter
 import com.nomanim.bunual.databinding.FragmentBrandsBinding
 import com.nomanim.bunual.api.entity.BrandsResponse
@@ -126,6 +127,7 @@ class BrandsFragment : BaseCoroutineScope(), PhoneBrandsAdapter.Listener {
             )
             val action = BrandsFragmentDirections.actionBrandsFragmentToModelsFragment(announcement)
             findNavController().navigate(action)
+
         } catch (e: Exception) {
         }
     }

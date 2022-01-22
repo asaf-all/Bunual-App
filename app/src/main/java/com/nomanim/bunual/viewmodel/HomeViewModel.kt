@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.nomanim.bunual.Constants
 import com.nomanim.bunual.base.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,9 +26,9 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
 
     fun getMostViewedAds(firestore: FirebaseFirestore, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            firestore.collection("All Announcements")
-                .orderBy("numberOfViews", Query.Direction.DESCENDING).limit(numberOfAds)
-                .get()
+            firestore.collection(Constants.ADS_COLLECTION_NAME)
+                .orderBy("numberOfViews", Query.Direction.DESCENDING)
+                .limit(numberOfAds).get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
                         val documents = response.result
@@ -43,7 +44,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
 
     fun getAllAds(firestore: FirebaseFirestore, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            firestore.collection("All Announcements")
+            firestore.collection(Constants.ADS_COLLECTION_NAME)
                 .limit(numberOfAds).orderBy("time", Query.Direction.DESCENDING).get()
                 .addOnCompleteListener { response ->
                     if (response.isSuccessful) {
@@ -60,7 +61,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
 
     fun getMoreAds(firestore: FirebaseFirestore, lastValue: QuerySnapshot, numberOfAds: Long) {
         CoroutineScope(Dispatchers.IO).launch(handler) {
-            firestore.collection("All Announcements")
+            firestore.collection(Constants.ADS_COLLECTION_NAME)
                 .orderBy("time", Query.Direction.DESCENDING)
                 .startAfter(lastValue.documents[lastValue.size() - 1])
                 .limit(numberOfAds).get()

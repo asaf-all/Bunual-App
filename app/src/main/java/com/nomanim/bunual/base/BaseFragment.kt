@@ -37,20 +37,6 @@ open class BaseFragment : Fragment() {
         requireActivity() as NewAdsActivity
     }
 
-    protected fun getPersistentView(
-        inflater: LayoutInflater?,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?,
-        layout: Int
-    ): View? {
-        if (rootView == null) {
-            rootView = inflater?.inflate(layout, container, false)
-        } else {
-            (rootView?.parent as? ViewGroup)?.removeView(rootView)
-        }
-        return rootView
-    }
-
     protected fun showToastMessage(text: String, lengthIsLong: Boolean = false) {
         if (lengthIsLong) {
             Toast.makeText(context, text, Toast.LENGTH_LONG).show()

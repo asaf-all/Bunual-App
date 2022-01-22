@@ -4,15 +4,15 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
+import com.nomanim.bunual.Constants
 import com.nomanim.bunual.models.ModelAnnouncement
 import com.nomanim.bunual.models.ModelPhone
 import com.nomanim.bunual.models.ModelUser
 import com.nomanim.bunual.api.entity.RegionsResponse
 
-
 fun ArrayList<ModelAnnouncement>.responseToList(
     fireStore: FirebaseFirestore,
-    collectionName: String = "All Announcements",
+    collectionName: String = Constants.ADS_COLLECTION_NAME,
     value: QuerySnapshot?
 ): ArrayList<ModelAnnouncement> {
 
@@ -145,8 +145,6 @@ fun ArrayList<ModelAnnouncement>.responseToItem(
     )
 
     list.add(announcement)
-
     this.addAll(list)
-
     return this
 }

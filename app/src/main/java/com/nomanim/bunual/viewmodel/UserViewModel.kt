@@ -64,7 +64,6 @@ class UserViewModel(application: Application) : BaseViewModel(application) {
             }.addOnCompleteListener { response ->
                 if (response.isSuccessful) {
                     val imagesUrl = ArrayList<String>()
-                    //imagesUrl.add(uploadTask.downloadUrl.toString())
                     imagesUrl.add(response.result.toString())
                     uploadAdsImagesMutableLiveData.postValue(imagesUrl)
                 } else {
