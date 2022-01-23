@@ -4,8 +4,7 @@
     <item
         android:id="@+id/homeFragment"
         android:icon="@drawable/home"
-        android:title="@string/discover"
-        android:menuCategory="secondary"/>
+        android:title="@string/discover"/>
     <!--<item
         android:id="@+id/searchFragment"
         android:icon="@drawable/im_search"
@@ -14,16 +13,13 @@
     <item
         android:id="@+id/newAnnouncementFragment"
         android:icon="@drawable/ic_add"
-        android:title="@string/add_announcement"
-        android:menuCategory="secondary"/>
+        android:title="@string/add_announcement"/>
     <item
         android:id="@+id/favoritesFragment"
         android:icon="@drawable/favourites"
-        android:title="@string/favorites"
-        android:menuCategory="secondary"/>
+        android:title="@string/favorites"/>
     <item
         android:id="@+id/profileFragment"
         android:icon="@drawable/user"
-        android:title="@string/profile"
-        android:menuCategory="secondary"/>
+        android:title="@string/profile"/>
 </menu>

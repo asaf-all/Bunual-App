@@ -11,7 +11,7 @@ import com.thekhaeng.pushdownanim.PushDownAnim
 
 class AllPhonesAdapter(
     val context: Context,
-    val list: ArrayList<ModelAnnouncement>,
+    val list: List<ModelAnnouncement>,
     val listener: Listener,
     private val onClick: ((ModelAnnouncement) -> Unit)
 ) : RecyclerView.Adapter<AllPhonesAdapter.Holder>() {
@@ -24,7 +24,7 @@ class AllPhonesAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun run(
-            list: ArrayList<ModelAnnouncement>,
+            list: List<ModelAnnouncement>,
             position: Int,
             listener: Listener,
             onClick: (ModelAnnouncement) -> Unit
