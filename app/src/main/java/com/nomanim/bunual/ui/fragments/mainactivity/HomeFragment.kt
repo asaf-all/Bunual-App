@@ -160,6 +160,7 @@ class HomeFragment : BaseFragment(), MostViewedPhonesAdapter.Listener,
         }
     }
 
+
 //  private fun createListWithSelectedAdsImages(
 //      list: ArrayList<ModelAnnouncement>,
 //      position: Int

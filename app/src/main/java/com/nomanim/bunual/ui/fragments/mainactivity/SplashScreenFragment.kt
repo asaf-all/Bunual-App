@@ -13,8 +13,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.work.*
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.firestore.FirebaseFirestore
+import com.nomanim.bunual.CheckVersionWork
 import com.nomanim.bunual.R
 import com.nomanim.bunual.databinding.FragmentSplashScreenBinding
 import com.nomanim.bunual.api.entity.BrandsResponse
@@ -22,8 +24,9 @@ import com.nomanim.bunual.api.entity.ModelsResponse
 import com.nomanim.bunual.room.database.RoomDB
 import com.nomanim.bunual.base.BaseCoroutineScope
 import com.nomanim.bunual.viewmodel.SplashViewModel
-import gun0912.tedimagepicker.util.ToastUtil
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
@@ -50,22 +53,41 @@ class SplashScreenFragment : BaseCoroutineScope() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
         firestore = FirebaseFirestore.getInstance()
         activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.GONE
         sharedPref = activity?.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-        activity?.window?.statusBarColor = ContextCompat.getColor(requireContext(), R.color.white)
 
         initSplashViewModel()
-        mSplashViewModel.getApiVersionCode(firestore)
+
+        val checkState = sharedPref?.getBoolean("check_api_version", true)
+
+        if (checkState != null && checkState) {
+            mSplashViewModel.getApiVersionCode(firestore)
+        } else {
+
+            val workConstraints = Constraints.Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val workRequest = PeriodicWorkRequestBuilder<CheckVersionWork>(1, TimeUnit.DAYS)
+                .setConstraints(workConstraints)
+                .build()
+            WorkManager.getInstance(requireContext()).enqueue(workRequest)
+
+            lifecycleScope.launchWhenCreated {
+                delay(500)
+                navigateToNextFragment()
+            }
+        }
     }
 
     private fun initSplashViewModel() {
         mSplashViewModel.apiVersionLiveData().observe(viewLifecycleOwner, { response ->
             currentApiVersionCode = response.get("version_code").toString()
-            checkApiVersionCodeForLoadData(currentApiVersionCode)
-
+            checkApiVersionCode(currentApiVersionCode)
+            showToastMessage("ss")
         })
         mSplashViewModel.brandsLiveData().observe(viewLifecycleOwner, { response ->
             if (response != null) {
@@ -84,12 +106,11 @@ class SplashScreenFragment : BaseCoroutineScope() {
         })
     }
 
-    private fun checkApiVersionCodeForLoadData(activeApiVersionCode: String?) {
+    private fun checkApiVersionCode(activeApiVersionCode: String?) {
         val latestApiVersionCode = sharedPref?.getString("api_version_code", "0")
         if (activeApiVersionCode == latestApiVersionCode) {
-            lifecycleScope.launchWhenResumed {
-                navigateToNextFragment()
-            }
+            sharedPref?.edit()?.putBoolean("check_api_version", false)?.apply()
+            navigateToNextFragment()
         } else {
             binding.downloadingTextView.visibility = View.VISIBLE
             mSplashViewModel.getPhoneBrands()

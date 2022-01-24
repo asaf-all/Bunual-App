@@ -23,8 +23,8 @@ class MainActivity : AppCompatActivity() {
 
     fun intentToAdsDetails(model: ModelAnnouncement) {
         val intent = Intent(this, AdsDetailsActivity::class.java)
-        val extraData = Intent()
-        extraData.putExtra("announcement",model)
+        val extraData = Bundle()
+        extraData.putParcelable("announcement",model)
         intent.putExtras(extraData)
         startActivity(intent)
     }

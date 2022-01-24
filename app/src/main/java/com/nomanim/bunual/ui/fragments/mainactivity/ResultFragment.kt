@@ -5,8 +5,10 @@ import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
@@ -18,6 +20,7 @@ import com.nomanim.bunual.base.BaseFragment
 import com.nomanim.bunual.base.responseToList
 import com.nomanim.bunual.databinding.FragmentResultBinding
 import com.nomanim.bunual.models.ModelAnnouncement
+import com.nomanim.bunual.ui.fragments.newadsactivity.FeaturesFragmentDirections
 import com.nomanim.bunual.viewmodel.ResultViewModel
 import kotlinx.parcelize.Parcelize
 
@@ -59,6 +62,7 @@ class ResultFragment : BaseFragment(), AllPhonesAdapter.Listener {
         firestore = FirebaseFirestore.getInstance()
 
 
+        pressBackButton()
         initViewModel()
 
         when (args.resultType) {
@@ -125,6 +129,18 @@ class ResultFragment : BaseFragment(), AllPhonesAdapter.Listener {
                 }
             }
         }
+    }
+
+    private fun pressBackButton() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    findNavController().navigate(
+                        R.id.action_resultFragment_to_homeFragment
+                    )
+                }
+            })
     }
 
 }

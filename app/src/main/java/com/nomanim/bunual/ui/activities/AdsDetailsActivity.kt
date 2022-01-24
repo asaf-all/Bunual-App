@@ -9,6 +9,7 @@ import com.nomanim.bunual.databinding.ActivityMainBinding
 class AdsDetailsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAdsDetailsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAdsDetailsBinding.inflate(layoutInflater)

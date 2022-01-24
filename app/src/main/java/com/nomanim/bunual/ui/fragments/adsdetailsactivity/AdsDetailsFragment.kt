@@ -134,12 +134,14 @@ class AdsDetailsFragment : BaseCoroutineScope(), AdsReviewAdapter.Listener {
         binding.adsDetailsBackButton.setOnClickListener {
             activity?.onBackPressed()
         }
+
         binding.imageView7.setOnClickListener {
             val intent = Intent(context, GalleryImageActivity::class.java)
             intent.putExtra("photos", Gson().toJson(dataOfCurrentAds[0].image))
             intent.putExtra("position", Gson().toJson(dataOfCurrentAds.map { it.image }))
             context?.startActivity(intent)
         }
+
         binding.btnAddToFav.setOnClickListener {
             binding.btnAddToFav.visibility = View.INVISIBLE
             if (auth.currentUser != null) {
