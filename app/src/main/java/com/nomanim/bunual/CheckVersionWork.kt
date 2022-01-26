@@ -13,7 +13,7 @@ class CheckVersionWork(
     override fun doWork(): Result {
 
         val sharedPref = applicationContext.getSharedPreferences("sharedPref", Context.MODE_PRIVATE)
-        val status = sharedPref.edit().putBoolean("check_api_version", true)
+        sharedPref.edit().putBoolean("check_api_version", true).apply()
 
         return Result.success()
     }

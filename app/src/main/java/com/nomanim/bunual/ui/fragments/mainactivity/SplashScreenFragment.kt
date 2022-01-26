@@ -87,7 +87,6 @@ class SplashScreenFragment : BaseCoroutineScope() {
         mSplashViewModel.apiVersionLiveData().observe(viewLifecycleOwner, { response ->
             currentApiVersionCode = response.get("version_code").toString()
             checkApiVersionCode(currentApiVersionCode)
-            showToastMessage("ss")
         })
         mSplashViewModel.brandsLiveData().observe(viewLifecycleOwner, { response ->
             if (response != null) {
@@ -109,7 +108,6 @@ class SplashScreenFragment : BaseCoroutineScope() {
     private fun checkApiVersionCode(activeApiVersionCode: String?) {
         val latestApiVersionCode = sharedPref?.getString("api_version_code", "0")
         if (activeApiVersionCode == latestApiVersionCode) {
-            sharedPref?.edit()?.putBoolean("check_api_version", false)?.apply()
             navigateToNextFragment()
         } else {
             binding.downloadingTextView.visibility = View.VISIBLE
@@ -140,6 +138,7 @@ class SplashScreenFragment : BaseCoroutineScope() {
     }
 
     private fun navigateToNextFragment() {
+        sharedPref?.edit()?.putBoolean("check_api_version", false)?.apply()
         findNavController().navigate(R.id.action_splashScreenFragment_to_homeFragment)
     }
 
