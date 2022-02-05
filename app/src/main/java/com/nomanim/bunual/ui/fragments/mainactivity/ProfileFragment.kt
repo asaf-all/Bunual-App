@@ -3,7 +3,6 @@ package com.nomanim.bunual.ui.fragments.mainactivity
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +74,7 @@ class ProfileFragment : BaseFragment(), AllPhonesAdapter.Listener {
     }
 
     private fun initProfileViewModel() {
-        mProfileViewModel.userAdsLiveData().observe(viewLifecycleOwner, { response ->
+        mProfileViewModel.userAdsLiveData().observe(viewLifecycleOwner) { response ->
             if (response.size() != 0) {
                 announcements.responseToList(firestore, userPhoneNumber, response)
                 setRecyclerView()
@@ -85,9 +84,9 @@ class ProfileFragment : BaseFragment(), AllPhonesAdapter.Listener {
                 binding.noDataTextView.visibility = View.VISIBLE
                 binding.currentUserProgressBar.visibility = View.INVISIBLE
             }
-        })
+        }
 
-        mProfileViewModel.moreLiveData().observe(viewLifecycleOwner, { response ->
+        mProfileViewModel.moreLiveData().observe(viewLifecycleOwner) { response ->
             if (response.size() < 10) {
                 announcementsAreOver = true
             }
@@ -103,11 +102,11 @@ class ProfileFragment : BaseFragment(), AllPhonesAdapter.Listener {
                 announcements.add(morePhones[i])
             }
             recyclerViewAdapter.notifyDataSetChanged()
-        })
-        mProfileViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+        }
+        mProfileViewModel.errorMutableLiveData.observe(viewLifecycleOwner) { message ->
             binding.currentUserProgressBar.visibility = View.INVISIBLE
             showToastMessage("error: $message")
-        })
+        }
     }
 
     private fun getMoreAds() {

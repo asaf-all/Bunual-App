@@ -73,7 +73,7 @@ class UserFragment : BaseFragment() {
     }
 
     private fun initUserViewModel() {
-        mUserViewModel.placesLiveData().observe(viewLifecycleOwner, { response ->
+        mUserViewModel.placesLiveData().observe(viewLifecycleOwner) { response ->
             binding.txtPlaceNames.text =
                 sharedPref?.getString("placeName", getString(R.string.choose_place)).toString()
 
@@ -101,16 +101,16 @@ class UserFragment : BaseFragment() {
                     true
                 )
             }
-        })
+        }
 
-        mUserViewModel.uploadAdsImagesLiveData().observe(viewLifecycleOwner, { response ->
+        mUserViewModel.uploadAdsImagesLiveData().observe(viewLifecycleOwner) { response ->
             val editor = sharedPref?.edit()
             editor?.putString("userName", binding.edtUserName.text.toString())
             editor?.apply()
             uploadAdsToFirestore(response)
-        })
+        }
 
-        mUserViewModel.uploadAdsLiveData().observe(viewLifecycleOwner, { response ->
+        mUserViewModel.uploadAdsLiveData().observe(viewLifecycleOwner) { response ->
             if (response == "success") {
                 loadingDialog.dismiss()
                 val intent = Intent(activity, MainActivity::class.java)
@@ -118,13 +118,12 @@ class UserFragment : BaseFragment() {
                 activity?.startActivity(intent)
                 activity?.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
             }
-        })
-        mUserViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+        }
+        mUserViewModel.errorMutableLiveData.observe(viewLifecycleOwner) { message ->
             binding.txtPlaceNames.text = "error! please try again"
             showToast("error: $message")
-        })
+        }
     }
-
 
 
     private fun initUi() {
@@ -138,7 +137,16 @@ class UserFragment : BaseFragment() {
             navigateToPreviousFragment()
         }
         binding.shareAdsButton.setOnClickListener {
-            openGallery()
+            if (auth.currentUser != null) {
+                openGallery()
+            } else {
+                showDialog(
+                    "You don't have permission!",
+                    "Currently you are in discover mode. " +
+                            "If you want to share announcement you must create account.",
+                    "OK"
+                )
+            }
         }
     }
 

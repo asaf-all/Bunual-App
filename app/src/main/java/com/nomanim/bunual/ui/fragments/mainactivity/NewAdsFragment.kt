@@ -18,11 +18,15 @@ class NewAdsFragment : BaseFragment() {
 
     private var _binding: FragmentNewAdsBinding? = null
     private val binding get() = _binding!!
-    private  lateinit var auth: FirebaseAuth
+    private lateinit var auth: FirebaseAuth
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentNewAdsBinding.inflate(inflater,container,false)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentNewAdsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -41,10 +45,15 @@ class NewAdsFragment : BaseFragment() {
         binding.btnStart.setOnClickListener {
             findNavController().navigate(R.id.action_newAnnouncementFragment_to_profileFragment)
         }
+
+        binding.txtDiscoverApp.setOnClickListener {
+            intentToNewAdsActivity()
+        }
     }
 
     private fun intentToNewAdsActivity() {
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility = View.INVISIBLE
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigation)?.visibility =
+            View.INVISIBLE
         val intent = Intent(activity, NewAdsActivity::class.java)
         activity?.finish()
         activity?.startActivity(intent)

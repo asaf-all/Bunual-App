@@ -3,6 +3,7 @@ package com.nomanim.bunual.ui.fragments.mainactivity
 import android.app.Activity
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -79,11 +80,13 @@ class RegistrationFragment : BaseFragment() {
                 override fun onVerificationFailed(exception: FirebaseException) {
                     binding.createAccountProgressBar.visibility = View.INVISIBLE
                     binding.createAccountNextButton.visibility = View.VISIBLE
-                    Snackbar.make(
-                        mView,
-                        resources.getString(R.string.enter_valid_phone_number),
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    showToastMessage(exception.message.toString())
+                    Log.e("com.nomanim.bunual", exception.message.toString())
+//                    Snackbar.make(
+//                        mView,
+//                        resources.getString(R.string.enter_valid_phone_number),
+//                        Snackbar.LENGTH_LONG
+//                    ).show()
                 }
             }).build()
         PhoneAuthProvider.verifyPhoneNumber(options)

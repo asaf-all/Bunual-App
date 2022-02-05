@@ -113,13 +113,16 @@ class ModelsFragment : BaseCoroutineScope(), PhoneModelsAdapter.Listener {
         scrollView.viewTreeObserver.addOnScrollChangedListener {
             if (scrollView.getChildAt(0).bottom <= (scrollView.height + scrollView.scrollY)) {
                 remainingListSize -= numberOfModelName
-                if (remainingListSize >= 0) {
-                    if (remainingListSize < numberOfModelName) {
-                        numberOfModelName = remainingListSize
-                        binding.moreModelsProgressBar.visibility = View.INVISIBLE
-                    }
+                if (remainingListSize in 0 until numberOfModelName) {
+
+                    numberOfModelName = remainingListSize
+                    binding.moreModelsProgressBar.visibility = View.INVISIBLE
+
                     for (index in lastLoudIndex until lastLoudIndex + numberOfModelName) {
-                        limitedAndFilteredList.add(filteredList[index])
+                        try {
+                            limitedAndFilteredList.add(filteredList[index])
+                        } catch (e: Exception) {
+                        }
                     }
                     lastLoudIndex += numberOfModelName
                     recyclerAdapter.notifyDataSetChanged()

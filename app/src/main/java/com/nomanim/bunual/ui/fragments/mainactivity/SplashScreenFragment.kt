@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -84,25 +85,27 @@ class SplashScreenFragment : BaseCoroutineScope() {
     }
 
     private fun initSplashViewModel() {
-        mSplashViewModel.apiVersionLiveData().observe(viewLifecycleOwner, { response ->
+        mSplashViewModel.apiVersionLiveData().observe(viewLifecycleOwner) { response ->
             currentApiVersionCode = response.get("version_code").toString()
             checkApiVersionCode(currentApiVersionCode)
-        })
-        mSplashViewModel.brandsLiveData().observe(viewLifecycleOwner, { response ->
+        }
+        mSplashViewModel.brandsLiveData().observe(viewLifecycleOwner) { response ->
             if (response != null) {
                 val brandsList = response.body as ArrayList<BrandsResponse.Body>
                 addBrandsNamesToRoom(brandsList)
             }
-        })
-        mSplashViewModel.modelsLiveData().observe(viewLifecycleOwner, { response ->
+        }
+        mSplashViewModel.modelsLiveData().observe(viewLifecycleOwner) { response ->
             if (response != null) {
                 val modelsList = response.body as ArrayList<ModelsResponse.Body>
                 addModelsNamesToRoom(modelsList)
             }
-        })
-        mSplashViewModel.errorMutableLiveData.observe(viewLifecycleOwner, { message ->
+        }
+        mSplashViewModel.errorMutableLiveData.observe(viewLifecycleOwner) { message ->
+            binding.splashScreenProgressBar.visibility = View.INVISIBLE
             showToastMessage("error: $message")
-        })
+            Log.e("com.nomanim.bunual", message.toString())
+        }
     }
 
     private fun checkApiVersionCode(activeApiVersionCode: String?) {

@@ -35,23 +35,22 @@ class UserViewModel(application: Application) : BaseViewModel(application) {
     private val uploadAdsMutableLiveData = MutableLiveData<String>()
 
     fun getPlaces() {
-        CoroutineScope(Dispatchers.IO).launch(handler) {
-            disposable.add(
-                RxJavaBuilder.service.getPlaces()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<List<RegionsResponse>>() {
-                        override fun onSuccess(list: List<RegionsResponse>) {
-                            placesMutableLiveData.postValue(list)
-                        }
+        disposable.add(
+            RxJavaBuilder.service.getPlaces()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<List<RegionsResponse>>() {
+                    override fun onSuccess(list: List<RegionsResponse>) {
+                        placesMutableLiveData.postValue(list)
+                    }
 
-                        override fun onError(error: Throwable) {
-                            errorMutableLiveData.postValue(error.message.toString())
-                        }
-                    })
-            )
-        }
+                    override fun onError(error: Throwable) {
+                        errorMutableLiveData.postValue(error.message.toString())
+                    }
+                })
+        )
     }
+
 
     //currently only 1 image can be uploaded
     fun uploadAdsImages(storage: FirebaseStorage, fileList: ArrayList<File>) {

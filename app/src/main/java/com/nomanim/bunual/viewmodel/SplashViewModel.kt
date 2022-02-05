@@ -75,23 +75,22 @@ class SplashViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun getPhoneModels() {
-        CoroutineScope(Dispatchers.IO).launch(handler) {
-            disposable.add(
-                RxJavaBuilder.service.getPhoneModels()
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(object : DisposableSingleObserver<ModelsResponse>() {
-                        override fun onSuccess(response: ModelsResponse) {
-                            modelsMutableLiveData.postValue(response)
-                        }
+        disposable.add(
+            RxJavaBuilder.service.getPhoneModels()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(object : DisposableSingleObserver<ModelsResponse>() {
+                    override fun onSuccess(response: ModelsResponse) {
+                        modelsMutableLiveData.postValue(response)
+                    }
 
-                        override fun onError(error: Throwable) {
-                            errorMutableLiveData.postValue(error.message.toString())
-                        }
-                    })
-            )
-        }
+                    override fun onError(error: Throwable) {
+                        errorMutableLiveData.postValue(error.message.toString())
+                    }
+                })
+        )
     }
+
 
     override fun onCleared() {
         super.onCleared()
