@@ -1,5 +1,5 @@
 # Bunual-App
-Technologies : Kotlin, MVVM, Navigation Components, View Binding, Material design, Retrofit + RxJava, Room, Work Manager, Firebase, GitHub, Some third party libraries.
+Technologies: Kotlin, MVVM + Live Data, Navigation, Retrofit + RxJava, Work Manager, Room, Firebase, View Binding, Material design, GitHub, third party libraries.
 
 ![photo5420099873031699390](https://user-images.githubusercontent.com/77666792/149990677-b6e1d37c-11b4-40c4-a813-dcb3ee3ee9fd.jpg)
 
